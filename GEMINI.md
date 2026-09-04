@@ -16,3 +16,11 @@ The workspace is equipped with production-grade design skills under `.agents/ski
 - `emil-design-eng`
 - `design-taste-frontend`
 - `web-design-engineer`
+
+<!-- ontoindex:start -->
+## OntoIndex — Code Intelligence
+This project is indexed by OntoIndex as **Englo** (641 symbols, 773 relationships, 1 execution flows). Use OntoIndex CLI and MCP to navigate the code graph, explore execution flows, and assess change impacts.
+- Graph index: `ontoindex status`
+- Impact analysis: `ontoindex impact --repo Englo <symbol>`
+- Change detection: `ontoindex detect-changes --repo Englo`
+<!-- ontoindex:end -->
