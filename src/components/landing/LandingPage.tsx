@@ -6,6 +6,7 @@ import { Flowing3DHeroAsset } from './Flowing3DHeroAsset';
 import { FloatingParallaxAssets } from './FloatingParallaxAssets';
 import { SplineLogicCore3D } from './SplineLogicCore3D';
 import { SplineArchitecture3D } from './SplineArchitecture3D';
+import { MultiFormatPitchAsset } from './MultiFormatPitchAsset';
 import {
   Terminal,
   Play,
@@ -615,10 +616,10 @@ export const LandingPage: React.FC = () => {
                 <span>The Core Advantage</span>
               </div>
               <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
-                The Cost of Syntax vs. The Power of Thought
+                The Cost of Syntax vs. The Freedom of Logic
               </h2>
               <p className={`text-sm max-w-xl ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
-                Traditional platforms penalize you for memory slips. Englo verifies your architectural invariants in pure English.
+                Traditional platforms penalize you for memory slips. Englo parses paragraphs, bullet points, or stepped prose to verify your invariant logic with zero formatting friction.
               </p>
             </div>
 
@@ -742,17 +743,17 @@ export const LandingPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#0071E3] animate-pulse" />
                     <span className="font-mono text-[11px] uppercase tracking-wider text-[#0071E3] font-bold">
-                      The Englo Way / Pure Logic
+                      The Englo Way / Any Format Accepted
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full font-medium ${
                       isDarkMode ? 'bg-white/10 text-neutral-300' : 'bg-neutral-100 text-[#6E6E73]'
                     }`}>
-                      Step {currentStep} of 4
+                      Invariants {currentStep} of 4
                     </span>
                     <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-[#0071E3] font-bold">
-                      Deterministic
+                      Format-Agnostic
                     </span>
                   </div>
                 </div>
@@ -819,6 +820,11 @@ export const LandingPage: React.FC = () => {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* Format-Independent Pitch Showcase Asset */}
+          <div className="mt-14">
+            <MultiFormatPitchAsset isDarkMode={isDarkMode} />
           </div>
         </div>
       </section>

@@ -49,7 +49,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FBFBFD] text-[#1D1D1F] flex flex-col font-sans selection:bg-[#0071E3] selection:text-[#FFFFFF]">
+    <div className="h-screen bg-[#FBFBFD] text-[#1D1D1F] flex flex-col font-sans selection:bg-[#0071E3] selection:text-[#FFFFFF] overflow-hidden">
       {/* Global Navigation Bar */}
       <Navbar />
 

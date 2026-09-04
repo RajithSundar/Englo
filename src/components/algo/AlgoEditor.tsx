@@ -102,40 +102,55 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
       <div className="h-10 px-4 border-b border-black/[0.06] bg-white flex items-center justify-between flex-shrink-0 select-none">
         <div className="flex items-center gap-2 text-xs text-[#6E6E73]">
           <FileText className="w-3.5 h-3.5 text-[#0071E3]" />
-          <span className="font-semibold text-[#1D1D1F]">Algo-English Prose Editor</span>
+          <span className="font-semibold text-[#1D1D1F]">Algo-English Editor</span>
           <span className="text-neutral-300">|</span>
           <span className="text-[11px] text-[#86868B] font-mono">
             {lines.length} lines • {wordCount} words
+          </span>
+          <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-[#34C759] border border-emerald-200/60">
+            Any Format: Paragraphs • Bullets • Steps
           </span>
         </div>
 
         {/* Right Toolbar Actions */}
         <div className="flex items-center gap-2">
           {/* Quick Prose Snippet Inserters */}
-          <div className="hidden lg:flex items-center gap-1.5 text-[11px] mr-1">
+          <div className="hidden xl:flex items-center gap-1.5 text-[11px] mr-1">
             <span className="text-[#86868B] text-[10px] uppercase font-mono font-bold tracking-wider">
-              Snippets:
+              Scaffolds:
             </span>
             <button
               type="button"
-              onClick={() => insertTemplate('Step X: Initialize [data_structure] to store [purpose].')}
+              onClick={() => insertTemplate('We can solve this by maintaining [data structure]. As we iterate through [input], we check [condition] and update [state]. Once [termination], we return [result].')}
               className="px-2 py-0.5 rounded-full bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200/60 transition-colors flex items-center gap-1 active:scale-95 text-[11px]"
+              title="Insert paragraph format structure"
             >
               <Plus className="w-3 h-3 text-[#0071E3]" />
+              <span>Paragraph</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => insertTemplate('- Maintain [data structure] to store [purpose]\n- For each [element] in [collection]:\n  - Calculate [lookup/condition]\n  - If match found: return [result]\n  - Otherwise: record into [data structure]\n- If no solution found: return [default]')}
+              className="px-2 py-0.5 rounded-full bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200/60 transition-colors flex items-center gap-1 active:scale-95 text-[11px]"
+              title="Insert bullet points structure"
+            >
+              <Plus className="w-3 h-3 text-[#AF00DB]" />
+              <span>Bullets</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => insertTemplate('Step 1: Initialize [data_structure] to store [purpose].\nStep 2: Traverse [input] and check [condition].\nStep 3: Return [result].')}
+              className="px-2 py-0.5 rounded-full bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200/60 transition-colors flex items-center gap-1 active:scale-95 text-[11px]"
+              title="Insert numbered step structure"
+            >
+              <Plus className="w-3 h-3 text-[#FF9500]" />
               <span>Step</span>
             </button>
             <button
               type="button"
-              onClick={() => insertTemplate('Edge Case: If the input list is null or empty, immediately return [default_val].')}
+              onClick={() => insertTemplate('Complexity Analysis:\n- Time Complexity: O(...) because [reason].\n- Space Complexity: O(...) because [reason].')}
               className="px-2 py-0.5 rounded-full bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200/60 transition-colors flex items-center gap-1 active:scale-95 text-[11px]"
-            >
-              <Plus className="w-3 h-3 text-[#FF9500]" />
-              <span>Edge Case</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => insertTemplate('Complexity Analysis:\n- Time Complexity: O(N) because [reason].\n- Space Complexity: O(1) extra space.')}
-              className="px-2 py-0.5 rounded-full bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200/60 transition-colors flex items-center gap-1 active:scale-95 text-[11px]"
+              title="Insert complexity analysis"
             >
               <Plus className="w-3 h-3 text-[#34C759]" />
               <span>Complexity</span>
@@ -219,11 +234,17 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
           onKeyDown={handleKeyDown}
           onScroll={handleScroll}
           disabled={disabled}
-          placeholder="Describe your algorithm step-by-step in deterministic, plain English prose...
-e.g.
-Step 1: Initialize an empty hash map 'seen' to store values and their indices.
-Step 2: Iterate through the array. For each element, compute complement = target - num.
-Step 3: If complement is in 'seen', return [seen[complement], current_index]..."
+          placeholder="Describe your algorithm in whatever format feels natural — continuous prose paragraphs, bulleted explanations, numbered points, or algorithmic logic...
+
+e.g. (Continuous Paragraph):
+We can solve this efficiently in O(N) time using a hash map to store numbers and their indices. As we iterate through each element in the array, we calculate the required complement (target - current_number). If the complement already exists in our map, we immediately return both indices; otherwise, we record the current number and continue.
+
+e.g. (Bullet Points):
+- Maintain an empty hash map 'seen' mapping numbers to indices
+- For each number at index i:
+  - If (target - number) is in 'seen': return [seen[target - number], i]
+  - Otherwise: record seen[number] = i
+- Time: O(N), Space: O(N)"
           spellCheck={false}
           className="flex-1 p-3 bg-transparent text-[#1D1D1F] placeholder-[#86868B] resize-none focus:outline-none overflow-y-auto leading-6 selection:bg-[#0071E3] selection:text-white"
           style={{ tabSize: 2 }}

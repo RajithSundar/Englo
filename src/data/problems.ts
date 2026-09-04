@@ -14,12 +14,13 @@ export const PROBLEMS: Problem[] = [
 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 
-### Algo-English Instructions
-Describe your approach step-by-step using clear, deterministic instructions. Detail:
+### Plain-English Instructions
+Explain your approach in plain English. You can write in whatever format you prefer — a cohesive paragraph, concise bullet points, or step-by-step prose.
+Be sure to communicate:
 1. The data structures you maintain (e.g., hash table mapping values to indices).
 2. The lookup conditions (calculating complement \`target - current_number\`).
-3. The expected time and space complexity ($O(N)$ time, $O(N)$ space).
-4. Edge cases or termination conditions.`,
+3. Invariants, termination, or edge conditions.
+4. Expected time and space complexity ($O(N)$ time, $O(N)$ space).`,
     examples: [
       {
         input: 'nums = [2, 7, 11, 15], target = 9',
@@ -48,21 +49,7 @@ Describe your approach step-by-step using clear, deterministic instructions. Det
       'As you iterate, calculate complement = target - num. Check if complement already exists in the map.',
       'If not found, record the current number and its index in the map.'
     ],
-    starterTemplate: `Step 1: Data Structures
-// Initialize an empty hash map to store numbers and their indices.
-
-Step 2: Traversal & Complement Check
-// Iterate through each number in the array.
-// Calculate complement = target - current_number.
-// If complement exists in map, return the pair of indices.
-// Otherwise, insert current_number and index into the map.
-
-Step 3: Edge Case / Termination
-// If no valid pair is found after iterating, return an empty array.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`,
+    starterTemplate: '',
     solutionAlgoEnglish: `Step 1: Initialize an empty hash map named "seen" where keys are array numbers and values are their 0-based indices.
 
 Step 2: Iterate through the input list "nums" from index 0 to the end of the array, tracking the current element "current_num" and its index "i".
@@ -79,21 +66,7 @@ Step 5: If the iteration completes without finding any match, return an empty ar
 Complexity Analysis:
 - Time Complexity: O(N) because we traverse the list of N elements once, and hash map lookups take O(1) average time.
 - Space Complexity: O(N) in the worst case to store up to N elements in the hash map.`,
-    defaultAlgoEnglish: `Step 1: Data Structures
-// Initialize an empty hash map to store numbers and their indices.
-
-Step 2: Traversal & Complement Check
-// Iterate through each number in the array.
-// Calculate complement = target - current_number.
-// If complement exists in map, return the pair of indices.
-// Otherwise, insert current_number and index into the map.
-
-Step 3: Edge Case / Termination
-// If no valid pair is found after iterating, return an empty array.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`
+    defaultAlgoEnglish: ''
   },
   {
     id: 'algo-2',
@@ -107,11 +80,12 @@ Complexity:
 
 Describe how to implement the \`get\` and \`put\` operations such that both run in $O(1)$ average time complexity.
 
-### Algo-English Instructions
-Explain:
-1. Why a standard hash map alone is insufficient and how pairing it with a Doubly Linked List solves $O(1)$ reordering.
-2. The exact mechanism when reading a key (\`get\`).
-3. The exact mechanism when inserting or updating a key (\`put\`), including evicting the node adjacent to the dummy tail when capacity is exceeded.`,
+### Plain-English Instructions
+Explain your design in plain English (using continuous paragraphs, bullet points, or step-by-step prose):
+- How pairing a Hash Map with a Doubly Linked List achieves O(1) lookups and reordering.
+- How \`get(key)\` operates (cache hit recency promotion and miss handling).
+- How \`put(key, value)\` operates (insertions, updates, and evicting the least recently used node when capacity is exceeded).
+- Time and space complexity guarantees.`,
     examples: [
       {
         input: 'LRUCache cache = new LRUCache(2); cache.put(1, 1); cache.put(2, 2); cache.get(1); cache.put(3, 3); // evicts key 2; cache.get(2); // returns -1',
@@ -129,23 +103,7 @@ Explain:
       'A hash map gives O(1) lookups, but does not maintain recency ordering.',
       'A doubly linked list allows removing a node and re-inserting it at the head in O(1) if you hold direct node references.'
     ],
-    starterTemplate: `Data Structures:
-// 1. Describe the Doubly Linked List nodes and how sentinel dummy head/tail nodes eliminate edge cases.
-// 2. Describe the Hash Map mapping keys to Doubly Linked List node pointers.
-// 3. Track integer capacity and current size.
-
-Operation 1: Helper Methods
-// Define helper operations: remove_node(node), add_to_head(node), move_to_head(node).
-
-Operation 2: get(key)
-// Describe retrieval logic, cache hit recency promotion, and handling misses (-1).
-
-Operation 3: put(key, value)
-// Describe inserting new keys, updating existing keys, and evicting the least recently used node (tail.prev) when capacity is exceeded.
-
-Complexity:
-// - Time Complexity: O(1) for both get and put.
-// - Space Complexity: O(capacity).`,
+    starterTemplate: '',
     solutionAlgoEnglish: `Data Structures:
 1. Maintain a Doubly Linked List with sentinel dummy "head" and dummy "tail" nodes to eliminate null pointer checks. The most recently used items reside near the head; the least recently used reside near the tail.
 2. Maintain a Hash Map mapping each integer key directly to its corresponding Doubly Linked List Node reference.
@@ -177,23 +135,7 @@ Operation 3: put(key, value)
 Complexity:
 - Time: O(1) for both get and put.
 - Space: O(capacity) to store entries in the map and list.`,
-    defaultAlgoEnglish: `Data Structures:
-// 1. Describe the Doubly Linked List nodes and how sentinel dummy head/tail nodes eliminate edge cases.
-// 2. Describe the Hash Map mapping keys to Doubly Linked List node pointers.
-// 3. Track integer capacity and current size.
-
-Operation 1: Helper Methods
-// Define helper operations: remove_node(node), add_to_head(node), move_to_head(node).
-
-Operation 2: get(key)
-// Describe retrieval logic, cache hit recency promotion, and handling misses (-1).
-
-Operation 3: put(key, value)
-// Describe inserting new keys, updating existing keys, and evicting the least recently used node (tail.prev) when capacity is exceeded.
-
-Complexity:
-// - Time Complexity: O(1) for both get and put.
-// - Space Complexity: O(capacity).`
+    defaultAlgoEnglish: ''
   },
   {
     id: 'algo-3',
@@ -235,20 +177,7 @@ Complexity:
       'Store the last seen index of each character in a map.',
       'When you see a duplicate at index right that occurred at or after left, jump left to last_seen[char] + 1.'
     ],
-    starterTemplate: `Step 1: Pointers & State
-// Initialize left and right window pointers, and a hash map for character positions.
-
-Step 2: Sliding Window Traversal
-// Expand the right pointer across string s.
-// If the character is already seen and within the current window, jump the left pointer forward.
-// Record the latest position of the character and track the maximum window length.
-
-Step 3: Return
-// Return the maximum window length observed.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`,
+    starterTemplate: '',
     solutionAlgoEnglish: `Step 1: Initialize two integer pointers: "left = 0" and "right = 0".
 Step 2: Initialize "max_len = 0" and an empty hash map "last_seen" to store each character and its most recent index.
 
@@ -265,20 +194,7 @@ Step 4: When the loop finishes, return "max_len".
 Complexity:
 - Time: O(N) since each character is processed at most once by right pointer.
 - Space: O(min(N, M)) where M is the character set size.`,
-    defaultAlgoEnglish: `Step 1: Pointers & State
-// Initialize left and right window pointers, and a hash map for character positions.
-
-Step 2: Sliding Window Traversal
-// Expand the right pointer across string s.
-// If the character is already seen and within the current window, jump the left pointer forward.
-// Record the latest position of the character and track the maximum window length.
-
-Step 3: Return
-// Return the maximum window length observed.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`
+    defaultAlgoEnglish: ''
   },
   {
     id: 'algo-4',
@@ -290,7 +206,13 @@ Complexity:
     tags: ['Two Pointers', 'Dynamic Programming', 'Monotonic Stack'],
     description: `Given \`n\` non-negative integers representing an elevation map where the width of each bar is \`1\`, compute how much water it can trap after raining.
 
-Explain in plain English how the two-pointer approach calculates trapped water in a single pass without extra memory ($O(1)$ auxiliary space).`,
+### Plain-English Instructions
+Explain in plain English how the two-pointer approach calculates trapped water in a single pass without extra memory ($O(1)$ auxiliary space).
+You can structure your thoughts as continuous prose, bullet points, or numbered steps. Cover:
+- Pointer initialization at boundaries
+- Boundary height maintenance (max_left, max_right)
+- Invariant: why we safely advance the smaller wall
+- Water accumulation and time/space complexity`,
     examples: [
       {
         input: 'height = [0,1,0,2,1,0,1,3,2,1,2,1]',
@@ -311,22 +233,7 @@ Explain in plain English how the two-pointer approach calculates trapped water i
       'Water trapped above any bar is determined by min(max_left, max_right) - height[i].',
       'Can you advance the pointer that has the smaller maximum wall?'
     ],
-    starterTemplate: `Step 1: Base Case & Two Pointers Setup
-// Handle edge case where height has fewer than 3 elements.
-// Initialize left pointer at 0 and right pointer at length - 1.
-// Maintain max_left, max_right, and total_water tracking variables.
-
-Step 2: Two-Pointer Traversal Logic
-// While left < right:
-// Compare height[left] and height[right] to decide which pointer to advance.
-// Accumulate trapped water based on the limiting wall height.
-
-Step 3: Return
-// Return total_water trapped.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`,
+    starterTemplate: '',
     solutionAlgoEnglish: `Step 1: If height array is empty or has length < 3, return 0 because at least 3 bars are needed to form a boundary.
 
 Step 2: Initialize two pointers: "left = 0" and "right = length - 1".
@@ -348,22 +255,7 @@ Step 5: Return total_water.
 Complexity:
 - Time: O(N) single pass.
 - Space: O(1) constant extra variables.`,
-    defaultAlgoEnglish: `Step 1: Base Case & Two Pointers Setup
-// Handle edge case where height has fewer than 3 elements.
-// Initialize left pointer at 0 and right pointer at length - 1.
-// Maintain max_left, max_right, and total_water tracking variables.
-
-Step 2: Two-Pointer Traversal Logic
-// While left < right:
-// Compare height[left] and height[right] to decide which pointer to advance.
-// Accumulate trapped water based on the limiting wall height.
-
-Step 3: Return
-// Return total_water trapped.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`
+    defaultAlgoEnglish: ''
   },
   {
     id: 'algo-5',
@@ -375,7 +267,13 @@ Complexity:
     tags: ['Min-Heap', 'Divide and Conquer', 'Linked List'],
     description: `You are given an array of \`k\` linked-lists \`lists\`, each linked-list is sorted in ascending order.
 
-Describe in plain English how to merge all the linked-lists into one sorted linked-list and return it using an optimal Min-Heap (Priority Queue) or Divide & Conquer strategy.`,
+### Plain-English Instructions
+Describe in plain English how to merge all the linked-lists into one sorted linked-list and return it using an optimal Min-Heap (Priority Queue) or Divide & Conquer strategy.
+Feel free to communicate in paragraphs, bullet points, or stepped logic:
+- Base cases (empty lists or null inputs)
+- Heap initialization with the head of each list
+- Iterative extraction, list splicing, and successor insertion
+- Invariants that guarantee ascending order and O(N log k) time complexity`,
     examples: [
       {
         input: 'lists = [[1,4,5],[1,3,4],[2,6]]',
@@ -393,22 +291,7 @@ Describe in plain English how to merge all the linked-lists into one sorted link
       'A min-heap of size K keeps track of the smallest current element among all K lists in O(log K) time per extraction.',
       'Whenever an element from list i is extracted, push the next node from list i into the heap.'
     ],
-    starterTemplate: `Step 1: Base Case
-// Handle empty lists or null input array.
-
-Step 2: Priority Queue / Min-Heap Setup
-// Initialize a Min-Heap and insert the head node of each non-empty list.
-
-Step 3: Extraction & Linkage
-// While heap is not empty:
-// Extract the minimum node, link it to the merged list, and push its next node into the heap.
-
-Step 4: Return
-// Return the head of the assembled merged list.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`,
+    starterTemplate: '',
     solutionAlgoEnglish: `Step 1: Handle edge case: if lists is empty or all lists are null, return an empty list.
 
 Step 2: Initialize a Min-Heap (Priority Queue) ordered by node values.
@@ -426,22 +309,7 @@ Step 6: Return dummy_head.next as the head of the merged sorted list.
 Complexity:
 - Time: O(N log k) where N is total number of nodes across all lists, and k is number of lists.
 - Space: O(k) for the priority queue.`,
-    defaultAlgoEnglish: `Step 1: Base Case
-// Handle empty lists or null input array.
-
-Step 2: Priority Queue / Min-Heap Setup
-// Initialize a Min-Heap and insert the head node of each non-empty list.
-
-Step 3: Extraction & Linkage
-// While heap is not empty:
-// Extract the minimum node, link it to the merged list, and push its next node into the heap.
-
-Step 4: Return
-// Return the head of the assembled merged list.
-
-Complexity:
-// - Time Complexity:
-// - Space Complexity:`
+    defaultAlgoEnglish: ''
   },
 
   // ==================== SYSTEM DESIGN PROBLEMS ====================

@@ -103,6 +103,19 @@ export const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem 
 
       {/* Main Content Area (Scrollable) */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-6 text-sm leading-relaxed">
+        {/* Format Freedom Banner */}
+        {isAlgo && (
+          <div className="p-3.5 rounded-xl border border-blue-500/25 bg-blue-50/70 text-xs flex items-start gap-2.5 shadow-2xs">
+            <Sparkles className="w-4 h-4 text-[#0071E3] shrink-0 mt-0.5" />
+            <div className="leading-relaxed">
+              <strong className="text-[#0071E3] font-semibold">Write in Any Format: </strong>
+              <span className="text-[#1D1D1F]">
+                Paragraphs, bullet points, or numbered steps are all fully supported. Englo marks your underlying logical invariants and data structures, not your formatting style.
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Description Section */}
         <div className="space-y-2.5">
           <h3 className="text-xs uppercase tracking-wider text-[#86868B] font-mono font-semibold flex items-center gap-1.5">

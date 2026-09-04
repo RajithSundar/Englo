@@ -55,8 +55,16 @@ export async function evaluateAlgoWithVertex(
   codeText: string
 ): Promise<AlgoEvaluationResult> {
   const prompt = `You are a Principal Staff Software Engineer at Apple evaluating a candidate's algorithm solution.
-The candidate expresses their algorithmic logic in plain English prose, avoiding language syntax/punctuation.
-You must rigorously evaluate their algorithm against the problem specification and test invariants.
+The candidate expresses their algorithmic logic in plain English, avoiding programming language syntax and punctuation.
+
+CRITICAL FORMAT-AGNOSTIC GUIDELINES:
+- The candidate is free to express their solution in ANY format:
+  * A continuous narrative paragraph
+  * Bulleted logical points
+  * Numbered steps
+  * High-level mathematical or pseudocode prose
+- DO NOT penalize or deduct points for writing in a paragraph rather than numbered "Step 1, Step 2".
+- Evaluate purely based on the conceptual algorithmic merit: data structure selection, invariant maintenance, lookup logic, boundary/edge case handling, and time/space complexity optimality.
 
 PROBLEM DETAILS:
 Title: ${problem.title}

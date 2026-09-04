@@ -27,7 +27,7 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
           explanation: 'No algorithmic steps were specified.'
         }
       ],
-      feedback: 'Your plain-English solution is too brief. Please provide step-by-step instructions describing data structures, loop conditions, and termination.',
+      feedback: 'Your plain-English solution is too brief. Please describe your data structures, invariants, loop logic, and termination (as paragraphs, bullets, or steps).',
       complexityDetected: {
         time: 'Undetermined',
         space: 'Undetermined',
@@ -37,18 +37,18 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
     };
   }
 
-  // Dimension 1: Determinism (Structure, ordered steps, precise conditions)
-  let determinismScore = 40;
-  const hasNumberedSteps = /(step\s*\d+|1\.|2\.|first|second|finally)/i.test(codeText);
-  const hasConditionals = /(if|else|while|until|when|check|compare|iterate|traverse|for each)/i.test(text);
-  const hasExplicitReturns = /(return|yield|output|terminate|stop)/i.test(text);
-  const hasVariableAssignments = /(initialize|set|let|assign|store|track|maintain)/i.test(text);
+  // Dimension 1: Determinism (Structure, logical flow, precise conditions)
+  let determinismScore = 45;
+  const hasStructuralMarkers = /(step\s*\d+|[1-9]\.|\-|\*|•|first|second|then|next|finally|iterate|traverse|for each|to begin|during|as we|we maintain|we can)/i.test(codeText);
+  const hasConditionals = /(if|else|while|until|when|check|compare|match|otherwise|in case)/i.test(text);
+  const hasExplicitReturns = /(return|yield|output|terminate|stop|result|found|give)/i.test(text);
+  const hasVariableAssignments = /(initialize|set|let|assign|store|track|maintain|create|keep|hold|use)/i.test(text);
 
-  if (hasNumberedSteps) determinismScore += 20;
+  if (hasStructuralMarkers) determinismScore += 20;
   if (hasConditionals) determinismScore += 15;
   if (hasExplicitReturns) determinismScore += 15;
   if (hasVariableAssignments) determinismScore += 10;
-  determinismScore = Math.min(98, Math.max(30, determinismScore));
+  determinismScore = Math.min(98, Math.max(35, determinismScore));
 
   // Dimension 2: Brevity (High information density, concise step definition)
   let brevityScore = 80;

@@ -10,7 +10,8 @@ import {
   SystemNodeData
 } from '../types';
 
-const STORAGE_KEY = 'algo_system_design_store_v1';
+const STORAGE_KEY = 'algo_system_design_store_v2';
+const LEGACY_STORAGE_KEY = 'algo_system_design_store_v1';
 
 export type AppView = 'landing' | 'dashboard' | 'algo_workspace' | 'system_design_workspace' | 'auth';
 
@@ -66,8 +67,16 @@ function loadInitialState() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      const parsed = JSON.parse(saved);
-      return parsed;
+      return JSON.parse(saved);
+    }
+    // Backward compatibility: load preferences from legacy key without legacy code
+    const legacySaved = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacySaved) {
+      const parsed = JSON.parse(legacySaved);
+      return {
+        ...parsed,
+        algoCodes: {} // purge old spoiled templates
+      };
     }
   } catch (e) {
     console.error('Error loading stored state:', e);
@@ -94,8 +103,18 @@ PROBLEMS.forEach((p) => {
   if (p.category === 'algorithm') {
     const starter = p.starterTemplate || p.defaultAlgoEnglish || '';
     const saved = savedData?.algoCodes?.[p.id];
-    // If the saved code is missing or matches the reference solution, load the clean starter template
-    if (!saved || (p.solutionAlgoEnglish && saved.trim() === p.solutionAlgoEnglish.trim())) {
+    
+    // Check if saved code is missing, matches reference solution, or contains old legacy spoiled scaffolding
+    const isSpoiledScaffold = saved && (
+      saved.includes('Initialize an empty hash map to store numbers') ||
+      saved.includes('Describe retrieval logic, cache hit recency promotion') ||
+      saved.includes('Initialize left and right window pointers') ||
+      saved.includes('Compare height[left] and height[right] to decide') ||
+      saved.includes('Initialize a Min-Heap and insert the head node') ||
+      (p.solutionAlgoEnglish && saved.trim() === p.solutionAlgoEnglish.trim())
+    );
+
+    if (!saved || isSpoiledScaffold) {
       initialAlgoCodes[p.id] = starter;
     } else {
       initialAlgoCodes[p.id] = saved;
@@ -132,7 +151,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
   archEvaluations: savedData?.archEvaluations || {},
   isEvaluating: false,
   activeConsoleTab: 'matrix',
-  isConsoleExpanded: true,
+  isConsoleExpanded: false,
   filterCategory: 'all',
   filterDifficulty: 'all',
   searchQuery: '',
@@ -158,6 +177,9 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
 
   setActiveView: (view) => {
     set({ activeView: view });
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
     persist(get());
   },
 
