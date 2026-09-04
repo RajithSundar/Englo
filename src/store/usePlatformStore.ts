@@ -302,12 +302,16 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
 
     const nextView: AppView = prob.category === 'algorithm' ? 'algo_workspace' : 'system_design_workspace';
 
-    // ensure canvas data exists
+    // ensure canvas data exists without direct mutation
     const currentCanvas = get().canvasData;
+    let nextCanvasData = currentCanvas;
     if (!currentCanvas[id] && prob.category === 'system_design') {
-      currentCanvas[id] = {
-        nodes: prob.defaultArchNodes || [],
-        edges: prob.defaultArchEdges || []
+      nextCanvasData = {
+        ...currentCanvas,
+        [id]: {
+          nodes: prob.defaultArchNodes || [],
+          edges: prob.defaultArchEdges || []
+        }
       };
     }
 
@@ -315,7 +319,8 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
       activeProblemId: id,
       activeView: nextView,
       selectedNodeId: null,
-      isConsoleExpanded: true
+      canvasData: nextCanvasData,
+      isConsoleExpanded: false
     });
     persist(get());
   },

@@ -25,6 +25,14 @@ function getVertexAI(): VertexAI {
   return vertexAI;
 }
 
+function cleanJsonOutput(raw: string): string {
+  let cleaned = raw.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  }
+  return cleaned.trim();
+}
+
 /**
  * Generates structured JSON using Google Cloud Vertex AI Gemini 2.5 Flash
  */
@@ -44,7 +52,7 @@ async function generateGeminiContent(prompt: string): Promise<string> {
     throw new Error('Empty response from Vertex AI Gemini');
   }
 
-  return text;
+  return cleanJsonOutput(text);
 }
 
 /**

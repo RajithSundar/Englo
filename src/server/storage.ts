@@ -24,6 +24,29 @@ export interface DBData {
 const DB_DIR = path.resolve(process.cwd(), 'data');
 const DB_FILE = path.join(DB_DIR, 'db.json');
 
+function getLocalTodayStr(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getYesterdayFrom(dateStr: string): string {
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length === 3) {
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    d.setDate(d.getDate() - 1);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 class StorageEngine {
   private data: DBData;
   private isInitialized = false;
@@ -48,7 +71,7 @@ class StorageEngine {
         this.data = JSON.parse(raw);
       } else {
         // Seed initial demo user
-        const today = new Date().toISOString().split('T')[0];
+        const today = getLocalTodayStr();
         this.data.users['staff@apple.com'] = {
           email: 'staff@apple.com',
           handle: 'APPLE_STAFF',
@@ -90,7 +113,7 @@ class StorageEngine {
     this.init();
     const key = email.toLowerCase();
     const existing = this.data.users[key];
-    const today = new Date().toISOString().split('T')[0];
+    const today = getLocalTodayStr();
 
     if (existing) {
       if (handle) existing.handle = handle;
@@ -125,13 +148,11 @@ class StorageEngine {
     this.init();
     const key = email.toLowerCase();
     const user = this.getOrCreateUser(key);
-    const today = dateStr || new Date().toISOString().split('T')[0];
+    const today = dateStr || getLocalTodayStr();
 
     // Recalculate streak
     const lastActive = user.lastActiveDate;
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const yesterdayStr = getYesterdayFrom(today);
 
     let newStreak = streak !== undefined ? streak : user.streakCount;
     if (streak === undefined) {

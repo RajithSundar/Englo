@@ -29,7 +29,8 @@ export const DashboardView: React.FC = () => {
     setFilterDifficulty,
     searchQuery,
     setSearchQuery,
-    setTestRunnerOpen
+    setTestRunnerOpen,
+    streakCount
   } = usePlatformStore();
 
   const totalProblems = PROBLEMS.length;
@@ -240,7 +241,7 @@ export const DashboardView: React.FC = () => {
           <div className="pt-4 border-t border-neutral-100 flex items-center justify-between text-xs text-[#86868B]">
             <span className="flex items-center gap-1.5">
               <Flame className="w-3.5 h-3.5 text-[#FF9500] fill-[#FF9500]" />
-              <span className="text-[#1D1D1F] font-semibold">18 Days</span> Active Practice
+              <span className="text-[#1D1D1F] font-semibold">{streakCount} Day{streakCount === 1 ? '' : 's'}</span> Active Practice
             </span>
             <span className="font-mono text-[11px] text-[#0071E3]">Top 98.4%</span>
           </div>
