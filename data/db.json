@@ -1,0 +1,23 @@
+{
+  "users": {
+    "staff@apple.com": {
+      "email": "staff@apple.com",
+      "handle": "APPLE_STAFF",
+      "name": "Principal Engineer",
+      "role": "Principal Staff Engineer",
+      "streakCount": 4,
+      "bestStreak": 18,
+      "lastActiveDate": "2026-09-04",
+      "activityDates": [
+        "2026-09-04"
+      ],
+      "solvedProblemIds": [
+        "algo-1"
+      ],
+      "createdAt": "2026-09-04T16:14:15.249Z",
+      "updatedAt": "2026-09-04T16:14:40.472Z"
+    }
+  },
+  "evaluationsCount": 1,
+  "startedAt": "2026-09-04T16:14:15.247Z"
+}

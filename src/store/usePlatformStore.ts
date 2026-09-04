@@ -35,10 +35,16 @@ interface PlatformState {
   selectedNodeId: string | null;
   isTestRunnerOpen: boolean;
   isDarkMode: boolean;
+  streakCount: number;
+  bestStreak: number;
+  lastActiveDate: string | null;
+  activityDates: string[];
 
   // Actions
   toggleDarkMode: () => void;
   setDarkMode: (dark: boolean) => void;
+  recordActivity: (customDateStr?: string) => void;
+  syncUserStreak: () => Promise<void>;
   setActiveView: (view: AppView) => void;
   setAuthMode: (mode: 'login' | 'register') => void;
   setAuthModalOpen: (open: boolean) => void;
@@ -60,6 +66,23 @@ interface PlatformState {
   resetProblem: (problemId: string) => void;
   loadSolution: (problemId: string) => void;
   setTestRunnerOpen: (open: boolean) => void;
+}
+
+export function getTodayDateStr(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export function getYesterdayDateStr(): string {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 // Load initial state from local storage or defaults
@@ -158,6 +181,73 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
   selectedNodeId: null,
   isTestRunnerOpen: false,
   isDarkMode: savedData?.isDarkMode ?? false,
+  streakCount: savedData?.streakCount ?? 1,
+  bestStreak: savedData?.bestStreak ?? 1,
+  lastActiveDate: savedData?.lastActiveDate ?? getTodayDateStr(),
+  activityDates: savedData?.activityDates ?? [getTodayDateStr()],
+
+  recordActivity: (customDateStr) => {
+    const today = customDateStr || getTodayDateStr();
+    const yesterday = getYesterdayDateStr();
+    const state = get();
+    const lastActive = state.lastActiveDate;
+
+    let newStreak = state.streakCount;
+    if (!lastActive) {
+      newStreak = 1;
+    } else if (lastActive === today) {
+      newStreak = Math.max(state.streakCount, 1);
+    } else if (lastActive === yesterday) {
+      newStreak = state.streakCount + 1;
+    } else {
+      newStreak = 1;
+    }
+
+    const updatedActivityDates = Array.from(new Set([...(state.activityDates || []), today]));
+    const updatedBest = Math.max(state.bestStreak || 1, newStreak);
+
+    set({
+      streakCount: newStreak,
+      bestStreak: updatedBest,
+      lastActiveDate: today,
+      activityDates: updatedActivityDates
+    });
+    persist(get());
+
+    if (state.authenticatedUser) {
+      fetch('/api/user/activity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: state.authenticatedUser.email,
+          date: today,
+          streakCount: newStreak
+        })
+      }).catch((err) => console.warn('Could not sync streak with backend:', err));
+    }
+  },
+
+  syncUserStreak: async () => {
+    const user = get().authenticatedUser;
+    if (!user) return;
+    try {
+      const res = await fetch(`/api/user/profile?email=${encodeURIComponent(user.email)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.profile) {
+          set({
+            streakCount: data.profile.streakCount ?? get().streakCount,
+            bestStreak: data.profile.bestStreak ?? get().bestStreak,
+            lastActiveDate: data.profile.lastActiveDate ?? get().lastActiveDate,
+            activityDates: data.profile.activityDates ?? get().activityDates
+          });
+          persist(get());
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to sync streak from server:', e);
+    }
+  },
 
   toggleDarkMode: () => {
     const next = !get().isDarkMode;
@@ -196,6 +286,8 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
       role: role || 'Staff Software Engineer'
     };
     set({ authenticatedUser: user, isAuthModalOpen: false, activeView: 'dashboard' });
+    get().recordActivity();
+    get().syncUserStreak();
     persist(get());
   },
 
@@ -334,6 +426,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
       };
     });
 
+    get().recordActivity();
     persist(get());
     return result;
   },
@@ -384,6 +477,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
       };
     });
 
+    get().recordActivity();
     persist(get());
     return result;
   },
@@ -458,7 +552,11 @@ function persist(state: PlatformState) {
       solvedProblemIds: state.solvedProblemIds,
       algoEvaluations: state.algoEvaluations,
       archEvaluations: state.archEvaluations,
-      isDarkMode: state.isDarkMode
+      isDarkMode: state.isDarkMode,
+      streakCount: state.streakCount,
+      bestStreak: state.bestStreak,
+      lastActiveDate: state.lastActiveDate,
+      activityDates: state.activityDates
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (e) {

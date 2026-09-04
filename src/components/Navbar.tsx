@@ -30,16 +30,48 @@ export const Navbar: React.FC = () => {
     setTestRunnerOpen,
     authenticatedUser,
     logoutUser,
-    openAuth
+    openAuth,
+    streakCount,
+    bestStreak,
+    lastActiveDate,
+    activityDates
   } = usePlatformStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false);
+  const [isStreakPopoverOpen, setIsStreakPopoverOpen] = React.useState(false);
+  const streakRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (streakRef.current && !streakRef.current.contains(e.target as Node)) {
+        setIsStreakPopoverOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const recentDays = React.useMemo(() => {
+    const days = [];
+    const today = new Date();
+    const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(today.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const label = dayNames[d.getDay()];
+      const dayNum = d.getDate();
+      const isActive = (activityDates || []).includes(dateStr) || (i === 0 && Boolean(lastActiveDate));
+      days.push({ date: dateStr, label, dayNum, isActive });
+    }
+    return days;
+  }, [activityDates, lastActiveDate]);
 
   const activeProblem = PROBLEMS.find((p) => p.id === activeProblemId) || PROBLEMS[0];
   const totalSolved = solvedProblemIds.length;
   const totalProblems = PROBLEMS.length;
 
   return (
-    <header className="h-14 border-b border-black/[0.06] bg-white/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between select-none z-30 sticky top-0 transition-all">
+    <header className="h-14 border-b border-black/[0.06] bg-white/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between select-none z-50 sticky top-0 transition-all">
       {/* Brand & Left Navigation */}
       <div className="flex items-center gap-4 sm:gap-6">
         <div 
@@ -156,9 +188,67 @@ export const Navbar: React.FC = () => {
       {/* Right Navigation & Status Controls */}
       <div className="flex items-center gap-3">
         {/* Daily Streak Indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50/80 border border-amber-200/60 text-[#B25E00] text-xs font-mono font-medium">
-          <Flame className="w-3.5 h-3.5 text-[#FF9500] fill-[#FF9500]" />
-          <span>18d Streak</span>
+        <div className="relative" ref={streakRef}>
+          <button
+            type="button"
+            onClick={() => setIsStreakPopoverOpen(!isStreakPopoverOpen)}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50/90 hover:bg-amber-100/90 border border-amber-200/70 text-[#B25E00] text-xs font-mono font-medium transition-all active:scale-95 cursor-pointer shadow-2xs"
+            title="View Daily Practice Streak"
+          >
+            <Flame className="w-3.5 h-3.5 text-[#FF9500] fill-[#FF9500] animate-pulse" />
+            <span>{streakCount}d Streak</span>
+          </button>
+
+          {isStreakPopoverOpen && (
+            <div className="absolute right-0 top-11 w-72 bg-white rounded-2xl border border-black/[0.08] shadow-apple p-4 z-[70] animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-neutral-100 pb-3 mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-amber-100/80 flex items-center justify-center text-[#FF9500]">
+                    <Flame className="w-5 h-5 fill-[#FF9500]" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-[#1D1D1F] font-sans">
+                      {streakCount} Day{streakCount === 1 ? '' : 's'} Active
+                    </div>
+                    <div className="text-[11px] text-[#86868B] font-sans">
+                      Personal best: {bestStreak} day{bestStreak === 1 ? '' : 's'}
+                    </div>
+                  </div>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-[#34C759] border border-emerald-200/60 font-semibold">
+                  Active Today
+                </span>
+              </div>
+
+              {/* 7-Day Activity Matrix */}
+              <div className="mb-3">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-[#86868B] mb-2">
+                  Recent Practice (Last 7 Days)
+                </div>
+                <div className="grid grid-cols-7 gap-1.5 text-center">
+                  {recentDays.map((day) => (
+                    <div key={day.date} className="flex flex-col items-center gap-1">
+                      <span className="text-[9px] font-mono text-[#86868B]">{day.label}</span>
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                          day.isActive
+                            ? 'bg-[#FF9500] text-white shadow-xs'
+                            : 'bg-neutral-100 text-neutral-400 border border-neutral-200/60'
+                        }`}
+                        title={`${day.date}: ${day.isActive ? 'Active' : 'No activity'}`}
+                      >
+                        {day.dayNum}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="text-[11px] text-[#6E6E73] bg-[#F5F5F7] rounded-xl p-2.5 font-sans leading-tight">
+                Solve algorithmic problems or design system topologies daily to preserve your pure logic momentum!
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Platform Verification Suite Trigger */}
