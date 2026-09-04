@@ -193,7 +193,8 @@ export const LandingPage: React.FC = () => {
     openAuth, 
     authenticatedUser,
     isDarkMode,
-    toggleDarkMode
+    toggleDarkMode,
+    streakCount
   } = usePlatformStore();
 
   // Scroll tracking for gradient transition
@@ -373,16 +374,6 @@ export const LandingPage: React.FC = () => {
 
           {/* Header Controls & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Streak Indicator with Modal / Dashboard link */}
-            <div 
-              onClick={() => setActiveView('dashboard')}
-              title="Click to view full streak and progress"
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-mono font-bold cursor-pointer hover:scale-105 active:scale-95 transition-all"
-            >
-              <Flame className="w-3.5 h-3.5 fill-amber-500" />
-              <span>18d Streak</span>
-            </div>
-
             {/* Quick Find Shortcut */}
             <button
               onClick={() => setActiveView('dashboard')}
@@ -415,22 +406,34 @@ export const LandingPage: React.FC = () => {
             </button>
 
             {authenticatedUser ? (
-              <button
-                onClick={() => setActiveView('dashboard')}
-                className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold transition-all ${
-                  isDarkMode ? 'border-white/10 bg-white/5 text-white' : 'border-black/[0.06] bg-neutral-50 text-[#1D1D1F]'
-                }`}
-              >
-                <div className={`w-5 h-5 rounded-full ${accentBgClass} text-white flex items-center justify-center text-[10px] font-bold`}>
-                  {authenticatedUser.name?.charAt(0).toUpperCase() || 'U'}
+              <div className="flex items-center gap-2">
+                {/* Dynamic Streak Indicator - Only when authenticated */}
+                <div 
+                  onClick={() => setActiveView('dashboard')}
+                  title="Click to view full streak and progress"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-mono font-bold cursor-pointer hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Flame className="w-3.5 h-3.5 fill-amber-500" />
+                  <span>{streakCount}d Streak</span>
                 </div>
-                <span className="hidden sm:inline font-mono text-[11px]">{authenticatedUser.name}</span>
-              </button>
+
+                <button
+                  onClick={() => setActiveView('dashboard')}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold transition-all ${
+                    isDarkMode ? 'border-white/10 bg-white/5 text-white' : 'border-black/[0.06] bg-neutral-50 text-[#1D1D1F]'
+                  }`}
+                >
+                  <div className={`w-5 h-5 rounded-full ${accentBgClass} text-white flex items-center justify-center text-[10px] font-bold`}>
+                    {authenticatedUser.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <span className="hidden sm:inline font-mono text-[11px]">{authenticatedUser.name}</span>
+                </button>
+              </div>
             ) : (
               <>
                 <button
                   onClick={() => openAuth('login')}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors cursor-pointer ${
                     isDarkMode ? 'text-neutral-300 hover:text-white hover:bg-white/5' : 'text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100'
                   }`}
                 >
@@ -438,7 +441,7 @@ export const LandingPage: React.FC = () => {
                 </button>
                 <button
                   onClick={() => openAuth('register')}
-                  className={`hidden sm:inline-flex px-3.5 py-1.5 text-xs font-bold rounded-full transition-all ${
+                  className={`hidden sm:inline-flex px-3.5 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
                     isDarkMode 
                       ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30' 
                       : 'bg-blue-50 text-[#0071E3] border border-blue-200/80 hover:bg-blue-100/80'

@@ -44,6 +44,10 @@ export default function App() {
     return (
       <div className="min-h-screen bg-[#FBFBFD] text-[#1D1D1F] font-sans selection:bg-[#0071E3] selection:text-[#FFFFFF]">
         <LandingPage />
+        {/* Quick Authentication Modal */}
+        <AuthModal />
+        {/* Automated Test Suite Modal */}
+        <AutomatedTestSuiteModal />
       </div>
     );
   }

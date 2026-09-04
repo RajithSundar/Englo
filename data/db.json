@@ -16,6 +16,36 @@
       ],
       "createdAt": "2026-09-04T16:14:15.249Z",
       "updatedAt": "2026-09-04T16:14:40.472Z"
+    },
+    "test.engineer@apple.com": {
+      "email": "test.engineer@apple.com",
+      "handle": "TEST.ENGINEER",
+      "name": "TEST.ENGINEER",
+      "role": "Staff Software Engineer",
+      "streakCount": 1,
+      "bestStreak": 1,
+      "lastActiveDate": "2026-09-04",
+      "activityDates": [
+        "2026-09-04"
+      ],
+      "solvedProblemIds": [],
+      "createdAt": "2026-09-04T17:16:47.288Z",
+      "updatedAt": "2026-09-04T17:16:47.289Z"
+    },
+    "staff.engineer@apple.com": {
+      "email": "staff.engineer@apple.com",
+      "handle": "STAFF.ENGINEER",
+      "name": "STAFF.ENGINEER",
+      "role": "Staff Software Engineer",
+      "streakCount": 1,
+      "bestStreak": 1,
+      "lastActiveDate": "2026-09-04",
+      "activityDates": [
+        "2026-09-04"
+      ],
+      "solvedProblemIds": [],
+      "createdAt": "2026-09-04T17:22:17.144Z",
+      "updatedAt": "2026-09-04T17:22:41.291Z"
     }
   },
   "evaluationsCount": 1,
