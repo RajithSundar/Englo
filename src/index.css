@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-apple-bg: #FBFBFD;
+  --color-apple-surface: #F5F5F7;
+  --color-apple-card: #FFFFFF;
+  --color-apple-dark: #1D1D1F;
+  --color-apple-secondary: #6E6E73;
+  --color-apple-tertiary: #86868B;
+  --color-apple-border: #E5E5EA;
+  --color-apple-blue: #0071E3;
+  --color-apple-blue-hover: #0077ED;
+  --color-apple-green: #34C759;
+  --color-apple-orange: #FF9500;
+  --color-apple-red: #FF3B30;
+
+  --shadow-apple: 0 4px 24px rgba(0, 0, 0, 0.04);
+  --shadow-apple-hover: 0 16px 36px rgba(0, 0, 0, 0.08);
+  --shadow-apple-card: 0 2px 12px rgba(0, 0, 0, 0.03);
+  --shadow-glow-blue: 0 0 20px rgba(0, 113, 227, 0.25);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  html, body {
+    background-color: #FBFBFD;
+    color: #1D1D1F;
+    font-family: var(--font-sans);
+    letter-spacing: -0.015em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: #0071E3;
+    color: #FFFFFF;
+  }
+
+  /* Micro letter tracking for typography */
+  h1, h2, h3, .heading-tight {
+    letter-spacing: -0.03em;
+  }
+}
+
+/* Apple-style Smooth Scroll Reveal & Transitions */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-item.is-revealed, .reveal-item-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Micro-lifts & Apple hardware interactions */
+.apple-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+}
+
+.apple-lift:hover {
+  transform: translateY(-2px) scale(1.004);
+}
+
+/* Soundwave bars animation for bento card */
+@keyframes wavePulse {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+
+.wave-bar:nth-child(1) { animation: wavePulse 1.2s infinite ease-in-out; }
+.wave-bar:nth-child(2) { animation: wavePulse 1s infinite ease-in-out 0.15s; }
+.wave-bar:nth-child(3) { animation: wavePulse 1.4s infinite ease-in-out 0.3s; }
+.wave-bar:nth-child(4) { animation: wavePulse 0.9s infinite ease-in-out 0.45s; }
+.wave-bar:nth-child(5) { animation: wavePulse 1.1s infinite ease-in-out 0.2s; }
+
+/* Latency shimmer glow */
+@keyframes latencyGlow {
+  0%, 100% { width: 88%; opacity: 0.95; }
+  50% { width: 94%; opacity: 1; filter: brightness(1.1); }
+}
+
+.animate-latency {
+  animation: latencyGlow 2.8s infinite ease-in-out;
+}
+
+/* Apple Light Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E5E5EA;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C7C7CC;
+}
+
+/* React Flow Light Theme Styling - Apple Precision */
+.react-flow {
+  background-color: #FBFBFD !important;
+}
+
+.react-flow__background-pattern {
+  stroke: rgba(0, 0, 0, 0.05) !important;
+}
+
+.react-flow__controls {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.react-flow__controls-button {
+  background: white !important;
+  border-bottom: 1px solid #E5E5EA !important;
+  color: #1D1D1F !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #F5F5F7 !important;
+}
+
+.react-flow__handle {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 9999px !important;
+  border: 2px solid #FFFFFF !important;
+  background-color: #0071E3 !important;
+  box-shadow: 0 0 0 1px rgba(0, 113, 227, 0.25) !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.react-flow__handle:hover,
+.react-flow__handle-connecting {
+  transform: scale(1.4) !important;
+  background-color: #0077ED !important;
+  box-shadow: 0 0 12px rgba(0, 113, 227, 0.4) !important;
+}
+
+.react-flow__edge-path {
+  stroke: #86868B !important;
+  stroke-width: 2 !important;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #0071E3 !important;
+  stroke-width: 2.5 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item, .apple-lift, .animate-latency, .wave-bar {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

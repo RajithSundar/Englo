@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Englo — Algorithmic Reasoning in Pure Logic</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'SF Pro Display', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            apple: {
+              bg: '#FBFBFD',
+              surface: '#F5F5F7',
+              card: '#FFFFFF',
+              dark: '#1D1D1F',
+              secondary: '#6E6E73',
+              tertiary: '#86868B',
+              border: '#E5E5EA',
+              blue: '#0071E3',
+              blueHover: '#0077ED',
+              green: '#34C759',
+              orange: '#FF9500',
+              red: '#FF3B30',
+            }
+          },
+          boxShadow: {
+            'apple': '0 4px 24px rgba(0, 0, 0, 0.04)',
+            'apple-hover': '0 16px 36px rgba(0, 0, 0, 0.08)',
+            'apple-card': '0 2px 12px rgba(0, 0, 0, 0.03)',
+            'glow-blue': '0 0 20px rgba(0, 113, 227, 0.25)',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    @layer base {
+      html, body {
+        background-color: #FBFBFD;
+        color: #1D1D1F;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        letter-spacing: -0.015em;
+        -webkit-font-smoothing: antialiased;
+      }
+      ::selection {
+        background-color: #0071E3;
+        color: #FFFFFF;
+      }
+    }
+
+    /* Apple-style Smooth Scroll Reveal & Transitions */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .reveal-item.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Micro-lifts & Apple hardware interactions */
+    .apple-lift {
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+    }
+    .apple-lift:hover {
+      transform: translateY(-2px) scale(1.004);
+    }
+
+    /* Soundwave bars animation for bento card 2 */
+    @keyframes wavePulse {
+      0%, 100% { height: 4px; }
+      50% { height: 14px; }
+    }
+    .wave-bar:nth-child(1) { animation: wavePulse 1.2s infinite ease-in-out; }
+    .wave-bar:nth-child(2) { animation: wavePulse 1s infinite ease-in-out 0.15s; }
+    .wave-bar:nth-child(3) { animation: wavePulse 1.4s infinite ease-in-out 0.3s; }
+    .wave-bar:nth-child(4) { animation: wavePulse 0.9s infinite ease-in-out 0.45s; }
+    .wave-bar:nth-child(5) { animation: wavePulse 1.1s infinite ease-in-out 0.2s; }
+
+    /* Latency shimmer glow */
+    @keyframes latencyGlow {
+      0%, 100% { width: 88%; opacity: 0.95; }
+      50% { width: 94%; opacity: 1; filter: brightness(1.15); }
+    }
+    .animate-latency {
+      animation: latencyGlow 2.8s infinite ease-in-out;
+    }
+
+    /* Visual Stepper loop bars */
+    .stepper-bar {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal-item, .apple-lift, .animate-latency, .wave-bar {
+        transition: none !important;
+        transform: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#FBFBFD] text-[#1D1D1F] antialiased min-h-screen">
+<!-- Apple-style Translucent Frosted Glass Sticky Navbar with Scroll State -->
+<header class="fixed top-0 inset-x-0 z-50 h-14 border-b border-black/[0.06] bg-white/80 backdrop-blur-md transition-all duration-300" id="main-header">
+<div class="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+<!-- Logo + Nav Links -->
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2.5 group cursor-pointer" href="#">
+<div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center ring-1 ring-black/5 group-hover:ring-[#0071E3]/50 group-hover:scale-105 transition-all duration-300 shadow-sm">
+https://lh3.googleusercontent.com/aida/AEtjO1Va4nawxYorDu82TnV_ywQFxHFKiAvmlaMtjWhB7YYnKHZXmukLutvAF5bdZT_TtHKniWMsjwfCnxiRvvAPi40eIAK7rvEfqdjwcvMplp63-CYznZ-Jp1VWrU25mG-XO6udCiWPwZif6MuJN8PCweH6bz9ZTO-CiExiCwItDdZCaN7wpRnvHdMLwkoddmGj8QecgKDnnImcKq5K-dYXtZKLks0gnOms8oTL_gKXyA-PxWfHaL5QT0MngA
+</div>
+<span class="text-[15px] font-semibold tracking-tight text-[#1D1D1F] flex items-center gap-2 group-hover:text-[#0071E3] transition-colors duration-200">
+            Englo
+            <span class="font-mono text-[10px] uppercase font-medium px-1.5 py-0.5 rounded border border-neutral-200 bg-neutral-100 text-[#6E6E73] group-hover:border-blue-200 transition-colors">v1.4</span>
+</span>
+</a>
+<nav class="hidden md:flex items-center gap-1 text-[13px] font-medium text-[#6E6E73]">
+<a class="px-3 py-1.5 rounded-full text-[#1D1D1F] bg-black/[0.04] transition-all hover:text-[#1D1D1F] hover:bg-black/[0.06]" href="#problem-library">Explore Problems</a>
+<a class="px-3 py-1.5 rounded-full hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-all" href="#how-it-works">How It Works</a>
+<a class="px-3 py-1.5 rounded-full hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-all" href="#playground-demo">Logic Playground</a>
+<a class="px-3 py-1.5 rounded-full hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-all" href="#testimonials">Testimonials</a>
+<a class="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-all group" href="#playground-demo">
+<span>Daily Prompt</span>
+<span class="font-mono text-[11px] text-[#FF9500] flex items-center gap-0.5 font-medium group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[13px] group-hover:animate-bounce">local_fire_department</span>18d
+            </span>
+</a>
+</nav>
+</div>
+<!-- Quick Action / User Profile -->
+<div class="flex items-center gap-3">
+<!-- Expandable Search Bar with Cmd+K hint -->
+<div class="relative hidden lg:block">
+<div class="flex items-center gap-2 px-3 py-1.5 text-xs text-[#6E6E73] bg-[#F5F5F7] hover:bg-[#EBEBED] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0071E3]/30 focus-within:border-[#0071E3] border border-neutral-200/80 rounded-full font-sans transition-all duration-300 w-44 focus-within:w-60 cursor-pointer shadow-xs">
+<span class="material-symbols-outlined text-[15px] text-[#86868B]">search</span>
+<input class="bg-transparent border-none p-0 text-xs w-full text-[#1D1D1F] focus:outline-none focus:ring-0 placeholder:text-[#86868B]" id="quick-search-input" placeholder="Find Problem" type="text"/>
+<kbd class="px-1.5 py-0.5 text-[10px] font-mono rounded bg-white border border-neutral-200 text-[#86868B] shrink-0 shadow-2xs">⌘K</kbd>
+</div>
+</div>
+<a class="inline-flex items-center justify-center px-4 py-1.5 text-xs font-semibold text-white bg-[#0071E3] hover:bg-[#0077ED] rounded-full transition-all duration-200 shadow-[0_2px_8px_rgba(0,113,227,0.25)] hover:shadow-[0_4px_12px_rgba(0,113,227,0.35)] active:scale-[0.97]" href="#playground-demo">
+          Start Solving
+        </a>
+<div class="pl-2 border-l border-black/[0.08]">
+<div class="w-7 h-7 rounded-full overflow-hidden ring-1 ring-black/10 hover:ring-[#0071E3] hover:scale-105 transition-all duration-200 cursor-pointer" title="Signed in as Engineer">
+<img alt="Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VBklXZkBiUQfiquTaI-mXSFTYoM6TlaZpAdtLbBGErzstmsZXL4T1cVcolN9RdJ9VcB62Y5N7AgXVBc7F56Ix0qHy_htkOZ3r1eXyUZDsaJYKQ41iUxwywe3CPdT8tVKNUwMTvcYdxqfvongzZo3p00-70gwbPuHLvHyGxspvumhzC7g-IOrOx017WJbvbyL9qmBW77_dOzWwifkhA6ByS_MBsJPJK4Ailv-ROi2bD4Xq9jrceh6eo8wQ"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="relative w-full pt-14">
+<!-- Hero Section with Staggered Cascading Entrance -->
+<section class="relative pt-24 pb-28 md:pt-32 md:pb-36 overflow-hidden">
+<!-- Soft ambient gradient glow -->
+<div class="absolute top-16 left-1/2 -translate-x-1/2 w-[880px] h-[360px] bg-gradient-to-b from-blue-50/70 via-sky-50/30 to-transparent blur-3xl -z-10 pointer-events-none rounded-full"></div>
+<div class="max-w-7xl mx-auto px-6 flex flex-col items-center text-center">
+<!-- Apple-style Pill Badge -->
+<a class="reveal-item inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/[0.08] bg-white shadow-apple hover:border-[#0071E3]/40 hover:shadow-apple-hover transition-all duration-300 mb-8 group cursor-pointer" href="#playground-demo" style="transition-delay: 50ms;">
+<span class="flex h-2 w-2 rounded-full bg-[#0071E3] ring-4 ring-blue-50 group-hover:scale-110 transition-transform"></span>
+<span class="font-mono text-[11px] tracking-wide text-[#6E6E73] uppercase font-semibold">Deterministic Semantic Engine v1.4</span>
+<span class="material-symbols-outlined text-[#86868B] group-hover:text-[#0071E3] text-[14px] transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</a>
+<!-- Headline -->
+<h1 class="reveal-item text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1D1D1F] max-w-4xl leading-[1.08] mb-6" style="transition-delay: 150ms;">
+          Solve Algorithms with <span class="text-[#0071E3] inline-block hover:scale-[1.01] transition-transform">Pure Logic.</span><br class="hidden sm:inline"/> Zero Syntax.
+        </h1>
+<!-- Subtitle -->
+<p class="reveal-item text-base sm:text-lg text-[#6E6E73] max-w-2xl mx-auto leading-relaxed mb-10 font-normal" style="transition-delay: 250ms;">
+          Englo tests your structural analytical reasoning, not punctuation. Express algorithms in crisp plain English — our compiler turns your steps directly into verified execution proofs.
+        </p>
+<!-- CTA Buttons -->
+<div class="reveal-item flex flex-wrap items-center justify-center gap-3.5 mb-14" style="transition-delay: 350ms;">
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold bg-[#0071E3] text-white hover:bg-[#0077ED] transition-all duration-300 shadow-[0_4px_16px_rgba(0,113,227,0.25)] hover:shadow-[0_6px_22px_rgba(0,113,227,0.35)] active:scale-[0.98] group" href="#playground-demo">
+<span class="material-symbols-outlined text-[17px] group-hover:rotate-12 transition-transform">terminal</span>
+<span>Try Daily Challenge: Two Sum</span>
+</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-[#1D1D1F] bg-white border border-neutral-200/90 hover:bg-[#F5F5F7] hover:border-neutral-300 shadow-apple hover:shadow-apple-hover transition-all duration-300 active:scale-[0.98]" href="#problem-library">
+<span class="material-symbols-outlined text-[17px] text-[#6E6E73]">dataset</span>
+<span>Explore 850+ Word Problems</span>
+</a>
+</div>
+<!-- Social Proof Stats Ribbon -->
+<div class="reveal-item w-full max-w-3xl py-3.5 px-6 rounded-2xl border border-black/[0.06] bg-white/70 backdrop-blur-md shadow-apple flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-[#6E6E73] hover:shadow-apple-hover hover:border-black/10 transition-all duration-300" style="transition-delay: 450ms;">
+<div class="flex items-center gap-2 hover:text-[#1D1D1F] transition-colors cursor-default">
+<span class="material-symbols-outlined text-[#0071E3] text-[16px]">verified</span>
+<span>Engineers from <strong class="text-[#1D1D1F] font-semibold">Google</strong>, <strong class="text-[#1D1D1F] font-semibold">Linear</strong>, <strong class="text-[#1D1D1F] font-semibold">Anthropic</strong></span>
+</div>
+<div class="flex items-center gap-2 hover:text-[#1D1D1F] transition-colors cursor-default">
+<span class="w-2 h-2 rounded-full bg-[#34C759] animate-pulse"></span>
+<span><strong class="text-[#1D1D1F] font-semibold">1.2M+</strong> plain text runs</span>
+</div>
+<div class="flex items-center gap-2 hover:text-[#1D1D1F] transition-colors cursor-default">
+<span class="material-symbols-outlined text-[#FF9500] text-[16px]">insights</span>
+<span><strong class="text-[#1D1D1F] font-semibold">99.4%</strong> logic equivalence</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Split-Screen Interactive Comparison (Interactive Logic Stepper & Test Runner) -->
+<section class="py-28 border-t border-black/[0.06] bg-[#F5F5F7] relative" id="playground-demo">
+<div class="max-w-7xl mx-auto px-6">
+<!-- Header -->
+<div class="reveal-item flex flex-col sm:flex-row sm:items-end justify-between pb-8 gap-4 border-b border-black/[0.06] mb-10">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#0071E3] font-semibold">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+<span>Interactive Live Comparison</span>
+</div>
+<h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#1D1D1F]">Problem #01 — Two Sum</h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 text-xs font-mono text-[#6E6E73]">
+<span>Determinism Mode:</span>
+<span class="px-2.5 py-1 rounded-full bg-white border border-neutral-200 text-[#1D1D1F] font-medium shadow-sm">Mathematical Lexicon v2</span>
+</div>
+<!-- Run Simulation Interactive Button -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-[#0071E3] hover:bg-[#0077ED] active:scale-95 transition-all shadow-[0_2px_8px_rgba(0,113,227,0.25)] cursor-pointer" id="run-sim-btn" type="button">
+<span class="material-symbols-outlined text-[15px] sim-icon">play_arrow</span>
+<span class="sim-label">Run Simulation</span>
+</button>
+</div>
+</div>
+<!-- Split Grid (Code vs Natural Logic) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Traditional Code Box (Left) -->
+<div class="reveal-item apple-lift lg:col-span-5 rounded-2xl border border-black/[0.06] bg-white p-7 flex flex-col justify-between shadow-apple hover:shadow-apple-hover">
+<div>
+<!-- Window dots / macOS style -->
+<div class="flex items-center justify-between pb-5 border-b border-neutral-100">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#FF5F56] border border-black/10"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-[#FFBD2E] border border-black/10"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-[#27C93F] border border-black/10"></span>
+<span class="ml-2 font-mono text-[11px] uppercase tracking-wider text-[#86868B] font-medium">Traditional Code / Syntax Trap</span>
+</div>
+<span class="font-mono text-[11px] text-[#FF3B30] bg-red-50 border border-red-200/70 px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[13px]">error</span> 1 Runtime Bug
+</span>
+</div>
+<!-- Code Snippet with Line Numbers (Light Xcode Theme) -->
+<div class="py-6 font-mono text-[12px] leading-6 text-[#1D1D1F] select-none overflow-x-auto">
+<div><span class="inline-block w-6 text-neutral-300">1</span><span class="text-[#AF00DB] font-semibold">function</span> <span class="text-[#0071E3] font-medium">twoSum</span>(nums, target) {</div>
+<div><span class="inline-block w-6 text-neutral-300">2</span> <span class="text-[#AF00DB] font-semibold">const</span> map = <span class="text-[#AF00DB] font-semibold">new</span> Map();</div>
+<div class="bg-red-50/80 -mx-4 px-4 py-0.5 border-l-2 border-[#FF3B30] rounded-r"><span class="inline-block w-6 text-[#FF3B30] font-bold">3</span> <span class="text-[#AF00DB] font-semibold">for</span> (<span class="text-[#AF00DB] font-semibold">let</span> i = <span class="text-[#895503] font-semibold">0</span>; i &lt;= nums.length; i++) {</div>
+<div><span class="inline-block w-6 text-neutral-300">4</span> <span class="text-[#AF00DB] font-semibold">let</span> comp = target - nums[i];</div>
+<div><span class="inline-block w-6 text-neutral-300">5</span> <span class="text-[#AF00DB] font-semibold">if</span> (map.has(comp)) {</div>
+<div><span class="inline-block w-6 text-neutral-300">6</span> <span class="text-[#AF00DB] font-semibold">return</span> [map.get(comp), i];</div>
+<div><span class="inline-block w-6 text-neutral-300">7</span>    }</div>
+<div><span class="inline-block w-6 text-neutral-300">8</span>    map.set(nums[i], i);</div>
+<div><span class="inline-block w-6 text-neutral-300">9</span>  }</div>
+<div><span class="inline-block w-6 text-neutral-300">10</span>}</div>
+</div>
+<!-- Diagnostic Box -->
+<div class="p-3.5 rounded-xl border border-red-200/80 bg-red-50/60 text-xs flex items-start gap-3">
+<span class="material-symbols-outlined text-[17px] text-[#FF3B30] shrink-0 mt-0.5">warning</span>
+<div>
+<div class="font-semibold text-[#FF3B30] mb-0.5">Off-By-One &amp; Boundary Overflow</div>
+<p class="text-[#6E6E73] leading-relaxed text-[11px]">
+                    Line 3 evaluates past bounds (<code class="text-[#FF3B30] font-mono font-semibold">i &lt;= length</code>), generating undefined memory accesses under high-volume test arrays.
+                  </p>
+</div>
+</div>
+</div>
+<div class="pt-5 mt-6 border-t border-neutral-100 flex items-center justify-between text-xs font-mono text-[#86868B]">
+<span>Interview reality:</span>
+<span class="text-[#FF3B30] font-semibold">Stuck debugging punctuation</span>
+</div>
+</div>
+<!-- Middle Engine Indicator with Dynamic AST flow pulsing -->
+<div class="reveal-item lg:col-span-2 flex flex-col items-center justify-center py-6 gap-3 text-center">
+<div class="w-12 h-12 rounded-full border border-black/[0.08] bg-white flex items-center justify-center text-[#0071E3] shadow-apple hover:scale-110 hover:shadow-glow-blue transition-all duration-300 cursor-pointer" id="ast-indicator">
+<span class="material-symbols-outlined text-[22px] transition-transform duration-500" id="ast-icon">transform</span>
+</div>
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#1D1D1F] font-semibold" id="ast-status">Semantic Compiler</span>
+<span class="text-xs text-[#6E6E73] max-w-[140px] leading-normal" id="ast-desc">Compiles plain statements to verified AST</span>
+</div>
+<!-- Englo Way (Right) - Fully Interactive Steps & Verification Progress -->
+<div class="reveal-item apple-lift lg:col-span-5 rounded-2xl border border-[#0071E3]/30 bg-white p-7 flex flex-col justify-between shadow-[0_8px_30px_rgba(0,113,227,0.08)] relative overflow-hidden ring-1 ring-[#0071E3]/10">
+<div class="space-y-5">
+<!-- Window top -->
+<div class="flex items-center justify-between pb-5 border-b border-neutral-100">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#0071E3] animate-pulse"></span>
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#0071E3] font-semibold">The Englo Way / Pure Logic</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[10px] text-[#6E6E73] bg-neutral-100 px-2 py-0.5 rounded-full" id="active-step-badge">Step <span id="current-step-num">1</span> of 4</span>
+<span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-[#0071E3] font-semibold">
+                  Deterministic
+                </span>
+</div>
+</div>
+<!-- Interactive Plain English Steps with click & hover state triggers -->
+<div class="space-y-2.5 font-sans text-[13px] leading-relaxed" id="interactive-logic-stepper">
+<div class="step-card active cursor-pointer p-3 rounded-xl border border-[#0071E3] bg-blue-50/40 shadow-xs flex items-start gap-3 transition-all duration-200 hover:border-[#0071E3]" data-step="1">
+<span class="step-num text-[#0071E3] font-mono font-bold text-[11px] select-none pt-0.5">01</span>
+<div class="text-[#1D1D1F] flex-1">
+                    Keep track of <span class="text-[#0071E3] font-medium bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/60">seen numbers</span> and their index in a memory map.
+                  </div>
+<span class="material-symbols-outlined text-[16px] text-[#0071E3] opacity-100 check-icon">check_circle</span>
+</div>
+<div class="step-card cursor-pointer p-3 rounded-xl border border-neutral-200/70 bg-[#FBFBFD] flex items-start gap-3 hover:border-[#0071E3]/60 hover:bg-blue-50/20 transition-all duration-200 shadow-sm" data-step="2">
+<span class="step-num text-[#86868B] font-mono font-bold text-[11px] select-none pt-0.5">02</span>
+<div class="text-[#1D1D1F] flex-1">
+<span class="font-medium text-[#1D1D1F]">For each number:</span> calculate complement as <span class="text-[#B25E00] font-mono font-medium bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200/60">(target − current)</span>.
+                  </div>
+<span class="material-symbols-outlined text-[16px] text-[#0071E3] opacity-0 check-icon transition-opacity">check_circle</span>
+</div>
+<div class="step-card cursor-pointer p-3 rounded-xl border border-neutral-200/70 bg-[#FBFBFD] flex items-start gap-3 hover:border-[#0071E3]/60 hover:bg-blue-50/20 transition-all duration-200 shadow-sm" data-step="3">
+<span class="step-num text-[#86868B] font-mono font-bold text-[11px] select-none pt-0.5">03</span>
+<div class="text-[#1D1D1F] flex-1">
+<span class="font-medium text-[#1D1D1F]">If complement exists</span> in map, return <span class="text-[#0071E3] font-mono font-medium bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200/60">[complement_index, current_index]</span>.
+                  </div>
+<span class="material-symbols-outlined text-[16px] text-[#0071E3] opacity-0 check-icon transition-opacity">check_circle</span>
+</div>
+<div class="step-card cursor-pointer p-3 rounded-xl border border-neutral-200/70 bg-[#FBFBFD] flex items-start gap-3 hover:border-[#0071E3]/60 hover:bg-blue-50/20 transition-all duration-200 shadow-sm" data-step="4">
+<span class="step-num text-[#86868B] font-mono font-bold text-[11px] select-none pt-0.5">04</span>
+<div class="text-[#1D1D1F] flex-1">
+<span class="font-medium text-[#1D1D1F]">Otherwise,</span> save current number into map and proceed.
+                  </div>
+<span class="material-symbols-outlined text-[16px] text-[#0071E3] opacity-0 check-icon transition-opacity">check_circle</span>
+</div>
+</div>
+<!-- Acceptance Output with Live Test Progress Bar -->
+<div class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 font-sans text-xs shadow-sm relative overflow-hidden">
+<!-- Progress bar line for simulated runs -->
+<div class="absolute top-0 left-0 h-[3px] bg-[#34C759] transition-all duration-500 w-full" id="sim-progress-bar"></div>
+<div class="flex items-center justify-between text-[#1E7E34] font-semibold mb-1.5 pt-0.5">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] transition-transform" id="test-check-icon">check_circle</span>
+<span id="test-count-label">ACCEPTED • <span id="test-num">42</span>/42 Test Cases Passed</span>
+</span>
+<span class="text-[10px] uppercase font-mono tracking-wider text-[#1E7E34] px-2 py-0.5 rounded-full bg-emerald-100 border border-emerald-200">Top 98.4%</span>
+</div>
+<div class="flex items-center gap-4 text-[#6E6E73] font-mono text-[11px] pt-1.5 border-t border-emerald-200/60">
+<span>Time: <strong class="text-[#1D1D1F]">O(n)</strong> (Single pass verified)</span>
+<span>Space: <strong class="text-[#1D1D1F]">O(n)</strong> (Map allocations)</span>
+</div>
+</div>
+</div>
+<div class="pt-5 mt-6 border-t border-neutral-100 flex items-center justify-between text-xs font-mono text-[#86868B]">
+<span>Result:</span>
+<span class="text-[#0071E3] font-semibold flex items-center gap-1">
+  Interview Loop Cleared
+  <span class="material-symbols-outlined text-[14px]">done_all</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4-Core Capabilities Bento (With Rich Micro-Interactions & Hover Dynamics) -->
+<section class="py-28 max-w-7xl mx-auto px-6" id="how-it-works">
+<div class="reveal-item max-w-2xl mx-auto text-center mb-16 space-y-3">
+<span class="font-mono text-xs uppercase tracking-widest text-[#0071E3] font-semibold">Algorithmic Precision</span>
+<h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1D1D1F]">Engineered to Verify Thought, Not Syntax</h2>
+<p class="text-sm sm:text-base text-[#6E6E73] leading-relaxed">
+          Our semantic engine maps English assertions to formalized AST abstractions and executes unit tests against boundary invariants in real-time.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1 (Deterministic Parser) - Latency dynamic hover -->
+<div class="reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white flex flex-col justify-between group shadow-apple cursor-pointer" id="bento-card-1" style="transition-delay: 50ms;">
+<div class="space-y-4">
+<div class="w-11 h-11 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F] group-hover:text-[#0071E3] group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:rotate-45">account_tree</span>
+</div>
+<h3 class="text-base font-semibold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Deterministic Parser</h3>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+              Extracts loop invariants, pointers, and hash lookups from natural language sentences without guessing.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100">
+<div class="flex items-center justify-between text-[11px] font-mono text-[#86868B] mb-2">
+<span>AST Resolution</span>
+<span class="text-[#0071E3] font-medium" id="latency-text">14ms latency</span>
+</div>
+<div class="w-full h-1.5 bg-[#F5F5F7] rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-[#0071E3] rounded-full animate-latency transition-all duration-300" id="bento-latency-bar"></div>
+</div>
+</div>
+</div>
+<!-- Card 2 (Interview Articulation) - Sound wave on hover -->
+<div class="reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white flex flex-col justify-between group shadow-apple cursor-pointer" id="bento-card-2" style="transition-delay: 150ms;">
+<div class="space-y-4">
+<div class="w-11 h-11 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F] group-hover:text-[#0071E3] group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:scale-110">record_voice_over</span>
+</div>
+<h3 class="text-base font-semibold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Interview Articulation</h3>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+              Senior loops evaluate communication first. Englo builds the cognitive muscle to explain steps clearly under pressure.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between text-[11px] font-mono text-[#6E6E73]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-[#0071E3]">groups</span>
+<span>L5 / L6 &amp; Staff</span>
+</div>
+<!-- Dynamic Soundwave pulse -->
+<div class="flex items-center gap-1 h-4 px-2 py-0.5 bg-[#F5F5F7] group-hover:bg-blue-50 rounded-md transition-colors">
+<div class="w-0.5 bg-[#0071E3] rounded-full wave-bar h-1.5"></div>
+<div class="w-0.5 bg-[#0071E3] rounded-full wave-bar h-2.5"></div>
+<div class="w-0.5 bg-[#0071E3] rounded-full wave-bar h-3.5"></div>
+<div class="w-0.5 bg-[#0071E3] rounded-full wave-bar h-2"></div>
+<div class="w-0.5 bg-[#0071E3] rounded-full wave-bar h-1"></div>
+</div>
+</div>
+</div>
+<!-- Card 3 (Visual State Stepper) - Stepper bars animation -->
+<div class="reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white flex flex-col justify-between group shadow-apple cursor-pointer" id="bento-card-3" style="transition-delay: 250ms;">
+<div class="space-y-4">
+<div class="w-11 h-11 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F] group-hover:text-[#0071E3] group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:rotate-180">step_over</span>
+</div>
+<h3 class="text-base font-semibold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Visual State Stepper</h3>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+              Follow your logic step-by-step. Watch arrays, pointers, and call stacks shift as each phrase resolves.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100">
+<div class="flex items-end gap-1.5 h-6" id="bento-stepper-bars">
+<div class="flex-1 bg-neutral-200 h-2 rounded-xs stepper-bar transition-all duration-300"></div>
+<div class="flex-1 bg-neutral-200 h-3 rounded-xs stepper-bar transition-all duration-300"></div>
+<div class="flex-1 bg-neutral-200 h-4 rounded-xs stepper-bar transition-all duration-300"></div>
+<div class="flex-1 bg-[#0071E3] h-6 rounded-xs stepper-bar transition-all duration-300"></div>
+<div class="flex-1 bg-neutral-200 h-3 rounded-xs stepper-bar transition-all duration-300"></div>
+</div>
+</div>
+</div>
+<!-- Card 4 (Dynamic Precision) - Interactive Casual vs Formal Toggle -->
+<div class="reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white flex flex-col justify-between group shadow-apple" id="bento-card-4" style="transition-delay: 350ms;">
+<div class="space-y-4">
+<div class="w-11 h-11 rounded-full bg-[#F5F5F7] flex items-center justify-center text-[#1D1D1F] group-hover:text-[#0071E3] group-hover:bg-blue-50 group-hover:scale-105 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</div>
+<h3 class="text-base font-semibold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Dynamic Precision</h3>
+<p class="text-xs text-[#6E6E73] leading-relaxed" id="precision-desc">
+              Switch seamlessly from intuitive casual phrasing to rigorous formal invariants with mathematical precision chips.
+            </p>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100">
+<div class="flex items-center justify-between text-[11px] font-mono text-[#86868B] mb-2">
+<span>Precision Mode</span>
+<span class="text-[#0071E3] font-medium" id="precision-mode-name">Casual English</span>
+</div>
+<!-- Interactive toggle pill -->
+<div class="grid grid-cols-2 p-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-center font-mono text-[10px]">
+<button class="py-1 px-2 rounded-full bg-white text-[#1D1D1F] font-semibold shadow-xs transition-all cursor-pointer" id="mode-casual-btn" type="button">Casual</button>
+<button class="py-1 px-2 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] transition-all cursor-pointer" id="mode-formal-btn" type="button">Formal</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Problem Curricula Library (Interactive Filter Tabs & Problem Cards) -->
+<section class="py-28 border-t border-black/[0.06] bg-[#F5F5F7]" id="problem-library">
+<div class="max-w-7xl mx-auto px-6">
+<!-- Header + Filter Row -->
+<div class="reveal-item flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
+<div class="space-y-2 max-w-xl">
+<span class="font-mono text-xs uppercase tracking-widest text-[#0071E3] font-semibold">Problem Curricula</span>
+<h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1D1D1F]">850+ Algorithms in Natural Language</h2>
+<p class="text-sm text-[#6E6E73]">Select an algorithm track to inspect its semantic reasoning structure.</p>
+</div>
+<!-- Apple Segmented Filter Pills (Interactive Sliding Tab Effect) -->
+<div class="flex flex-wrap items-center gap-1.5 p-1 bg-white border border-neutral-200/90 rounded-full shadow-apple" id="filter-tabs">
+<button class="filter-tab-btn active px-4 py-1.5 rounded-full bg-[#1D1D1F] text-white text-xs font-mono font-medium shadow-sm transition-all duration-200 cursor-pointer" data-category="all" type="button">All (850+)</button>
+<button class="filter-tab-btn px-4 py-1.5 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100 text-xs font-mono transition-all duration-200 cursor-pointer" data-category="arrays" type="button">Arrays &amp; Maps</button>
+<button class="filter-tab-btn px-4 py-1.5 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100 text-xs font-mono transition-all duration-200 cursor-pointer" data-category="pointers" type="button">Two Pointers</button>
+<button class="filter-tab-btn px-4 py-1.5 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100 text-xs font-mono transition-all duration-200 cursor-pointer" data-category="graphs" type="button">Graphs</button>
+<button class="filter-tab-btn px-4 py-1.5 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100 text-xs font-mono transition-all duration-200 cursor-pointer" data-category="dynamic" type="button">Dynamic Logic</button>
+</div>
+</div>
+<!-- Problem Cards Grid (2x2) with Interactive Run Tests Action -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="problem-cards-grid">
+<!-- Card 1: Two Sum -->
+<div class="problem-card reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white hover:shadow-apple-hover transition-all flex flex-col justify-between group shadow-apple" data-category="arrays">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-[#0071E3] font-semibold">#01</span>
+<h3 class="text-lg font-bold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Two Sum</h3>
+</div>
+<span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-[#1E7E34] font-semibold group-hover:scale-105 transition-transform">Easy</span>
+</div>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+                Find two elements in an unordered list that sum to a target value using constant lookup semantics.
+              </p>
+<div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">Hash Map Invariants</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">~4 lines of logic</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#1E7E34] font-medium">88% acceptance</span>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+<span class="font-mono text-xs text-[#86868B]">Complexity: O(n)</span>
+<button class="run-test-card-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F5F5F7] hover:bg-[#0071E3] hover:text-white text-[#1D1D1F] text-xs font-mono font-semibold transition-all duration-200 shadow-sm active:scale-95 cursor-pointer" type="button">
+<span class="btn-text">Run Tests</span>
+<span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Trapping Rain Water -->
+<div class="problem-card reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white hover:shadow-apple-hover transition-all flex flex-col justify-between group shadow-apple" data-category="pointers" style="transition-delay: 100ms;">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-[#0071E3] font-semibold">#42</span>
+<h3 class="text-lg font-bold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Trapping Rain Water</h3>
+</div>
+<span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full border border-red-200 bg-red-50 text-[#FF3B30] font-semibold group-hover:scale-105 transition-transform">Hard</span>
+</div>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+                Compute how much water elevation bars can trap after raining using monotonic dual pointer boundaries.
+              </p>
+<div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">Dual Inward Pointers</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">~6 lines of logic</span>
+<span class="px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-[#FF9500] font-medium">44% acceptance</span>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+<span class="font-mono text-xs text-[#86868B]">Complexity: O(n) / O(1)</span>
+<button class="run-test-card-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F5F5F7] hover:bg-[#0071E3] hover:text-white text-[#1D1D1F] text-xs font-mono font-semibold transition-all duration-200 shadow-sm active:scale-95 cursor-pointer" type="button">
+<span class="btn-text">Run Tests</span>
+<span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Count Islands -->
+<div class="problem-card reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white hover:shadow-apple-hover transition-all flex flex-col justify-between group shadow-apple" data-category="graphs" style="transition-delay: 150ms;">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-[#0071E3] font-semibold">#200</span>
+<h3 class="text-lg font-bold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">Count Islands in Matrix</h3>
+</div>
+<span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-[#FF9500] font-semibold group-hover:scale-105 transition-transform">Medium</span>
+</div>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+                Traverse 2D binary grids to isolate connected components by recursively submerging contiguous land masses.
+              </p>
+<div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">Plain Words DFS</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">~5 lines of logic</span>
+<span class="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[#0071E3] font-medium">61% acceptance</span>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+<span class="font-mono text-xs text-[#86868B]">Complexity: O(M×N)</span>
+<button class="run-test-card-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F5F5F7] hover:bg-[#0071E3] hover:text-white text-[#1D1D1F] text-xs font-mono font-semibold transition-all duration-200 shadow-sm active:scale-95 cursor-pointer" type="button">
+<span class="btn-text">Run Tests</span>
+<span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 4: LRU Cache -->
+<div class="problem-card reveal-item apple-lift p-8 rounded-2xl border border-black/[0.06] bg-white hover:shadow-apple-hover transition-all flex flex-col justify-between group shadow-apple" data-category="dynamic" style="transition-delay: 200ms;">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-[#0071E3] font-semibold">#146</span>
+<h3 class="text-lg font-bold text-[#1D1D1F] group-hover:text-[#0071E3] transition-colors">LRU Eviction Policy</h3>
+</div>
+<span class="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-[#FF9500] font-semibold group-hover:scale-105 transition-transform">Medium</span>
+</div>
+<p class="text-xs text-[#6E6E73] leading-relaxed">
+                Design an in-memory cache that prioritizes recent access and discards the stalest node when capacity is exceeded.
+              </p>
+<div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">Linked Semantic Rules</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200 text-[#6E6E73]">~8 lines of logic</span>
+<span class="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[#0071E3] font-medium">52% acceptance</span>
+</div>
+</div>
+<div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+<span class="font-mono text-xs text-[#86868B]">Complexity: O(1) ops</span>
+<button class="run-test-card-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F5F5F7] hover:bg-[#0071E3] hover:text-white text-[#1D1D1F] text-xs font-mono font-semibold transition-all duration-200 shadow-sm active:scale-95 cursor-pointer" type="button">
+<span class="btn-text">Run Tests</span>
+<span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials / Engineering Leadership Perspective -->
+<section class="py-28 max-w-7xl mx-auto px-6" id="testimonials">
+<div class="reveal-item p-10 md:p-16 rounded-3xl border border-black/[0.06] bg-white shadow-apple">
+<div class="max-w-xl mx-auto text-center mb-14 space-y-2">
+<span class="font-mono text-xs uppercase tracking-widest text-[#0071E3] font-semibold">The Industry Perspective</span>
+<h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#1D1D1F]">Why Hiring Teams Love Englo</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Testimonial 1 -->
+<div class="apple-lift p-8 rounded-2xl border border-neutral-200/80 bg-[#FBFBFD] flex flex-col justify-between gap-6 shadow-apple-card hover:border-[#0071E3]/30 transition-all cursor-default">
+<p class="text-[#1D1D1F] text-sm sm:text-[15px] leading-relaxed font-normal">
+              "I used to fail FAANG interviews because of accidental off-by-one errors on a remote coderpad. Englo trained me to nail the structural explanation cleanly without syntax anxiety. Got offers from both Meta and Stripe."
+            </p>
+<div class="flex items-center gap-3.5 pt-4 border-t border-neutral-200/80">
+<img alt="David Chen" class="w-10 h-10 rounded-full object-cover ring-1 ring-black/10 shadow-sm" src="https://lh3.googleusercontent.com/aida/AEtjO1VBklXZkBiUQfiquTaI-mXSFTYoM6TlaZpAdtLbBGErzstmsZXL4T1cVcolN9RdJ9VcB62Y5N7AgXVBc7F56Ix0qHy_htkOZ3r1eXyUZDsaJYKQ41iUxwywe3CPdT8tVKNUwMTvcYdxqfvongzZo3p00-70gwbPuHLvHyGxspvumhzC7g-IOrOx017WJbvbyL9qmBW77_dOzWwifkhA6ByS_MBsJPJK4Ailv-ROi2bD4Xq9jrceh6eo8wQ"/>
+<div>
+<div class="text-sm font-semibold text-[#1D1D1F]">David Chen</div>
+<div class="text-xs text-[#6E6E73] font-mono">Staff Systems Engineer (ex-Amazon)</div>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="apple-lift p-8 rounded-2xl border border-neutral-200/80 bg-[#FBFBFD] flex flex-col justify-between gap-6 shadow-apple-card hover:border-[#0071E3]/30 transition-all cursor-default">
+<p class="text-[#1D1D1F] text-sm sm:text-[15px] leading-relaxed font-normal">
+              "As an engineering director, this is actually how I evaluate candidates: can you think and communicate the logic crisply? Any LLM can generate syntax, but raw algorithmic cognition is rare and Englo proves it."
+            </p>
+<div class="flex items-center gap-3.5 pt-4 border-t border-neutral-200/80">
+<img alt="Elena Rostova" class="w-10 h-10 rounded-full object-cover ring-1 ring-black/10 shadow-sm" src="https://lh3.googleusercontent.com/aida/AEtjO1VBklXZkBiUQfiquTaI-mXSFTYoM6TlaZpAdtLbBGErzstmsZXL4T1cVcolN9RdJ9VcB62Y5N7AgXVBc7F56Ix0qHy_htkOZ3r1eXyUZDsaJYKQ41iUxwywe3CPdT8tVKNUwMTvcYdxqfvongzZo3p00-70gwbPuHLvHyGxspvumhzC7g-IOrOx017WJbvbyL9qmBW77_dOzWwifkhA6ByS_MBsJPJK4Ailv-ROi2bD4Xq9jrceh6eo8wQ"/>
+<div>
+<div class="text-sm font-semibold text-[#1D1D1F]">Elena Rostova</div>
+<div class="text-xs text-[#6E6E73] font-mono">VP of Engineering at Datacore</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA Banner (Apple Product Finale Aesthetic with interactive form) -->
+<section class="py-28 border-t border-black/[0.06] relative bg-[#FBFBFD]">
+<div class="reveal-item max-w-4xl mx-auto px-6 text-center">
+<span class="font-mono text-xs uppercase tracking-widest text-[#0071E3] font-semibold mb-3 block">Start In 5 Seconds • No Credit Card</span>
+<h2 class="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#1D1D1F] mb-6 leading-tight">
+          Stop fighting syntax errors.<br/>Start mastering algorithms.
+        </h2>
+<p class="text-base sm:text-lg text-[#6E6E73] max-w-xl mx-auto mb-10 leading-relaxed font-normal">
+          Join 45,000+ developers sharpening their cognitive reasoning. Express your next solution in pure deterministic natural language.
+        </p>
+<!-- Interactive Command Form with glow & ripple effect -->
+<form class="max-w-lg mx-auto flex flex-col sm:flex-row items-center gap-2 p-2 rounded-full border border-neutral-200/90 bg-white shadow-apple hover:shadow-apple-hover focus-within:ring-2 focus-within:ring-[#0071E3]/30 focus-within:border-[#0071E3] transition-all duration-300 mb-8" id="cta-form" onsubmit="event.preventDefault();">
+<input class="w-full sm:flex-1 px-5 py-2.5 bg-transparent border-0 text-sm font-mono text-[#1D1D1F] placeholder:text-[#86868B] focus:ring-0 focus:outline-none" id="cta-prompt-input" placeholder="e.g. Try Two Sum, Substring, or DFS..." type="text"/>
+<button class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-[#0071E3] text-white text-xs font-semibold font-sans hover:bg-[#0077ED] transition-all duration-200 shadow-[0_2px_8px_rgba(0,113,227,0.25)] hover:shadow-[0_4px_12px_rgba(0,113,227,0.35)] active:scale-95 shrink-0 cursor-pointer" id="cta-submit-btn" type="submit">
+            Start Writing Logic
+          </button>
+</form>
+<!-- Trust Badges -->
+<div class="flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-[#6E6E73]">
+<span class="flex items-center gap-1.5 hover:text-[#1D1D1F] transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#0071E3]">check</span>
+            100 Free Core Problems
+          </span>
+<span class="flex items-center gap-1.5 hover:text-[#1D1D1F] transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#0071E3]">check</span>
+            Instant Automated AST Tests
+          </span>
+<span class="flex items-center gap-1.5 hover:text-[#1D1D1F] transition-colors">
+<span class="material-symbols-outlined text-[16px] text-[#0071E3]">check</span>
+            Daily Problem Streak System
+          </span>
+</div>
+</div>
+</section>
+</main>
+<!-- Developer Footer (Apple Light Minimal Style) -->
+<footer class="border-t border-black/[0.06] bg-[#F5F5F7] py-16 text-[#6E6E73] text-xs">
+<div class="max-w-7xl mx-auto px-6 flex flex-col gap-12">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="space-y-3">
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#1D1D1F] font-semibold">Problem Tracks</span>
+<ul class="space-y-2">
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Arrays &amp; Hashing</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Greedy Invariants</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Dynamic Reasoning</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Tree Traversals</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#1D1D1F] font-semibold">Community &amp; Docs</span>
+<ul class="space-y-2">
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Pseudocode Syntax Guide</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Algorithmic Assertions</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Developer Discord</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">GitHub Repository</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#1D1D1F] font-semibold">Ecosystem</span>
+<ul class="space-y-2">
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Weekly Algorithm Contests</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Company Assessment Paths</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">System Architecture Drills</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Changelog &amp; Releases</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<span class="font-mono text-[11px] uppercase tracking-wider text-[#1D1D1F] font-semibold">Legal &amp; Trust</span>
+<ul class="space-y-2">
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Telemetry &amp; Data Ethics</a></li>
+<li><a class="hover:text-[#0071E3] transition-colors" href="#">Security Whitepaper</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-black/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-[#86868B]">
+<div>© 2025 Englo Inc. All rights reserved.</div>
+<div class="flex items-center gap-4">
+<span>Structured for natural cognition</span>
+<span class="w-1.5 h-1.5 rounded-full bg-[#0071E3]"></span>
+<span>Engine v1.4.0-stable</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- Vanilla JavaScript for Rich Apple-Grade Micro-Interactions -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. IntersectionObserver-driven Scroll Reveals
+    const revealElements = document.querySelectorAll('.reveal-item');
+    if ('IntersectionObserver' in window) {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
+      };
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      revealElements.forEach(el => revealObserver.observe(el));
+    } else {
+      revealElements.forEach(el => el.classList.add('is-revealed'));
+    }
+
+    // 2. Scroll-aware Header frosted border enhancement
+    const mainHeader = document.getElementById('main-header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        mainHeader.classList.add('shadow-xs', 'bg-white/90');
+      } else {
+        mainHeader.classList.remove('shadow-xs', 'bg-white/90');
+      }
+    }, { passive: true });
+
+    // 3. Interactive Logic Stepper in The Englo Way container
+    const stepCards = document.querySelectorAll('#interactive-logic-stepper .step-card');
+    const stepNumDisplay = document.getElementById('current-step-num');
+    const astIcon = document.getElementById('ast-icon');
+    const astStatus = document.getElementById('ast-status');
+    const astDesc = document.getElementById('ast-desc');
+
+    const stepAstDescriptions = [
+      { status: 'AST: Memory Alloc', desc: 'HashMap instantiated with hash invariants' },
+      { status: 'AST: Invariant Loop', desc: 'Evaluating delta complement per cycle' },
+      { status: 'AST: Branch Condition', desc: 'Constant-time O(1) hash query matching' },
+      { status: 'AST: Safe Insertion', desc: 'Registering unseen key index into state' }
+    ];
+
+    function activateStep(index) {
+      stepCards.forEach((card, i) => {
+        const checkIcon = card.querySelector('.check-icon');
+        const stepNum = card.querySelector('.step-num');
+        if (i === index) {
+          card.classList.add('active', 'border-[#0071E3]', 'bg-blue-50/40', 'shadow-xs');
+          card.classList.remove('bg-[#FBFBFD]', 'border-neutral-200/70');
+          if (checkIcon) checkIcon.classList.remove('opacity-0');
+          if (stepNum) {
+            stepNum.classList.add('text-[#0071E3]');
+            stepNum.classList.remove('text-[#86868B]');
+          }
+        } else {
+          card.classList.remove('active', 'border-[#0071E3]', 'bg-blue-50/40', 'shadow-xs');
+          card.classList.add('bg-[#FBFBFD]', 'border-neutral-200/70');
+          if (checkIcon) checkIcon.classList.add('opacity-0');
+          if (stepNum) {
+            stepNum.classList.remove('text-[#0071E3]');
+            stepNum.classList.add('text-[#86868B]');
+          }
+        }
+      });
+
+      if (stepNumDisplay) stepNumDisplay.textContent = index + 1;
+
+      // Pulse middle AST indicator
+      if (astIcon) {
+        astIcon.style.transform = 'scale(1.25) rotate(180deg)';
+        setTimeout(() => {
+          astIcon.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+      }
+      if (astStatus && stepAstDescriptions[index]) {
+        astStatus.textContent = stepAstDescriptions[index].status;
+        astDesc.textContent = stepAstDescriptions[index].desc;
+      }
+    }
+
+    stepCards.forEach((card, idx) => {
+      card.addEventListener('click', () => activateStep(idx));
+      card.addEventListener('mouseenter', () => activateStep(idx));
+    });
+
+    // 4. Test Logic / Run Simulation Animated Runner
+    const runSimBtn = document.getElementById('run-sim-btn');
+    const simProgressBar = document.getElementById('sim-progress-bar');
+    const testNum = document.getElementById('test-num');
+    const testCheckIcon = document.getElementById('test-check-icon');
+    let isSimulating = false;
+
+    if (runSimBtn) {
+      runSimBtn.addEventListener('click', () => {
+        if (isSimulating) return;
+        isSimulating = true;
+        const simLabel = runSimBtn.querySelector('.sim-label');
+        const simIcon = runSimBtn.querySelector('.sim-icon');
+
+        if (simLabel) simLabel.textContent = 'Verifying AST...';
+        if (simIcon) simIcon.textContent = 'sync';
+        if (simIcon) simIcon.classList.add('animate-spin');
+
+        // Reset progress bar
+        if (simProgressBar) {
+          simProgressBar.style.width = '0%';
+          simProgressBar.style.backgroundColor = '#0071E3';
+        }
+        if (testNum) testNum.textContent = '0';
+
+        let currentCount = 0;
+        const total = 42;
+        const stepTime = 18;
+
+        const interval = setInterval(() => {
+          currentCount += 2;
+          if (currentCount > total) currentCount = total;
+          if (testNum) testNum.textContent = currentCount;
+          if (simProgressBar) simProgressBar.style.width = `${(currentCount / total) * 100}%`;
+
+          if (currentCount >= total) {
+            clearInterval(interval);
+            setTimeout(() => {
+              if (simProgressBar) simProgressBar.style.backgroundColor = '#34C759';
+              if (simLabel) simLabel.textContent = 'Simulate Again';
+              if (simIcon) {
+                simIcon.textContent = 'check';
+                simIcon.classList.remove('animate-spin');
+              }
+              if (testCheckIcon) {
+                testCheckIcon.classList.add('scale-125', 'text-emerald-600');
+                setTimeout(() => testCheckIcon.classList.remove('scale-125'), 350);
+              }
+              isSimulating = false;
+            }, 200);
+          }
+        }, stepTime);
+      });
+    }
+
+    // 5. Algorithm Problem Filter Tabs
+    const filterButtons = document.querySelectorAll('.filter-tab-btn');
+    const problemCards = document.querySelectorAll('#problem-cards-grid .problem-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-[#1D1D1F]', 'text-white', 'shadow-sm', 'active');
+          b.classList.add('text-[#6E6E73]');
+        });
+        btn.classList.add('bg-[#1D1D1F]', 'text-white', 'shadow-sm', 'active');
+        btn.classList.remove('text-[#6E6E73]');
+
+        const category = btn.getAttribute('data-category');
+        problemCards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          if (category === 'all' || cardCat === category) {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0) scale(1)';
+            card.style.pointerEvents = 'auto';
+          } else {
+            card.style.opacity = '0.2';
+            card.style.transform = 'translateY(4px) scale(0.98)';
+            card.style.pointerEvents = 'none';
+          }
+        });
+      });
+    });
+
+    // 6. Problem Card 'Run Tests' instant verification micro-interaction
+    const runTestCardButtons = document.querySelectorAll('.run-test-card-btn');
+    runTestCardButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const textSpan = btn.querySelector('.btn-text');
+        if (!textSpan || btn.getAttribute('data-running')) return;
+
+        btn.setAttribute('data-running', 'true');
+        textSpan.textContent = 'Running...';
+        btn.classList.add('bg-[#0071E3]', 'text-white');
+
+        setTimeout(() => {
+          textSpan.innerHTML = '✓ Passed (0.8ms)';
+          btn.classList.remove('bg-[#0071E3]');
+          btn.classList.add('bg-emerald-600', 'text-white');
+          setTimeout(() => {
+            textSpan.textContent = 'Run Tests';
+            btn.classList.remove('bg-emerald-600', 'text-white');
+            btn.removeAttribute('data-running');
+          }, 2400);
+        }, 550);
+      });
+    });
+
+    // 7. Bento Card 3 - Visual Stepper hover loop
+    const bentoCard3 = document.getElementById('bento-card-3');
+    const stepperBars = document.querySelectorAll('#bento-stepper-bars .stepper-bar');
+    let stepperInterval = null;
+
+    if (bentoCard3 && stepperBars.length > 0) {
+      const heights = ['h-2', 'h-3', 'h-4', 'h-6', 'h-5', 'h-3'];
+      bentoCard3.addEventListener('mouseenter', () => {
+        let activeIdx = 0;
+        stepperInterval = setInterval(() => {
+          stepperBars.forEach((bar, i) => {
+            if (i === activeIdx) {
+              bar.classList.add('bg-[#0071E3]', 'h-6');
+              bar.classList.remove('bg-neutral-200');
+            } else {
+              bar.classList.remove('bg-[#0071E3]');
+              bar.classList.add('bg-neutral-200');
+            }
+          });
+          activeIdx = (activeIdx + 1) % stepperBars.length;
+        }, 220);
+      });
+
+      bentoCard3.addEventListener('mouseleave', () => {
+        clearInterval(stepperInterval);
+        stepperBars.forEach((bar, i) => {
+          bar.classList.remove('bg-[#0071E3]');
+          bar.classList.add('bg-neutral-200');
+          if (i === 3) {
+            bar.classList.add('bg-[#0071E3]');
+            bar.classList.remove('bg-neutral-200');
+          }
+        });
+      });
+    }
+
+    // 8. Bento Card 4 - Casual vs Formal Toggle
+    const modeCasualBtn = document.getElementById('mode-casual-btn');
+    const modeFormalBtn = document.getElementById('mode-formal-btn');
+    const precisionModeName = document.getElementById('precision-mode-name');
+    const precisionDesc = document.getElementById('precision-desc');
+
+    if (modeCasualBtn && modeFormalBtn) {
+      modeCasualBtn.addEventListener('click', () => {
+        modeCasualBtn.classList.add('bg-white', 'text-[#1D1D1F]', 'font-semibold', 'shadow-xs');
+        modeCasualBtn.classList.remove('text-[#6E6E73]');
+        modeFormalBtn.classList.remove('bg-white', 'text-[#1D1D1F]', 'font-semibold', 'shadow-xs');
+        modeFormalBtn.classList.add('text-[#6E6E73]');
+        if (precisionModeName) precisionModeName.textContent = 'Casual English';
+        if (precisionDesc) precisionDesc.textContent = 'Switch seamlessly from intuitive casual phrasing to rigorous formal invariants with mathematical precision chips.';
+      });
+
+      modeFormalBtn.addEventListener('click', () => {
+        modeFormalBtn.classList.add('bg-white', 'text-[#1D1D1F]', 'font-semibold', 'shadow-xs');
+        modeFormalBtn.classList.remove('text-[#6E6E73]');
+        modeCasualBtn.classList.remove('bg-white', 'text-[#1D1D1F]', 'font-semibold', 'shadow-xs');
+        modeCasualBtn.classList.add('text-[#6E6E73]');
+        if (precisionModeName) precisionModeName.textContent = 'Formal Hoare Logic';
+        if (precisionDesc) precisionDesc.textContent = 'Enforces pre/post conditions and inductive loop invariants directly checked by automated theorem provers.';
+      });
+    }
+
+    // 9. CTA Submit button feedback
+    const ctaSubmitBtn = document.getElementById('cta-submit-btn');
+    const ctaPromptInput = document.getElementById('cta-prompt-input');
+    if (ctaSubmitBtn) {
+      ctaSubmitBtn.addEventListener('click', () => {
+        ctaSubmitBtn.textContent = 'Initializing Logic Engine...';
+        ctaSubmitBtn.classList.add('scale-95');
+        setTimeout(() => {
+          ctaSubmitBtn.textContent = 'Engine Ready ✓';
+          ctaSubmitBtn.classList.remove('scale-95');
+          setTimeout(() => {
+            ctaSubmitBtn.textContent = 'Start Writing Logic';
+            if (ctaPromptInput) ctaPromptInput.value = '';
+          }, 1800);
+        }, 500);
+      });
+    }
+
+    // Keyboard shortcut (⌘K / Ctrl+K) focus search
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('quick-search-input');
+        if (searchInput) searchInput.focus();
+      }
+    });
+  });
+</script>
+</body></html>

@@ -1,0 +1,445 @@
+import { create } from 'zustand';
+import { PROBLEMS } from '../data/problems';
+import { evaluateAlgoEnglish } from '../services/algoEvaluator';
+import { evaluateArchitecture } from '../services/systemDesignEvaluator';
+import {
+  AlgoEvaluationResult,
+  ArchitectureEvaluationResult,
+  Difficulty,
+  ProblemCategory,
+  SystemNodeData
+} from '../types';
+
+const STORAGE_KEY = 'algo_system_design_store_v1';
+
+export type AppView = 'landing' | 'dashboard' | 'algo_workspace' | 'system_design_workspace' | 'auth';
+
+interface PlatformState {
+  activeView: AppView;
+  activeProblemId: string;
+  authenticatedUser: { email: string; handle: string; name?: string; role?: string } | null;
+  authMode: 'login' | 'register';
+  isAuthModalOpen: boolean;
+  algoCodes: Record<string, string>;
+  canvasData: Record<string, { nodes: any[]; edges: any[] }>;
+  solvedProblemIds: string[];
+  algoEvaluations: Record<string, AlgoEvaluationResult>;
+  archEvaluations: Record<string, ArchitectureEvaluationResult>;
+  isEvaluating: boolean;
+  activeConsoleTab: 'matrix' | 'testcases' | 'notes';
+  isConsoleExpanded: boolean;
+  filterCategory: 'all' | ProblemCategory;
+  filterDifficulty: 'all' | Difficulty;
+  searchQuery: string;
+  selectedNodeId: string | null;
+  isTestRunnerOpen: boolean;
+  isDarkMode: boolean;
+
+  // Actions
+  toggleDarkMode: () => void;
+  setDarkMode: (dark: boolean) => void;
+  setActiveView: (view: AppView) => void;
+  setAuthMode: (mode: 'login' | 'register') => void;
+  setAuthModalOpen: (open: boolean) => void;
+  openAuth: (mode?: 'login' | 'register') => void;
+  authenticateUser: (email: string, handle?: string, name?: string, role?: string) => void;
+  logoutUser: () => void;
+  setActiveProblem: (id: string) => void;
+  setAlgoCode: (problemId: string, code: string) => void;
+  setCanvasData: (problemId: string, nodes: any[], edges: any[]) => void;
+  setSelectedNodeId: (id: string | null) => void;
+  updateNodeData: (problemId: string, nodeId: string, patch: Partial<SystemNodeData>) => void;
+  setFilterCategory: (category: 'all' | ProblemCategory) => void;
+  setFilterDifficulty: (difficulty: 'all' | Difficulty) => void;
+  setSearchQuery: (query: string) => void;
+  setConsoleExpanded: (expanded: boolean) => void;
+  setActiveConsoleTab: (tab: 'matrix' | 'testcases' | 'notes') => void;
+  runAlgoEvaluation: (problemId: string) => Promise<AlgoEvaluationResult>;
+  runArchEvaluation: (problemId: string) => Promise<ArchitectureEvaluationResult>;
+  resetProblem: (problemId: string) => void;
+  loadSolution: (problemId: string) => void;
+  setTestRunnerOpen: (open: boolean) => void;
+}
+
+// Load initial state from local storage or defaults
+function loadInitialState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed;
+    }
+  } catch (e) {
+    console.error('Error loading stored state:', e);
+  }
+  return null;
+}
+
+const savedData = loadInitialState();
+
+if (typeof document !== 'undefined') {
+  const initialDark = savedData?.isDarkMode ?? false;
+  if (initialDark) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+}
+
+// Initialize default algo code map
+const initialAlgoCodes: Record<string, string> = {};
+const initialCanvasData: Record<string, { nodes: any[]; edges: any[] }> = {};
+
+PROBLEMS.forEach((p) => {
+  if (p.category === 'algorithm') {
+    const starter = p.starterTemplate || p.defaultAlgoEnglish || '';
+    const saved = savedData?.algoCodes?.[p.id];
+    // If the saved code is missing or matches the reference solution, load the clean starter template
+    if (!saved || (p.solutionAlgoEnglish && saved.trim() === p.solutionAlgoEnglish.trim())) {
+      initialAlgoCodes[p.id] = starter;
+    } else {
+      initialAlgoCodes[p.id] = saved;
+    }
+  }
+  if (p.category === 'system_design') {
+    const starterNodes = p.defaultArchNodes || [];
+    const starterEdges = p.defaultArchEdges || [];
+    const saved = savedData?.canvasData?.[p.id];
+    const isSavedSolution = Boolean(
+      saved && p.solutionArchNodes && saved.nodes?.length >= p.solutionArchNodes.length
+    );
+    if (!saved || isSavedSolution) {
+      initialCanvasData[p.id] = {
+        nodes: starterNodes,
+        edges: starterEdges
+      };
+    } else {
+      initialCanvasData[p.id] = saved;
+    }
+  }
+});
+
+export const usePlatformStore = create<PlatformState>((set, get) => ({
+  activeView: savedData?.activeView || 'landing',
+  activeProblemId: savedData?.activeProblemId || 'algo-1',
+  authenticatedUser: savedData?.authenticatedUser || null,
+  authMode: 'login',
+  isAuthModalOpen: false,
+  algoCodes: initialAlgoCodes,
+  canvasData: initialCanvasData,
+  solvedProblemIds: savedData?.solvedProblemIds || ['algo-1'],
+  algoEvaluations: savedData?.algoEvaluations || {},
+  archEvaluations: savedData?.archEvaluations || {},
+  isEvaluating: false,
+  activeConsoleTab: 'matrix',
+  isConsoleExpanded: true,
+  filterCategory: 'all',
+  filterDifficulty: 'all',
+  searchQuery: '',
+  selectedNodeId: null,
+  isTestRunnerOpen: false,
+  isDarkMode: savedData?.isDarkMode ?? false,
+
+  toggleDarkMode: () => {
+    const next = !get().isDarkMode;
+    set({ isDarkMode: next });
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('dark', next);
+    }
+    persist(get());
+  },
+  setDarkMode: (dark) => {
+    set({ isDarkMode: dark });
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('dark', dark);
+    }
+    persist(get());
+  },
+
+  setActiveView: (view) => {
+    set({ activeView: view });
+    persist(get());
+  },
+
+  setAuthMode: (mode) => set({ authMode: mode }),
+  setAuthModalOpen: (open) => set({ isAuthModalOpen: open }),
+  openAuth: (mode = 'login') => set({ isAuthModalOpen: true, authMode: mode }),
+
+  authenticateUser: (email, handle, name, role) => {
+    const defaultHandle = email.split('@')[0] || 'ENGINEER_01';
+    const user = {
+      email,
+      handle: handle || defaultHandle,
+      name: name || defaultHandle,
+      role: role || 'Staff Software Engineer'
+    };
+    set({ authenticatedUser: user, isAuthModalOpen: false, activeView: 'dashboard' });
+    persist(get());
+  },
+
+  logoutUser: () => {
+    set({ authenticatedUser: null, activeView: 'landing' });
+    persist(get());
+  },
+
+  setActiveProblem: (id) => {
+    const prob = PROBLEMS.find((p) => p.id === id);
+    if (!prob) return;
+
+    const nextView: AppView = prob.category === 'algorithm' ? 'algo_workspace' : 'system_design_workspace';
+
+    // ensure canvas data exists
+    const currentCanvas = get().canvasData;
+    if (!currentCanvas[id] && prob.category === 'system_design') {
+      currentCanvas[id] = {
+        nodes: prob.defaultArchNodes || [],
+        edges: prob.defaultArchEdges || []
+      };
+    }
+
+    set({
+      activeProblemId: id,
+      activeView: nextView,
+      selectedNodeId: null,
+      isConsoleExpanded: true
+    });
+    persist(get());
+  },
+
+  setAlgoCode: (problemId, code) => {
+    set((state) => ({
+      algoCodes: { ...state.algoCodes, [problemId]: code }
+    }));
+    persist(get());
+  },
+
+  setCanvasData: (problemId, nodes, edges) => {
+    set((state) => ({
+      canvasData: {
+        ...state.canvasData,
+        [problemId]: { nodes, edges }
+      }
+    }));
+    persist(get());
+  },
+
+  setSelectedNodeId: (id) => set({ selectedNodeId: id }),
+
+  updateNodeData: (problemId, nodeId, patch) => {
+    set((state) => {
+      const current = state.canvasData[problemId];
+      if (!current) return state;
+
+      const updatedNodes = current.nodes.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              ...patch,
+              config: {
+                ...node.data.config,
+                ...patch.config
+              }
+            }
+          };
+        }
+        return node;
+      });
+
+      return {
+        canvasData: {
+          ...state.canvasData,
+          [problemId]: {
+            ...current,
+            nodes: updatedNodes
+          }
+        }
+      };
+    });
+    persist(get());
+  },
+
+  setFilterCategory: (category) => set({ filterCategory: category }),
+  setFilterDifficulty: (difficulty) => set({ filterDifficulty: difficulty }),
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  setConsoleExpanded: (expanded) => set({ isConsoleExpanded: expanded }),
+  setActiveConsoleTab: (tab) => set({ activeConsoleTab: tab }),
+
+  runAlgoEvaluation: async (problemId) => {
+    const prob = PROBLEMS.find((p) => p.id === problemId);
+    if (!prob) throw new Error('Problem not found');
+
+    set({ isEvaluating: true, isConsoleExpanded: true });
+
+    const code = get().algoCodes[problemId] || '';
+    let result: AlgoEvaluationResult;
+
+    try {
+      const response = await fetch('/api/evaluate-algo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem: prob, codeText: code })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Vertex AI Server responded with status ${response.status}`);
+      }
+
+      const json = await response.json();
+      if (json.error) {
+        throw new Error(json.error);
+      }
+      result = json;
+    } catch (err) {
+      console.warn('Vertex AI evaluation unavailable or failed, falling back to local heuristic evaluator:', err);
+      // Fallback to local heuristic evaluator
+      result = evaluateAlgoEnglish(prob, code);
+    }
+
+    set((state) => {
+      const nextSolved = result.passed && !state.solvedProblemIds.includes(problemId)
+        ? [...state.solvedProblemIds, problemId]
+        : state.solvedProblemIds;
+
+      return {
+        isEvaluating: false,
+        algoEvaluations: {
+          ...state.algoEvaluations,
+          [problemId]: result
+        },
+        solvedProblemIds: nextSolved
+      };
+    });
+
+    persist(get());
+    return result;
+  },
+
+  runArchEvaluation: async (problemId) => {
+    const prob = PROBLEMS.find((p) => p.id === problemId);
+    if (!prob) throw new Error('Problem not found');
+
+    set({ isEvaluating: true, isConsoleExpanded: true });
+
+    const data = get().canvasData[problemId] || { nodes: [], edges: [] };
+    let result: ArchitectureEvaluationResult;
+
+    try {
+      const response = await fetch('/api/evaluate-arch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ problem: prob, nodes: data.nodes, edges: data.edges })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Vertex AI Server responded with status ${response.status}`);
+      }
+
+      const json = await response.json();
+      if (json.error) {
+        throw new Error(json.error);
+      }
+      result = json;
+    } catch (err) {
+      console.warn('Vertex AI architecture evaluation unavailable or failed, falling back to local heuristic evaluator:', err);
+      // Fallback to local heuristic evaluator
+      result = evaluateArchitecture(prob, data.nodes, data.edges);
+    }
+
+    set((state) => {
+      const nextSolved = result.passed && !state.solvedProblemIds.includes(problemId)
+        ? [...state.solvedProblemIds, problemId]
+        : state.solvedProblemIds;
+
+      return {
+        isEvaluating: false,
+        archEvaluations: {
+          ...state.archEvaluations,
+          [problemId]: result
+        },
+        solvedProblemIds: nextSolved
+      };
+    });
+
+    persist(get());
+    return result;
+  },
+
+  resetProblem: (problemId) => {
+    const prob = PROBLEMS.find((p) => p.id === problemId);
+    if (!prob) return;
+
+    set((state) => {
+      const nextCodes = { ...state.algoCodes };
+      const nextCanvas = { ...state.canvasData };
+
+      if (prob.category === 'algorithm') {
+        nextCodes[problemId] = prob.starterTemplate || prob.defaultAlgoEnglish || '';
+      }
+      if (prob.category === 'system_design') {
+        nextCanvas[problemId] = {
+          nodes: prob.defaultArchNodes || [],
+          edges: prob.defaultArchEdges || []
+        };
+      }
+
+      return {
+        algoCodes: nextCodes,
+        canvasData: nextCanvas,
+        selectedNodeId: null
+      };
+    });
+    persist(get());
+  },
+
+  loadSolution: (problemId) => {
+    const prob = PROBLEMS.find((p) => p.id === problemId);
+    if (!prob) return;
+
+    set((state) => {
+      if (prob.category === 'algorithm' && prob.solutionAlgoEnglish) {
+        return {
+          algoCodes: {
+            ...state.algoCodes,
+            [problemId]: prob.solutionAlgoEnglish
+          }
+        };
+      }
+      if (prob.category === 'system_design' && prob.solutionArchNodes) {
+        return {
+          canvasData: {
+            ...state.canvasData,
+            [problemId]: {
+              nodes: prob.solutionArchNodes,
+              edges: prob.solutionArchEdges || []
+            }
+          }
+        };
+      }
+      return state;
+    });
+    persist(get());
+  },
+
+  setTestRunnerOpen: (open) => set({ isTestRunnerOpen: open })
+}));
+
+function persist(state: PlatformState) {
+  try {
+    const payload = {
+      activeView: state.activeView,
+      activeProblemId: state.activeProblemId,
+      authenticatedUser: state.authenticatedUser,
+      algoCodes: state.algoCodes,
+      canvasData: state.canvasData,
+      solvedProblemIds: state.solvedProblemIds,
+      algoEvaluations: state.algoEvaluations,
+      archEvaluations: state.archEvaluations,
+      isDarkMode: state.isDarkMode
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (e) {
+    console.error('Failed to persist to localStorage', e);
+  }
+}

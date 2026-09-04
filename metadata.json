@@ -1,0 +1,6 @@
+{
+  "name": "Englo — Algorithmic Reasoning in Pure Logic",
+  "description": "Technical interview preparation platform combining Cupertino precision with LeetCode rigor: express algorithms in plain English and model distributed architectures on an interactive canvas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
