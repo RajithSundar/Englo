@@ -74,8 +74,9 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
   const detectedTechniques: string[] = [];
   let correctnessScore = 50;
   let testCases: TestCaseResult[] = [];
+  const slug = (problem?.slug || problem?.id || '').toLowerCase();
 
-  if (problem.slug === 'two-sum') {
+  if (slug.includes('two-sum') || problem?.id === 'algo-1') {
     const hasHashMap = /(hash map|hash table|dictionary|map|seen|lookup)/i.test(text);
     const hasComplement = /(complement|target\s*-\s*|difference|remaining)/i.test(text);
     const hasIndexStore = /(store.*index|record.*index|key.*value.*index)/i.test(text);
@@ -140,7 +141,7 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
         explanation: isOptimal ? 'Linear time O(N) completed in 8.2ms.' : 'Nested loop brute force exceeded time budget.'
       }
     ];
-  } else if (problem.slug === 'lru-cache') {
+  } else if (slug.includes('lru-cache') || problem?.id === 'algo-2') {
     const hasDLL = /(doubly linked list|dummy head|dummy tail|nodes|prev.*next)/i.test(text);
     const hasMap = /(hash map|dictionary|key.*node|pointer)/i.test(text);
     const hasEvict = /(evict|remove.*tail|capacity|least recently used)/i.test(text);
@@ -196,7 +197,7 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
         explanation: 'Single capacity edge case tested dummy node pointer updates.'
       }
     ];
-  } else if (problem.slug === 'longest-substring') {
+  } else if (slug.includes('longest-substring') || problem?.id === 'algo-3') {
     const hasSlidingWindow = /(sliding window|left.*right|two pointers|window)/i.test(text);
     const hasSetOrMap = /(hash set|hash map|last seen|index map|seen)/i.test(text);
     const hasJump = /(jump|advance left|contract|duplicate)/i.test(text);
@@ -247,7 +248,7 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
         explanation: 'Correctly skips duplicate w index.'
       }
     ];
-  } else if (problem.slug === 'trapping-rain-water') {
+  } else if (slug.includes('trapping-rain-water') || problem?.id === 'algo-4') {
     const hasTwoPointers = /(two pointers|left.*right|left pointer|right pointer)/i.test(text);
     const hasMaxWalls = /(max_left|max_right|max wall|maximum left|maximum right)/i.test(text);
     const hasWaterAccumulation = /(water|trapped|accumulate|total)/i.test(text);
@@ -298,6 +299,101 @@ export function evaluateAlgoEnglish(problem: Problem, codeText: string): AlgoEva
         explanation: '3 inner bars each trap 5 units of water.'
       }
     ];
+  } else if (slug.includes('merge-k-sorted') || slug.includes('merge-k') || problem?.id === 'algo-5') {
+    const hasHeap = /(min-heap|min heap|priority queue|heap)/i.test(text);
+    const hasPointers = /(dummy head|current\.next|advance|extract|extract min)/i.test(text);
+    const hasInsert = /(insert|push|add.*heap|next node)/i.test(text);
+
+    if (hasHeap) {
+      detectedTechniques.push('Min-Heap Priority Queue');
+      correctnessScore += 30;
+    }
+    if (hasPointers) {
+      detectedTechniques.push('Dummy Head Linked Chain');
+      correctnessScore += 25;
+    }
+    if (hasInsert) {
+      detectedTechniques.push('Incremental K-Way Merge');
+      correctnessScore += 20;
+    }
+
+    isOptimal = hasHeap && hasPointers;
+    detectedTime = 'O(N log k)';
+    detectedSpace = 'O(k)';
+
+    testCases = [
+      {
+        id: 'tc-1',
+        name: 'Standard 3 Lists [[1,4,5],[1,3,4],[2,6]]',
+        input: 'lists = [[1,4,5],[1,3,4],[2,6]]',
+        expected: '[1,1,2,3,4,4,5,6]',
+        actual: isOptimal ? '[1,1,2,3,4,4,5,6]' : '[1,1,2,3,4,4,5,6]',
+        passed: isOptimal || correctnessScore > 65,
+        executionTimeMs: 1.4,
+        explanation: 'Min-heap maintains lowest element across all k lists in O(log k).'
+      },
+      {
+        id: 'tc-2',
+        name: 'Empty Lists Edge Case [[]]',
+        input: 'lists = [[]]',
+        expected: '[]',
+        actual: '[]',
+        passed: true,
+        executionTimeMs: 0.5,
+        explanation: 'Safely handles empty list input.'
+      }
+    ];
+  } else if (problem?.id === 'algo-6' || slug.includes('double-entry') || slug.includes('ledger')) {
+    const hasLockOrder = /(lock.*min|min.*max|lexicographical|deadlock|deterministic.*lock)/i.test(text);
+    const hasSolvency = /(solvency|balance|insufficient|positive|cents)/i.test(text);
+    const hasIdempotency = /(idempotency|journal|deduplicat|already)/i.test(text);
+    const hasAtomic = /(atomic|debit.*credit|balance.*conservation|transaction)/i.test(text);
+
+    if (hasLockOrder) {
+      detectedTechniques.push('Deterministic Lock Hierarchy (Deadlock Elimination)');
+      correctnessScore += 25;
+    }
+    if (hasSolvency) {
+      detectedTechniques.push('Strict Solvency & Integer Cents Invariant');
+      correctnessScore += 25;
+    }
+    if (hasIdempotency) {
+      detectedTechniques.push('Idempotent Journal Verification');
+      correctnessScore += 25;
+    }
+    if (hasAtomic) {
+      detectedTechniques.push('Atomic Double-Entry Balance Conservation');
+      correctnessScore += 25;
+    }
+
+    isOptimal = hasLockOrder && hasSolvency && hasIdempotency && hasAtomic;
+    detectedTime = 'O(1) Atomic Lock & Append';
+    detectedSpace = 'O(1) Auxiliary Journal Entry';
+
+    const testCategories = [
+      { prefix: 'Concurrency & Deadlock Prevention', count: 10, detail: 'Deterministic lexicographical locking min(A,B) -> max(A,B) eliminates circular wait' },
+      { prefix: 'Zero-Sum Balance Conservation Invariant', count: 10, detail: 'ΔBal(A) + ΔBal(B) = 0 strictly maintained across all account permutations' },
+      { prefix: 'Integer Cents & Non-Negative Solvency', count: 11, detail: 'Strict rejection of overdraft, fractional cents, and zero/negative transfers' },
+      { prefix: 'Idempotent Journal & ACID Rollback Isolation', count: 11, detail: 'Duplicate idempotent requests return cached receipts without re-executing' }
+    ];
+
+    let tcIndex = 1;
+    testCases = [];
+    testCategories.forEach((cat) => {
+      for (let i = 1; i <= cat.count; i++) {
+        testCases.push({
+          id: `tc-${tcIndex}`,
+          name: `${cat.prefix} Case #${i}`,
+          input: `Txn_Permutation_${tcIndex}: [Acc_${i * 101} -> Acc_${i * 202}, amount: ${i * 1000} cents]`,
+          expected: `Invariant Verified • ${cat.detail}`,
+          actual: isOptimal ? `Invariant Verified • ${cat.detail}` : 'Sub-optimal locking or missing idempotency check',
+          passed: isOptimal || correctnessScore > 75,
+          executionTimeMs: Number((0.4 + (i * 0.05)).toFixed(2)),
+          explanation: cat.detail
+        });
+        tcIndex++;
+      }
+    });
   } else {
     // Default generic algo
     const hasLoop = /(loop|iterate|while|for)/i.test(text);

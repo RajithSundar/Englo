@@ -1,11 +1,40 @@
+# Dependencies
 node_modules/
-build/
+npm-debug.log*
+
+# Production Build Outputs
 dist/
+dist-server/
+build/
 coverage/
-.DS_Store
-*.log
+
+# Environment Variables and Credentials (STRICTLY FORBIDDEN FROM COMMITS)
 .env*
 !.env.example
-.ontoindex/
-*.zip
+*.pem
+*.key
+*credential*.json
+application_default_credentials.json
 
+# Exclude Local Automation & Recording Scripts (per repository guidelines)
+scripts/
+*.pdf
+recordings/
+videos/
+scratch/
+*.mp4
+*.mkv
+*.webm
+*.log
+
+# Internal Tooling, Metadata & Editor Configs
+.DS_Store
+Thumbs.db
+.ontoindex/
+.agent/
+.agents/
+.gemini/
+.claude/
+.vscode/
+.idea/
+*.zip

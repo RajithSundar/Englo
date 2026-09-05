@@ -9,6 +9,7 @@ import {
   ProblemCategory,
   SystemNodeData
 } from '../types';
+import { audioService } from '../services/audioService';
 
 const STORAGE_KEY = 'algo_system_design_store_v2';
 const LEGACY_STORAGE_KEY = 'algo_system_design_store_v1';
@@ -34,6 +35,14 @@ interface PlatformState {
   searchQuery: string;
   selectedNodeId: string | null;
   isTestRunnerOpen: boolean;
+  isCertificateModalOpen: boolean;
+  isShortcutsModalOpen: boolean;
+  isCheckoutModalOpen: boolean;
+  isBountyModalOpen: boolean;
+  isEvaluatorPro: boolean;
+  assessmentCredits: number;
+  bountyClaimed: boolean;
+  bountyReceipt: any | null;
   isDarkMode: boolean;
   streakCount: number;
   bestStreak: number;
@@ -66,6 +75,12 @@ interface PlatformState {
   resetProblem: (problemId: string) => void;
   loadSolution: (problemId: string) => void;
   setTestRunnerOpen: (open: boolean) => void;
+  setCertificateModalOpen: (open: boolean) => void;
+  setShortcutsModalOpen: (open: boolean) => void;
+  setCheckoutModalOpen: (open: boolean) => void;
+  setBountyModalOpen: (open: boolean) => void;
+  unlockEvaluatorPro: () => void;
+  claimBounty: (receipt: any) => void;
 }
 
 export function getTodayDateStr(): string {
@@ -110,11 +125,13 @@ function loadInitialState() {
 const savedData = loadInitialState();
 
 if (typeof document !== 'undefined') {
-  const initialDark = savedData?.isDarkMode ?? false;
+  const initialDark = savedData?.isDarkMode ?? true;
   if (initialDark) {
     document.documentElement.classList.add('dark');
+    document.body?.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
+    document.body?.classList.remove('dark');
   }
 }
 
@@ -180,7 +197,15 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
   searchQuery: '',
   selectedNodeId: null,
   isTestRunnerOpen: false,
-  isDarkMode: savedData?.isDarkMode ?? false,
+  isCertificateModalOpen: false,
+  isShortcutsModalOpen: false,
+  isCheckoutModalOpen: false,
+  isBountyModalOpen: false,
+  isEvaluatorPro: savedData?.isEvaluatorPro ?? false,
+  assessmentCredits: savedData?.assessmentCredits ?? (savedData?.isEvaluatorPro ? 100 : 0),
+  bountyClaimed: savedData?.bountyClaimed ?? false,
+  bountyReceipt: savedData?.bountyReceipt ?? null,
+  isDarkMode: savedData?.isDarkMode ?? true,
   streakCount: savedData?.streakCount ?? 1,
   bestStreak: savedData?.bestStreak ?? 1,
   lastActiveDate: savedData?.lastActiveDate ?? getTodayDateStr(),
@@ -254,6 +279,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
     set({ isDarkMode: next });
     if (typeof document !== 'undefined') {
       document.documentElement.classList.toggle('dark', next);
+      document.body?.classList.toggle('dark', next);
     }
     persist(get());
   },
@@ -261,6 +287,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
     set({ isDarkMode: dark });
     if (typeof document !== 'undefined') {
       document.documentElement.classList.toggle('dark', dark);
+      document.body?.classList.toggle('dark', dark);
     }
     persist(get());
   },
@@ -431,6 +458,12 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
       };
     });
 
+    if (result.passed) {
+      audioService.playSuccessChime();
+    } else {
+      audioService.playAlert();
+    }
+
     get().recordActivity();
     persist(get());
     return result;
@@ -472,15 +505,44 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
         ? [...state.solvedProblemIds, problemId]
         : state.solvedProblemIds;
 
+      let nextCanvas = state.canvasData;
+      if (result.passed && state.canvasData[problemId]) {
+        const updatedNodes = (state.canvasData[problemId].nodes as any[]).map((node) => ({
+          ...node,
+          data: {
+            ...node.data,
+            status: 'healthy',
+            metrics: {
+              rps: '10,000 req/s',
+              latency: '8ms (Healthy)'
+            }
+          }
+        }));
+        nextCanvas = {
+          ...state.canvasData,
+          [problemId]: {
+            ...state.canvasData[problemId],
+            nodes: updatedNodes
+          }
+        };
+      }
+
       return {
         isEvaluating: false,
         archEvaluations: {
           ...state.archEvaluations,
           [problemId]: result
         },
+        canvasData: nextCanvas,
         solvedProblemIds: nextSolved
       };
     });
+
+    if (result.passed) {
+      audioService.playSuccessChime();
+    } else {
+      audioService.playAlert();
+    }
 
     get().recordActivity();
     persist(get());
@@ -543,8 +605,24 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
     persist(get());
   },
 
-  setTestRunnerOpen: (open) => set({ isTestRunnerOpen: open })
+  setTestRunnerOpen: (open) => set({ isTestRunnerOpen: open }),
+  setCertificateModalOpen: (open) => set({ isCertificateModalOpen: open }),
+  setShortcutsModalOpen: (open) => set({ isShortcutsModalOpen: open }),
+  setCheckoutModalOpen: (open) => set({ isCheckoutModalOpen: open }),
+  setBountyModalOpen: (open) => set({ isBountyModalOpen: open }),
+  unlockEvaluatorPro: () => {
+    set({ isEvaluatorPro: true, assessmentCredits: 100 });
+    persist(get());
+  },
+  claimBounty: (receipt) => {
+    set({ bountyClaimed: true, bountyReceipt: receipt });
+    persist(get());
+  }
 }));
+
+if (typeof window !== 'undefined') {
+  (window as any).usePlatformStore = usePlatformStore;
+}
 
 function persist(state: PlatformState) {
   try {
@@ -561,7 +639,11 @@ function persist(state: PlatformState) {
       streakCount: state.streakCount,
       bestStreak: state.bestStreak,
       lastActiveDate: state.lastActiveDate,
-      activityDates: state.activityDates
+      activityDates: state.activityDates,
+      isEvaluatorPro: state.isEvaluatorPro,
+      assessmentCredits: state.assessmentCredits,
+      bountyClaimed: state.bountyClaimed,
+      bountyReceipt: state.bountyReceipt
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (e) {

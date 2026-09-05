@@ -59,13 +59,13 @@ export const SplineArchitecture3D: React.FC = () => {
         }}
         className={`relative w-[340px] sm:w-[380px] h-[340px] rounded-3xl p-6 transition-colors duration-300 ${
           isDarkMode
-            ? 'bg-[#10131C]/90 border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.7)]'
-            : 'bg-white/90 border border-black/[0.08] shadow-[0_30px_70px_rgba(0,113,227,0.15)]'
+            ? 'bg-[#2F3E46]/90 border border-white/10 shadow-[0_30px_70px_rgba(0,0,0,0.7)]'
+            : 'bg-white/90 border border-black/[0.08] shadow-[0_30px_70px_rgba(132,169,140,0.15)]'
         } backdrop-blur-xl`}
       >
         {/* Grid Floor Lines */}
         <div 
-          className="absolute inset-4 rounded-2xl opacity-30 border border-dashed border-[#0071E3]/40 pointer-events-none"
+          className="absolute inset-4 rounded-2xl opacity-30 border border-dashed border-[#84A98C]/40 pointer-events-none"
           style={{ transform: 'translateZ(-10px)' }}
         />
 
@@ -75,15 +75,15 @@ export const SplineArchitecture3D: React.FC = () => {
           style={{ transform: 'translate3d(30px, 30px, 30px)' }}
           className={`absolute cursor-pointer p-3 rounded-2xl border transition-all duration-300 shadow-md ${
             selectedNode === 'edge'
-              ? 'border-[#0071E3] bg-blue-50/90 dark:bg-blue-950/80 scale-105'
-              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#181B26]/80'
+              ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52]/80 scale-105'
+              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-[#0071E3]" />
+            <Globe className="w-5 h-5 text-[#84A98C]" />
             <div>
-              <div className="text-[11px] font-bold text-[#1D1D1F] dark:text-white">Edge CDN</div>
-              <div className="text-[9px] font-mono text-[#6E6E73] dark:text-neutral-400">Cloudflare TLS</div>
+              <div className="text-[11px] font-bold text-[#2F3E46] dark:text-white">Edge CDN</div>
+              <div className="text-[9px] font-mono text-[#52796F] dark:text-neutral-400">Cloudflare TLS</div>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@ export const SplineArchitecture3D: React.FC = () => {
             opacity: [0, 1, 0]
           }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute w-2 h-2 rounded-full bg-[#0071E3] shadow-[0_0_8px_#0071E3]"
+          className="absolute w-2 h-2 rounded-full bg-[#84A98C] shadow-[0_0_8px_#84A98C]"
           style={{ transform: 'translateZ(35px)' }}
         />
 
@@ -106,15 +106,15 @@ export const SplineArchitecture3D: React.FC = () => {
           style={{ transform: 'translate3d(140px, 90px, 60px)' }}
           className={`absolute cursor-pointer p-3.5 rounded-2xl border transition-all duration-300 shadow-lg ${
             selectedNode === 'gateway'
-              ? 'border-[#FF9500] bg-amber-50/90 dark:bg-amber-950/80 scale-105'
-              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#181B26]/80'
+              ? 'border-[#D4A373] bg-amber-50/90 dark:bg-amber-950/80 scale-105'
+              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Server className="w-5 h-5 text-[#FF9500]" />
+            <Server className="w-5 h-5 text-[#D4A373]" />
             <div>
-              <div className="text-[11px] font-bold text-[#1D1D1F] dark:text-white">Envoy Gateway</div>
-              <div className="text-[9px] font-mono text-[#6E6E73] dark:text-neutral-400">Rate Limiter</div>
+              <div className="text-[11px] font-bold text-[#2F3E46] dark:text-white">Envoy Gateway</div>
+              <div className="text-[9px] font-mono text-[#52796F] dark:text-neutral-400">Rate Limiter</div>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@ export const SplineArchitecture3D: React.FC = () => {
             opacity: [0, 1, 0]
           }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-          className="absolute w-2 h-2 rounded-full bg-[#34C759] shadow-[0_0_8px_#34C759]"
+          className="absolute w-2 h-2 rounded-full bg-[#84A98C] shadow-[0_0_8px_#84A98C]"
           style={{ transform: 'translateZ(65px)' }}
         />
 
@@ -137,15 +137,15 @@ export const SplineArchitecture3D: React.FC = () => {
           style={{ transform: 'translate3d(40px, 180px, 45px)' }}
           className={`absolute cursor-pointer p-3 rounded-2xl border transition-all duration-300 shadow-md ${
             selectedNode === 'cache'
-              ? 'border-[#34C759] bg-emerald-50/90 dark:bg-emerald-950/80 scale-105'
-              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#181B26]/80'
+              ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52]/80 scale-105'
+              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#34C759]" />
+            <Zap className="w-5 h-5 text-[#84A98C]" />
             <div>
-              <div className="text-[11px] font-bold text-[#1D1D1F] dark:text-white">Redis Cluster</div>
-              <div className="text-[9px] font-mono text-[#6E6E73] dark:text-neutral-400">Sub-ms Cache</div>
+              <div className="text-[11px] font-bold text-[#2F3E46] dark:text-white">Redis Cluster</div>
+              <div className="text-[9px] font-mono text-[#52796F] dark:text-neutral-400">Sub-ms Cache</div>
             </div>
           </div>
         </div>
@@ -156,15 +156,15 @@ export const SplineArchitecture3D: React.FC = () => {
           style={{ transform: 'translate3d(170px, 200px, 50px)' }}
           className={`absolute cursor-pointer p-3 rounded-2xl border transition-all duration-300 shadow-md ${
             selectedNode === 'storage'
-              ? 'border-[#AF00DB] bg-purple-50/90 dark:bg-purple-950/80 scale-105'
-              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#181B26]/80'
+              ? 'border-[#52796F] bg-[#52796F]/15 dark:bg-[#354F52]/80 scale-105'
+              : 'border-black/[0.06] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80'
           }`}
         >
           <div className="flex items-center gap-2">
-            <Database className="w-5 h-5 text-[#AF00DB]" />
+            <Database className="w-5 h-5 text-[#52796F] dark:text-[#84A98C]" />
             <div>
-              <div className="text-[11px] font-bold text-[#1D1D1F] dark:text-white">Postgres DB</div>
-              <div className="text-[9px] font-mono text-[#6E6E73] dark:text-neutral-400">Sharded Primary</div>
+              <div className="text-[11px] font-bold text-[#2F3E46] dark:text-white">Postgres DB</div>
+              <div className="text-[9px] font-mono text-[#52796F] dark:text-neutral-400">Sharded Primary</div>
             </div>
           </div>
         </div>
@@ -174,20 +174,20 @@ export const SplineArchitecture3D: React.FC = () => {
       <div 
         className={`absolute bottom-2 left-4 right-4 sm:left-auto sm:right-6 sm:w-64 p-3.5 rounded-2xl border backdrop-blur-xl shadow-lg transition-colors duration-300 ${
           isDarkMode
-            ? 'bg-[#141722]/95 border-white/10 text-white'
-            : 'bg-white/95 border-black/[0.08] text-[#1D1D1F]'
+            ? 'bg-[#2F3E46]/95 border-white/10 text-white'
+            : 'bg-white/95 border-black/[0.08] text-[#2F3E46]'
         }`}
       >
         <div className="flex items-center justify-between text-xs font-mono font-bold mb-1">
-          <span className="text-[#0071E3] flex items-center gap-1">
+          <span className="text-[#84A98C] flex items-center gap-1">
             <Activity className="w-3.5 h-3.5" />
             {NODES[selectedNode as keyof typeof NODES].name}
           </span>
-          <span className="text-[#34C759]">
+          <span className="text-[#84A98C]">
             {NODES[selectedNode as keyof typeof NODES].latency}
           </span>
         </div>
-        <div className="text-[11px] font-mono text-[#86868B]">
+        <div className="text-[11px] font-mono text-[#CAD2C5] dark:text-[#CAD2C5]">
           {NODES[selectedNode as keyof typeof NODES].specs}
         </div>
       </div>

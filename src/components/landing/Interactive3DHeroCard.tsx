@@ -218,21 +218,21 @@ export const Interactive3DHeroCard: React.FC = () => {
           <div className="flex items-center gap-2 text-xs">
             <button
               onClick={() => setIsPaused(!isPaused)}
-              className="p-1.5 rounded-lg text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-colors"
+              className="p-1.5 rounded-lg text-[#52796F] hover:text-[#2F3E46] hover:bg-black/[0.04] transition-colors cursor-pointer"
               title={isPaused ? 'Resume Typing' : 'Pause Typing'}
             >
-              {isPaused ? <Play className="w-3.5 h-3.5 text-[#0071E3]" /> : <Pause className="w-3.5 h-3.5" />}
+              {isPaused ? <Play className="w-3.5 h-3.5 text-[#84A98C]" /> : <Pause className="w-3.5 h-3.5" />}
             </button>
             <button
               onClick={handleResetSnippet}
-              className="p-1.5 rounded-lg text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-black/[0.04] transition-colors"
+              className="p-1.5 rounded-lg text-[#52796F] hover:text-[#2F3E46] hover:bg-black/[0.04] transition-colors cursor-pointer"
               title="Restart Problem"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleNextSnippet}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-[#0071E3] hover:bg-blue-100/80 font-mono text-[11px] font-medium transition-all"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#84A98C]/15 text-[#52796F] hover:bg-[#84A98C]/25 font-mono text-[11px] font-medium transition-all cursor-pointer"
               title="Next Problem Snippet"
             >
               <span>Next Example</span>
@@ -242,12 +242,12 @@ export const Interactive3DHeroCard: React.FC = () => {
         </div>
 
         {/* 2. Interactive Plain-English Code Area */}
-        <div className="p-6 sm:p-8 font-mono text-xs sm:text-[13px] leading-7 text-[#1D1D1F] min-h-[260px] sm:min-h-[290px] flex flex-col justify-between relative z-10 bg-[#FBFBFD]/60">
+        <div className="p-6 sm:p-8 font-mono text-xs sm:text-[13px] leading-7 text-[#2F3E46] min-h-[260px] sm:min-h-[290px] flex flex-col justify-between relative z-10 bg-[#F4F6F4]/60">
           <div className="space-y-1">
             {/* Context header */}
-            <div className="text-[11px] text-[#86868B] pb-2 border-b border-black/[0.04] flex items-center justify-between">
+            <div className="text-[11px] text-[#52796F] pb-2 border-b border-black/[0.04] flex items-center justify-between">
               <span>// Goal: {currentSnippet.problem}</span>
-              <span className="text-[#0071E3] font-semibold">{currentSnippet.technique}</span>
+              <span className="text-[#52796F] font-semibold">{currentSnippet.technique}</span>
             </div>
 
             {/* Typewritten Lines */}
@@ -259,23 +259,23 @@ export const Interactive3DHeroCard: React.FC = () => {
 
                 return (
                   <div key={idx} className="flex items-start gap-3">
-                    <span className="text-[#86868B] select-none text-[11px] w-5 text-right shrink-0">
+                    <span className="text-[#84A98C] select-none text-[11px] w-5 text-right shrink-0">
                       {idx + 1}
                     </span>
                     <div className="flex-1 whitespace-pre-wrap">
                       <span
                         className={
                           line.startsWith('Step')
-                            ? 'text-[#0071E3] font-semibold'
+                            ? 'text-[#52796F] font-semibold'
                             : line.includes('return')
-                            ? 'text-emerald-600 font-semibold'
-                            : 'text-[#1D1D1F]'
+                            ? 'text-[#84A98C] font-semibold'
+                            : 'text-[#2F3E46]'
                         }
                       >
                         {displayText}
                       </span>
                       {isCurrentLine && (
-                        <span className="inline-block w-1.5 h-4 bg-[#0071E3] ml-1 translate-y-0.5 animate-pulse" />
+                        <span className="inline-block w-1.5 h-4 bg-[#84A98C] ml-1 translate-y-0.5 animate-pulse" />
                       )}
                     </div>
                   </div>
@@ -287,20 +287,20 @@ export const Interactive3DHeroCard: React.FC = () => {
           {/* Bottom Card Metric Bar */}
           <div className="pt-4 mt-4 border-t border-black/[0.06] flex flex-wrap items-center justify-between gap-3 text-[11px]">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
+              <span className="flex items-center gap-1.5 text-[#84A98C] font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Deterministic Proof</span>
               </span>
-              <span className="text-[#86868B]">•</span>
-              <span className="text-[#6E6E73]">{currentSnippet.complexity}</span>
+              <span className="text-[#CAD2C5]">•</span>
+              <span className="text-[#52796F]">{currentSnippet.complexity}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase font-mono tracking-wider text-[#86868B]">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-[#84A98C]">
                 Engine:
               </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-black/[0.06] text-[#0071E3] font-mono text-[10px] font-semibold shadow-2xs">
-                <Sparkles className="w-2.5 h-2.5" />
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white border border-black/[0.06] text-[#52796F] font-mono text-[10px] font-semibold shadow-2xs">
+                <Sparkles className="w-2.5 h-2.5 text-[#84A98C]" />
                 Vertex AI Gemini 2.5
               </span>
             </div>
@@ -313,10 +313,10 @@ export const Interactive3DHeroCard: React.FC = () => {
         {/* Floating Top-Right 3D Pill (translateZ 45px) */}
         <motion.div
           style={{ transform: 'translateZ(45px)' }}
-          className="absolute -top-5 -right-3 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-xl border border-black/[0.08] shadow-[0_8px_24px_rgba(0,113,227,0.18)] z-40 text-xs font-mono text-[#1D1D1F]"
+          className="absolute -top-5 -right-3 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-xl border border-black/[0.08] shadow-[0_8px_24px_rgba(132,169,140,0.22)] z-40 text-xs font-mono text-[#2F3E46]"
         >
-          <span className="w-2 h-2 rounded-full bg-[#0071E3] ring-4 ring-blue-100 animate-ping" />
-          <span className="font-semibold text-[11px] text-[#0071E3]">Live Semantic Proof</span>
+          <span className="w-2 h-2 rounded-full bg-[#84A98C] ring-4 ring-[#CAD2C5]/60 animate-ping" />
+          <span className="font-semibold text-[11px] text-[#52796F]">Live Semantic Proof</span>
         </motion.div>
 
         {/* Floating Bottom-Left 3D Pill (translateZ 55px) */}

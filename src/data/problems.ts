@@ -311,6 +311,66 @@ Complexity:
 - Space: O(k) for the priority queue.`,
     defaultAlgoEnglish: ''
   },
+  {
+    id: 'algo-6',
+    title: 'Atomic Double-Entry Ledger Transfer Engine',
+    slug: 'double-entry-ledger-transfer',
+    category: 'algorithm',
+    difficulty: 'Medium',
+    acceptanceRate: '48.5%',
+    tags: ['Razorpay Fintech', 'Financial Ledger', 'Idempotency', 'Concurrency', 'Deadlock Prevention'],
+    description: `Design a mission-critical, double-entry financial balance transfer algorithm between two customer accounts (Account A and Account B) under high concurrency, inspired by **Razorpay's internal ledger**.
+
+Your algorithm must guarantee absolute financial correctness:
+1. **Balance Conservation Invariant**: Every debit to Account A must be precisely mirrored by an equal credit to Account B ($Delta Balance(A) + Delta Balance(B) = 0$). Money can never be created or destroyed.
+2. **Integer Cents Representation**: Amounts must be processed in integer smallest currency units (e.g. paisa or cents) to prevent floating-point IEEE-754 rounding inaccuracies.
+3. **Deadlock Prevention**: When two concurrent transactions transfer funds between the same pair of accounts in opposite directions (A -> B and B -> A), design a deterministic locking order (e.g. lock by lexicographical account ID \`min(A, B)\` then \`max(A, B)\`) to guarantee zero deadlocks.
+4. **Idempotency & Journaling**: Prevent double-debiting when network retries occur.`,
+    examples: [
+      {
+        input: 'Transfer 5000 cents ($50.00) from Account_101 (balance: 10000) to Account_202 (balance: 2000)',
+        output: 'Account_101: 5000 cents, Account_202: 7000 cents, Ledger Entry: [Txn_UUID, -5000, +5000]',
+        explanation: 'Atomic debit and credit recorded in immutable ledger journal.'
+      },
+      {
+        input: 'Concurrent Transfer: Txn1 (A -> B, $10) and Txn2 (B -> A, $15)',
+        output: 'Both succeed without deadlock by acquiring locks in deterministic sorted order: Lock(min(A,B)) then Lock(max(A,B)).',
+        explanation: 'Deterministic lock hierarchy eliminates circular wait deadlocks.'
+      }
+    ],
+    constraints: [
+      'Account balances cannot drop below zero (insufficient funds rejection).',
+      'Zero floating-point arithmetic (all amounts represented in integer base currency units).',
+      'Strict linearizability: transactions must be atomic, consistent, isolated, and durable (ACID).'
+    ],
+    hints: [
+      'Sort account IDs before acquiring exclusive locks: first lock min(acc1, acc2), then lock max(acc1, acc2).',
+      'Verify sufficient balance before debiting Account A.',
+      'Append an immutable ledger journal entry containing debit, credit, timestamp, and idempotency key.'
+    ],
+    starterTemplate: '',
+    solutionAlgoEnglish: `Step 1: Validate input transfer parameters: ensure transfer amount is a positive integer in minor units (paisa/cents), and that source and destination account IDs are distinct.
+
+Step 2: Acquire distributed or row locks in deterministic global order to eliminate circular wait deadlocks:
+   - Always lock the account with lexicographically smaller ID first: first_lock = min(source_id, dest_id).
+   - Then lock the account with the larger ID: second_lock = max(source_id, dest_id).
+
+Step 3: Check transaction idempotency: inspect the ledger journal for the incoming idempotency_key. If already committed, return the cached transfer receipt immediately without re-executing.
+
+Step 4: Verify solvency invariant: check that source_account.balance >= transfer_amount. If insufficient, release locks and reject with InsufficientFunds error.
+
+Step 5: Execute atomic balanced ledger mutation within a single ACID transaction:
+   - Debit source account: source_account.balance -= transfer_amount
+   - Credit destination account: dest_account.balance += transfer_amount
+   - Append immutable double-entry journal entry: record debit to source_id and credit to dest_id with timestamp and transaction_id.
+
+Step 6: Commit transaction and release locks in reverse order. Return successful transfer receipt.
+
+Complexity Analysis:
+- Time Complexity: O(1) constant time balance lookup and atomic record append.
+- Space Complexity: O(1) auxiliary space per transaction entry.`,
+    defaultAlgoEnglish: ''
+  },
 
   // ==================== SYSTEM DESIGN PROBLEMS ====================
   {
@@ -664,6 +724,216 @@ On the canvas, assemble a complete distributed architecture:
     hints: [
       'All 3 client types (Smart TV, Mobile, Browser) connect to edge CDNs.',
       'Original videos stored in S3, processed by asynchronous Worker clusters.'
+    ]
+  },
+  {
+    id: 'sys-6',
+    title: 'Design High-Throughput Payment Gateway & Idempotency Engine',
+    slug: 'payment-gateway-idempotency',
+    category: 'system_design',
+    difficulty: 'Hard',
+    acceptanceRate: '29.4%',
+    tags: ['Razorpay Fintech', 'Payment Gateway', 'Idempotency', 'Double-Entry Ledger', 'Circuit Breaker', 'Webhooks'],
+    description: `Design a high-scale, fault-tolerant payment gateway and transaction settlement infrastructure inspired by **Razorpay**.
+
+### Core Requirements
+1. **Idempotency Guarantee**: Prevent duplicate charges under unreliable network conditions when users or checkout SDKs retry requests. Use an in-memory Redis cluster to acquire a distributed idempotency lock on \`Idempotency-Key\` with automatic TTL.
+2. **Double-Entry Ledger Persistence**: Transactions must be recorded in an ACID SQL database with a strict double-entry journal.
+3. **Acquirer Failover & Circuit Breaker**: Route transactions to multiple banking partners / payment aggregators. If a bank's latency spikes over 5 seconds or error rate exceeds 5%, the circuit breaker trips and automatically diverts traffic to healthy secondary acquirers.
+4. **Reliable Webhook Delivery**: Merchant notification webhooks must be delivered asynchronously via worker queues with exponential backoff retries and Dead-Letter Queue (DLQ) support.`,
+    examples: [
+      {
+        input: 'Merchant initiates $100 payment with Idempotency-Key: "order_xyz_789"',
+        output: 'Transaction authorized via Primary Bank, double-entry ledger updated, webhook dispatched to merchant in 45ms.',
+        explanation: 'Subsequent duplicate requests with order_xyz_789 return the exact same cached authorization response without recharging.'
+      }
+    ],
+    constraints: [
+      'Handle 10,000+ payment requests per second with sub-100ms P99 latency',
+      'Zero double-charges across 100M+ monthly transactions',
+      '99.999% payment processing availability (five nines)'
+    ],
+    hints: [
+      'Connect Clients -> API Gateway -> Payment Web Server.',
+      'Place Redis Cache with LRU and lock TTL directly in front of the Payment Service for atomic idempotency checks.',
+      'Use SQL Database in Primary-Replica mode for double-entry financial ledger journal.',
+      'Connect Async Workers and Queue to handle merchant webhook delivery and bank reconciliation.'
+    ],
+    archScenarios: [
+      {
+        id: 'sc-pay-1',
+        name: 'Flash-Sale Double-Click Payment Surge',
+        description: 'Simulates 50,000 users rapidly double-clicking payment buttons. Verifies Redis idempotency lock prevents duplicate financial transactions.',
+        criteria: 'Requires API Gateway, Redis Cache, and SQL Database.'
+      },
+      {
+        id: 'sc-pay-2',
+        name: 'Banking Partner / Acquirer Outage Failover',
+        description: 'Simulates primary banking partner downtime. Verifies compute layer routes traffic through circuit breaker without dropping transactions.',
+        criteria: 'Requires redundant Web Server compute with Autoscaling.'
+      },
+      {
+        id: 'sc-pay-3',
+        name: 'Merchant Webhook Retry with Exponential Backoff',
+        description: 'Simulates merchant webhook endpoints timing out. Verifies Async Workers queue retries with dead-letter queue backup.',
+        criteria: 'Requires Async Workers or Lambda connected to storage.'
+      }
+    ],
+    defaultArchNodes: [
+      {
+        id: 'node-client-pay',
+        type: 'systemNode',
+        position: { x: 50, y: 180 },
+        data: {
+          id: 'node-client-pay',
+          label: 'Merchant App / Web Checkout',
+          category: 'client',
+          subType: 'mobile',
+          config: {},
+          metrics: { rps: '10,000 req/s', latency: '45ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-gateway-pay',
+        type: 'systemNode',
+        position: { x: 310, y: 180 },
+        data: {
+          id: 'node-gateway-pay',
+          label: 'Payment Gateway API',
+          category: 'network',
+          subType: 'api_gateway',
+          config: { mode: 'Rate Limiting & Auth' },
+          metrics: { rps: '10,000 req/s', latency: '2ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-service-pay',
+        type: 'systemNode',
+        position: { x: 570, y: 180 },
+        data: {
+          id: 'node-service-pay',
+          label: 'Payment Settlement Service',
+          category: 'compute',
+          subType: 'worker',
+          config: { replicas: 4, mode: 'Autoscaling' },
+          metrics: { rps: '10,000 req/s', latency: '18ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-db-pay',
+        type: 'systemNode',
+        position: { x: 830, y: 180 },
+        data: {
+          id: 'node-db-pay',
+          label: 'Double-Entry SQL Ledger',
+          category: 'storage',
+          subType: 'sql_db',
+          config: { mode: 'Single Node', replicas: 1 },
+          metrics: { rps: '2,500 req/s', latency: '8ms' },
+          status: 'healthy'
+        }
+      }
+    ],
+    defaultArchEdges: [
+      { id: 'e-pay-1', source: 'node-client-pay', target: 'node-gateway-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'e-pay-2', source: 'node-gateway-pay', target: 'node-service-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'e-pay-3', source: 'node-service-pay', target: 'node-db-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } }
+    ],
+    solutionArchNodes: [
+      {
+        id: 'node-client-pay',
+        type: 'systemNode',
+        position: { x: 60, y: 220 },
+        data: {
+          id: 'node-client-pay',
+          label: 'Merchant App / Web Checkout',
+          category: 'client',
+          subType: 'mobile',
+          config: {},
+          metrics: { rps: '10,000 req/s', latency: '45ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-gateway-pay',
+        type: 'systemNode',
+        position: { x: 340, y: 220 },
+        data: {
+          id: 'node-gateway-pay',
+          label: 'Payment Gateway API',
+          category: 'network',
+          subType: 'api_gateway',
+          config: { mode: 'Rate Limiting & Auth' },
+          metrics: { rps: '10,000 req/s', latency: '2ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-redis-idempotency',
+        type: 'systemNode',
+        position: { x: 620, y: 90 },
+        data: {
+          id: 'node-redis-idempotency',
+          label: 'Redis Idempotency Locks',
+          category: 'storage',
+          subType: 'redis_cache',
+          config: { mode: 'Multi-AZ', cachePolicy: 'TTL 24h' },
+          metrics: { rps: '10,000 req/s', latency: '1ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-service-pay',
+        type: 'systemNode',
+        position: { x: 620, y: 260 },
+        data: {
+          id: 'node-service-pay',
+          label: 'Payment Processing Service',
+          category: 'compute',
+          subType: 'worker',
+          config: { replicas: 6, mode: 'Autoscaling' },
+          metrics: { rps: '10,000 req/s', latency: '15ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-db-pay',
+        type: 'systemNode',
+        position: { x: 920, y: 260 },
+        data: {
+          id: 'node-db-pay',
+          label: 'Double-Entry SQL Ledger',
+          category: 'storage',
+          subType: 'sql_db',
+          config: { mode: 'Primary-Replica', replicas: 3 },
+          metrics: { rps: '2,500 req/s', latency: '6ms' },
+          status: 'healthy'
+        }
+      },
+      {
+        id: 'node-webhook-worker',
+        type: 'systemNode',
+        position: { x: 620, y: 440 },
+        data: {
+          id: 'node-webhook-worker',
+          label: 'Async Webhooks & DLQ',
+          category: 'compute',
+          subType: 'lambda',
+          config: { concurrency: 500 },
+          metrics: { rps: '10,000 req/s', latency: '25ms' },
+          status: 'healthy'
+        }
+      }
+    ],
+    solutionArchEdges: [
+      { id: 'sol-e-1', source: 'node-client-pay', target: 'node-gateway-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'sol-e-2', source: 'node-gateway-pay', target: 'node-redis-idempotency', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'sol-e-3', source: 'node-gateway-pay', target: 'node-service-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'sol-e-4', source: 'node-service-pay', target: 'node-db-pay', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } },
+      { id: 'sol-e-5', source: 'node-service-pay', target: 'node-webhook-worker', animated: true, style: { stroke: '#84A98C', strokeWidth: 2 } }
     ]
   }
 ];

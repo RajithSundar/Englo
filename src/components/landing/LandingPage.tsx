@@ -266,19 +266,19 @@ export const LandingPage: React.FC = () => {
   }).slice(0, 6);
 
   // Accent styles
-  const accentBgClass = accentTheme === 'blue' ? 'bg-[#0071E3]' : accentTheme === 'emerald' ? 'bg-[#10B981]' : 'bg-[#1D1D1F] dark:bg-white dark:text-black';
-  const accentTextClass = accentTheme === 'blue' ? 'text-[#0071E3]' : accentTheme === 'emerald' ? 'text-[#10B981]' : 'text-[#1D1D1F] dark:text-white';
-  const accentBorderClass = accentTheme === 'blue' ? 'border-[#0071E3]' : accentTheme === 'emerald' ? 'border-[#10B981]' : 'border-[#1D1D1F] dark:border-white';
+  const accentBgClass = accentTheme === 'blue' ? 'bg-[#84A98C]' : accentTheme === 'emerald' ? 'bg-[#52796F]' : 'bg-[#2F3E46] dark:bg-[#CAD2C5] dark:text-[#2F3E46]';
+  const accentTextClass = accentTheme === 'blue' ? 'text-[#84A98C]' : accentTheme === 'emerald' ? 'text-[#52796F]' : 'text-[#2F3E46] dark:text-white';
+  const accentBorderClass = accentTheme === 'blue' ? 'border-[#84A98C]' : accentTheme === 'emerald' ? 'border-[#52796F]' : 'border-[#354F52] dark:border-[#52796F]';
 
   return (
     <div 
-      className={`min-h-screen transition-colors duration-500 flex flex-col selection:bg-[#0071E3] selection:text-white relative overflow-x-hidden ${
+      className={`min-h-screen transition-colors duration-500 flex flex-col selection:bg-[#52796F] selection:text-[#CAD2C5] dark:selection:bg-[#84A98C] dark:selection:text-[#2F3E46] relative overflow-x-hidden ${
         isDarkMode 
-          ? 'bg-[#090A0D] text-[#F5F5F7]' 
-          : 'bg-[#FBFBFD] text-[#1D1D1F]'
+          ? 'bg-[#1E272C] text-[#CAD2C5]' 
+          : 'bg-[#F4F6F4] text-[#2F3E46]'
       } ${densityMode === 'compact' ? 'text-[13px]' : 'text-[15px]'}`}
       style={{
-        fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Google Sans', 'Plus Jakarta Sans', sans-serif"
       }}
     >
       {/* 3D Floating Parallax Assets */}
@@ -289,17 +289,17 @@ export const LandingPage: React.FC = () => {
           ========================================================================= */}
       <div className={`py-2 px-4 text-center text-xs font-medium tracking-tight flex items-center justify-center gap-2 border-b z-50 transition-colors ${
         isDarkMode 
-          ? 'bg-[#12141C] text-neutral-300 border-white/[0.06]' 
-          : 'bg-[#1D1D1F] text-white border-black/10'
+          ? 'bg-[#2F3E46] text-[#CAD2C5] border-[#52796F]/30' 
+          : 'bg-[#2F3E46] text-[#CAD2C5] border-[#354F52]'
       }`}>
-        <span className="flex h-2 w-2 rounded-full bg-[#34C759] animate-pulse" />
+        <span className="flex h-2 w-2 rounded-full bg-[#84A98C] animate-pulse" />
         <span className="font-semibold text-white">Englo 1.4:</span>
-        <span className="text-neutral-200">
+        <span className="text-[#CAD2C5]/90">
           The first algorithmic interview platform that tests your architectural logic, not punctuation.
         </span>
         <button
           onClick={() => handleStartProblem('algo-1', 'algorithm')}
-          className="underline font-semibold hover:text-[#0071E3] ml-1 transition-colors cursor-pointer"
+          className="underline font-semibold hover:text-[#84A98C] ml-1 transition-colors cursor-pointer text-[#84A98C]"
         >
           Try Two Sum Free →
         </button>
@@ -361,14 +361,15 @@ export const LandingPage: React.FC = () => {
               >
                 System Design
               </a>
-              <a
-                href="#problem-catalog"
-                className={`px-3 py-1.5 rounded-full transition-all ${
+              <button
+                id="landing-nav-ledger"
+                onClick={() => setActiveView('dashboard')}
+                className={`px-3 py-1.5 rounded-full transition-all cursor-pointer ${
                   isDarkMode ? 'hover:text-white hover:bg-white/[0.06]' : 'hover:text-[#1D1D1F] hover:bg-black/[0.04]'
                 }`}
               >
                 Problem Ledger
-              </a>
+              </button>
             </nav>
           </div>
 
@@ -443,8 +444,8 @@ export const LandingPage: React.FC = () => {
                   onClick={() => openAuth('register')}
                   className={`hidden sm:inline-flex px-3.5 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
                     isDarkMode 
-                      ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500/30' 
-                      : 'bg-blue-50 text-[#0071E3] border border-blue-200/80 hover:bg-blue-100/80'
+                      ? 'bg-[#84A98C]/20 text-[#84A98C] border border-[#84A98C]/40 hover:bg-[#84A98C]/30' 
+                      : 'bg-[#CAD2C5]/30 text-[#52796F] border border-[#CAD2C5] hover:bg-[#CAD2C5]/50'
                   }`}
                 >
                   Register
@@ -453,11 +454,12 @@ export const LandingPage: React.FC = () => {
             )}
 
             <button
+              id="landing-start-free-btn"
               onClick={() => {
                 setActiveProblem('algo-1');
                 setActiveView('algo_workspace');
               }}
-              className="inline-flex items-center justify-center px-4 py-1.5 text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0077ED] rounded-full transition-all duration-200 shadow-[0_2px_8px_rgba(0,113,227,0.25)] active:scale-[0.97]"
+              className="inline-flex items-center justify-center px-4 py-1.5 text-xs font-bold text-[#2F3E46] hover:text-white bg-[#84A98C] hover:bg-[#52796F] rounded-full transition-all duration-200 shadow-[0_2px_8px_rgba(132,169,140,0.3)] active:scale-[0.97] cursor-pointer"
             >
               Start Free
             </button>
@@ -474,8 +476,8 @@ export const LandingPage: React.FC = () => {
           className="absolute top-4 left-1/2 -translate-x-1/2 w-[980px] h-[460px] blur-3xl -z-10 pointer-events-none rounded-full transition-colors duration-500"
           style={{
             background: isDarkMode
-              ? 'radial-gradient(ellipse at center, rgba(0, 113, 227, 0.18), rgba(52, 199, 89, 0.08), transparent 70%)'
-              : 'radial-gradient(ellipse at center, rgba(0, 113, 227, 0.12), rgba(186, 230, 253, 0.3), transparent 70%)'
+              ? 'radial-gradient(ellipse at center, rgba(132, 169, 140, 0.2), rgba(82, 121, 111, 0.1), transparent 70%)'
+              : 'radial-gradient(ellipse at center, rgba(132, 169, 140, 0.15), rgba(202, 210, 197, 0.4), transparent 70%)'
           }}
         />
 
@@ -485,23 +487,23 @@ export const LandingPage: React.FC = () => {
             onClick={() => handleStartProblem('algo-1', 'algorithm')}
             className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border shadow-xs transition-all duration-300 mb-4 group cursor-pointer ${
               isDarkMode 
-                ? 'bg-[#141722] border-white/10 hover:border-blue-500/50' 
-                : 'bg-white border-black/[0.08] hover:border-[#0071E3]/40'
+                ? 'bg-[#2F3E46] border-[#52796F]/50 hover:border-[#84A98C]' 
+                : 'bg-white border-[#CAD2C5]/80 hover:border-[#84A98C]'
             }`}
           >
-            <span className="flex h-2 w-2 rounded-full bg-[#0071E3] ring-4 ring-blue-500/20 group-hover:scale-110 transition-transform" />
-            <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-neutral-200' : 'text-[#1D1D1F]'}`}>
+            <span className="flex h-2 w-2 rounded-full bg-[#84A98C] ring-4 ring-[#84A98C]/20 group-hover:scale-110 transition-transform" />
+            <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#2F3E46]'}`}>
               Built for Staff &amp; Senior Engineering Interviews
             </span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#86868B] group-hover:text-[#0071E3] transition-transform duration-300 group-hover:translate-x-0.5" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#52796F] dark:text-[#CAD2C5]/70 group-hover:text-[#84A98C] transition-transform duration-300 group-hover:translate-x-0.5" />
           </div>
 
           {/* Compelling Value Proposition Headline */}
           <h1 className={`text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-[-0.035em] max-w-4xl leading-[1.08] mb-4 ${
-            isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+            isDarkMode ? 'text-white' : 'text-[#2F3E46]'
           }`}>
             Interview like an Architect.{' '}
-            <span className="text-[#0071E3] inline-block">
+            <span className="text-[#84A98C] inline-block">
               Solve in Pure Logic.
             </span>
             <br />
@@ -510,22 +512,22 @@ export const LandingPage: React.FC = () => {
 
           {/* Subtitle Selling the Product */}
           <p className={`text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mb-5 font-normal tracking-tight ${
-            isDarkMode ? 'text-neutral-300' : 'text-[#6E6E73]'
+            isDarkMode ? 'text-[#CAD2C5]/80' : 'text-[#52796F]'
           }`}>
             Stop failing technical interviews because of missing semicolons or off-by-one errors. Englo turns your algorithmic invariants into verified execution proofs, Big-O benchmarks, and distributed blueprints.
           </p>
 
           {/* Interactive Invariant Prompt Starters */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-5 max-w-2xl">
-            <span className="text-[11px] font-mono text-[#86868B] uppercase tracking-wider mr-1">
+            <span className="text-[11px] font-mono text-[#52796F] dark:text-[#CAD2C5]/70 uppercase tracking-wider mr-1">
               Select Logic:
             </span>
             <button
               onClick={() => handleStartProblem('algo-1', 'algorithm')}
               className={`text-xs px-3 py-1 rounded-full border shadow-xs font-semibold transition-all ${
                 isDarkMode 
-                  ? 'bg-[#12141D] border-white/10 text-neutral-300 hover:border-blue-500 hover:text-white' 
-                  : 'bg-white border-black/[0.08] text-[#1D1D1F] hover:border-[#0071E3] hover:text-[#0071E3]'
+                  ? 'bg-[#2F3E46] border-[#52796F]/40 text-[#CAD2C5] hover:border-[#84A98C] hover:text-white' 
+                  : 'bg-white border-[#CAD2C5]/80 text-[#2F3E46] hover:border-[#84A98C] hover:text-[#52796F]'
               }`}
             >
               "Two Sum with O(1) hash lookup"
@@ -534,8 +536,8 @@ export const LandingPage: React.FC = () => {
               onClick={() => handleStartProblem('algo-2', 'algorithm')}
               className={`text-xs px-3 py-1 rounded-full border shadow-xs font-semibold transition-all ${
                 isDarkMode 
-                  ? 'bg-[#12141D] border-white/10 text-neutral-300 hover:border-blue-500 hover:text-white' 
-                  : 'bg-white border-black/[0.08] text-[#1D1D1F] hover:border-[#0071E3] hover:text-[#0071E3]'
+                  ? 'bg-[#2F3E46] border-[#52796F]/40 text-[#CAD2C5] hover:border-[#84A98C] hover:text-white' 
+                  : 'bg-white border-[#CAD2C5]/80 text-[#2F3E46] hover:border-[#84A98C] hover:text-[#52796F]'
               }`}
             >
               "LRU Cache with O(1) eviction sentinels"
@@ -544,8 +546,8 @@ export const LandingPage: React.FC = () => {
               onClick={() => handleStartProblem('algo-3', 'algorithm')}
               className={`text-xs px-3 py-1 rounded-full border shadow-xs font-semibold transition-all ${
                 isDarkMode 
-                  ? 'bg-[#12141D] border-white/10 text-neutral-300 hover:border-blue-500 hover:text-white' 
-                  : 'bg-white border-black/[0.08] text-[#1D1D1F] hover:border-[#0071E3] hover:text-[#0071E3]'
+                  ? 'bg-[#2F3E46] border-[#52796F]/40 text-[#CAD2C5] hover:border-[#84A98C] hover:text-white' 
+                  : 'bg-white border-[#CAD2C5]/80 text-[#2F3E46] hover:border-[#84A98C] hover:text-[#52796F]'
               }`}
             >
               "Trapping Rain Water with two pointers"
@@ -555,24 +557,25 @@ export const LandingPage: React.FC = () => {
           {/* Main Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-3.5 mb-8">
             <button
-              onClick={() => handleStartProblem('algo-1', 'algorithm')}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold bg-[#0071E3] text-white hover:bg-[#0077ED] transition-all duration-300 shadow-[0_4px_16px_rgba(0,113,227,0.3)] hover:shadow-[0_6px_22px_rgba(0,113,227,0.4)] active:scale-[0.98] group"
+              id="hero-btn-explore-ledger"
+              onClick={() => setActiveView('dashboard')}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold bg-[#84A98C] text-[#2F3E46] hover:bg-[#52796F] hover:text-white transition-all duration-300 shadow-[0_4px_16px_rgba(132,169,140,0.3)] hover:shadow-[0_6px_22px_rgba(132,169,140,0.4)] active:scale-[0.98] group cursor-pointer"
             >
-              <Terminal className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              <span>Launch Daily Challenge: Two Sum</span>
+              <Workflow className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+              <span>Explore Problem Ledger</span>
             </button>
 
-            <a
-              href="#how-it-works"
-              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold border transition-all duration-300 active:scale-[0.98] ${
+            <button
+              onClick={() => handleStartProblem('algo-1', 'algorithm')}
+              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold border transition-all duration-300 active:scale-[0.98] cursor-pointer ${
                 isDarkMode 
-                  ? 'bg-[#141722] border-white/10 text-white hover:bg-white/10' 
-                  : 'bg-white border-neutral-200/90 text-[#1D1D1F] hover:bg-[#F5F5F7] shadow-xs'
+                  ? 'bg-[#2F3E46] border-[#52796F]/40 text-white hover:bg-[#354F52]' 
+                  : 'bg-white border-[#CAD2C5]/80 text-[#2F3E46] hover:bg-[#F4F6F4] shadow-xs'
               }`}
             >
-              <Workflow className="w-4 h-4 text-[#0071E3]" />
-              <span>See How It Compiles</span>
-            </a>
+              <Terminal className="w-4 h-4 text-[#52796F] dark:text-[#84A98C]" />
+              <span>Launch Daily Challenge: Two Sum</span>
+            </button>
           </div>
 
           {/* Continuous Flowing 3D Hero Asset — Journeys through all 5 sections as user scrolls */}
@@ -591,7 +594,7 @@ export const LandingPage: React.FC = () => {
               <span><strong className={isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}>100% Invariant Verification:</strong> Edge cases proved mathematically</span>
             </div>
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-[#0071E3]" />
+              <Activity className="w-4 h-4 text-[#84A98C]" />
               <span><strong className={isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}>Big-O Guarantees:</strong> Time &amp; space validated automatically</span>
             </div>
             <div className="flex items-center gap-2">
@@ -612,16 +615,16 @@ export const LandingPage: React.FC = () => {
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 gap-6 border-b border-black/[0.06] dark:border-white/[0.06] mb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 gap-6 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 mb-10">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#0071E3] font-bold">
+              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#52796F] dark:text-[#84A98C] font-bold">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>The Core Advantage</span>
               </div>
-              <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+              <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                 The Cost of Syntax vs. The Freedom of Logic
               </h2>
-              <p className={`text-sm max-w-xl ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+              <p className={`text-sm max-w-xl ${isDarkMode ? 'text-[#CAD2C5]/70' : 'text-[#52796F]'}`}>
                 Traditional platforms penalize you for memory slips. Englo parses paragraphs, bullet points, or stepped prose to verify your invariant logic with zero formatting friction.
               </p>
             </div>
@@ -629,7 +632,7 @@ export const LandingPage: React.FC = () => {
             {/* Problem Tab Switcher & Run Simulation */}
             <div className="flex items-center gap-3 flex-wrap">
               <div className={`flex items-center p-1 rounded-full border shadow-2xs ${
-                isDarkMode ? 'bg-[#181B26] border-white/10' : 'bg-white border-black/[0.06]'
+                isDarkMode ? 'bg-[#2F3E46] border-[#52796F]/40' : 'bg-white border-[#CAD2C5]/80'
               }`}>
                 {COMPARISON_PROBLEMS.map((comp, idx) => (
                   <button
@@ -641,8 +644,8 @@ export const LandingPage: React.FC = () => {
                     }}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                       selectedCompIndex === idx
-                        ? 'bg-[#0071E3] text-white shadow-xs'
-                        : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                        ? 'bg-[#84A98C] text-[#2F3E46] shadow-xs'
+                        : isDarkMode ? 'text-[#CAD2C5]/70 hover:text-white' : 'text-[#52796F] hover:text-[#2F3E46]'
                     }`}
                   >
                     {comp.id === 'two-sum' ? 'Two Sum (Array)' : 'LRU Cache (O(1))'}
@@ -654,9 +657,9 @@ export const LandingPage: React.FC = () => {
                 type="button"
                 onClick={handleRunSimulation}
                 disabled={isSimulating}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0077ED] active:scale-95 transition-all shadow-[0_2px_8px_rgba(0,113,227,0.25)] cursor-pointer disabled:opacity-70"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-[#2F3E46] hover:text-white bg-[#84A98C] hover:bg-[#52796F] active:scale-95 transition-all shadow-[0_2px_8px_rgba(132,169,140,0.3)] cursor-pointer disabled:opacity-70"
               >
-                <Play className="w-3.5 h-3.5 fill-white" />
+                <Play className="w-3.5 h-3.5 fill-current" />
                 <span>{isSimulating ? 'Testing Invariants...' : 'Run Simulation'}</span>
               </button>
             </div>
@@ -666,15 +669,15 @@ export const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
             {/* The Brittle Syntax Trap (Left) */}
             <div className={`lg:col-span-5 rounded-2xl border p-7 flex flex-col justify-between shadow-xs transition-all duration-300 ${
-              isDarkMode ? 'bg-[#121520] border-white/10' : 'bg-white border-black/[0.06]'
+              isDarkMode ? 'bg-[#2F3E46] border-[#52796F]/40' : 'bg-white border-[#CAD2C5]/60'
             }`}>
               <div>
-                <div className="flex items-center justify-between pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
+                <div className="flex items-center justify-between pb-5 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" />
                     <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
-                    <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-[#86868B] font-bold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#84A98C]" />
+                    <span className="ml-2 font-mono text-[11px] uppercase tracking-wider text-[#52796F] dark:text-[#CAD2C5]/70 font-bold">
                       Brittle Syntax Trap
                     </span>
                   </div>
@@ -689,9 +692,9 @@ export const LandingPage: React.FC = () => {
                     return (
                       <div 
                         key={idx} 
-                        className={isError ? 'bg-red-500/15 -mx-4 px-4 py-0.5 border-l-2 border-[#FF3B30] rounded-r font-bold text-[#FF3B30]' : isDarkMode ? 'text-neutral-300' : 'text-[#1D1D1F]'}
+                        className={isError ? 'bg-red-500/15 -mx-4 px-4 py-0.5 border-l-2 border-[#FF3B30] rounded-r font-bold text-[#FF3B30]' : isDarkMode ? 'text-[#CAD2C5]' : 'text-[#2F3E46]'}
                       >
-                        <span className={`inline-block w-6 ${isError ? 'text-[#FF3B30] font-bold' : 'text-neutral-500'}`}>
+                        <span className={`inline-block w-6 ${isError ? 'text-[#FF3B30] font-bold' : 'text-[#52796F]'}`}>
                           {idx + 1}
                         </span>
                         <span>{line}</span>
@@ -706,14 +709,14 @@ export const LandingPage: React.FC = () => {
                     <div className="font-bold text-[#FF3B30] mb-0.5">
                       {activeComp.traditionalSnippet.bugTitle}
                     </div>
-                    <p className={`leading-relaxed text-[11px] ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+                    <p className={`leading-relaxed text-[11px] ${isDarkMode ? 'text-[#CAD2C5]/70' : 'text-[#52796F]'}`}>
                       {activeComp.traditionalSnippet.bugExplanation}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-5 mt-6 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-xs font-mono text-[#86868B]">
+              <div className="pt-5 mt-6 border-t border-[#CAD2C5]/40 dark:border-[#52796F]/30 flex items-center justify-between text-xs font-mono text-[#52796F] dark:text-[#CAD2C5]/70">
                 <span>Interview Outcome:</span>
                 <span className="text-[#FF3B30] font-bold">Failed on syntax minutiae</span>
               </div>
@@ -723,39 +726,39 @@ export const LandingPage: React.FC = () => {
             <div className="lg:col-span-2 flex flex-col items-center justify-center py-6 gap-3 text-center">
               <div 
                 onClick={handleRunSimulation}
-                className={`w-12 h-12 rounded-full border flex items-center justify-center text-[#0071E3] shadow-xs hover:scale-110 hover:shadow-[0_0_20px_rgba(0,113,227,0.3)] transition-all duration-300 cursor-pointer ${
-                  isDarkMode ? 'bg-[#181B26] border-white/10' : 'bg-white border-black/[0.08]'
+                className={`w-12 h-12 rounded-full border flex items-center justify-center text-[#52796F] dark:text-[#84A98C] shadow-xs hover:scale-110 hover:shadow-[0_0_20px_rgba(132,169,140,0.3)] transition-all duration-300 cursor-pointer ${
+                  isDarkMode ? 'bg-[#2F3E46] border-[#52796F]/40' : 'bg-white border-[#CAD2C5]/80'
                 }`}
               >
                 <Cpu className={`w-5 h-5 ${isSimulating ? 'animate-spin' : ''}`} />
               </div>
-              <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+              <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                 Englo Logic Engine
               </span>
-              <span className={`text-xs max-w-[150px] leading-normal font-medium ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+              <span className={`text-xs max-w-[150px] leading-normal font-medium ${isDarkMode ? 'text-[#CAD2C5]/70' : 'text-[#52796F]'}`}>
                 Verifies loop bounds &amp; invariants automatically
               </span>
             </div>
 
             {/* The Englo Way (Right) */}
-            <div className={`lg:col-span-5 rounded-2xl border border-[#0071E3]/40 p-7 flex flex-col justify-between shadow-[0_8px_30px_rgba(0,113,227,0.1)] relative overflow-hidden ring-1 ring-[#0071E3]/20 ${
-              isDarkMode ? 'bg-[#121520]' : 'bg-white'
+            <div className={`lg:col-span-5 rounded-2xl border border-[#84A98C]/50 p-7 flex flex-col justify-between shadow-[0_8px_30px_rgba(132,169,140,0.12)] relative overflow-hidden ring-1 ring-[#84A98C]/30 ${
+              isDarkMode ? 'bg-[#2F3E46]' : 'bg-white'
             }`}>
               <div className="space-y-5">
-                <div className="flex items-center justify-between pb-5 border-b border-black/[0.06] dark:border-white/[0.06]">
+                <div className="flex items-center justify-between pb-5 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#0071E3] animate-pulse" />
-                    <span className="font-mono text-[11px] uppercase tracking-wider text-[#0071E3] font-bold">
+                    <span className="w-2 h-2 rounded-full bg-[#84A98C] animate-pulse" />
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-[#52796F] dark:text-[#84A98C] font-bold">
                       The Englo Way / Any Format Accepted
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full font-medium ${
-                      isDarkMode ? 'bg-white/10 text-neutral-300' : 'bg-neutral-100 text-[#6E6E73]'
+                      isDarkMode ? 'bg-[#1E272C] text-[#CAD2C5]' : 'bg-[#F4F6F4] text-[#52796F]'
                     }`}>
                       Invariants {currentStep} of 4
                     </span>
-                    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-[#0071E3] font-bold">
+                    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full border border-[#84A98C]/40 bg-[#84A98C]/15 text-[#52796F] dark:text-[#84A98C] font-bold">
                       Format-Agnostic
                     </span>
                   </div>
@@ -771,24 +774,24 @@ export const LandingPage: React.FC = () => {
                         onClick={() => setCurrentStep(stepItem.id)}
                         className={`cursor-pointer p-3 rounded-xl border flex items-start gap-3 transition-all duration-200 ${
                           isActive
-                            ? 'border-[#0071E3] bg-blue-500/10 shadow-xs'
+                            ? 'border-[#84A98C] bg-[#84A98C]/15 shadow-xs'
                             : isDarkMode 
-                              ? 'border-white/[0.06] bg-[#161926] hover:border-blue-500/40' 
-                              : 'border-neutral-200/70 bg-[#FBFBFD] hover:border-[#0071E3]/50'
+                              ? 'border-[#52796F]/30 bg-[#1E272C] hover:border-[#84A98C]/50' 
+                              : 'border-[#CAD2C5]/60 bg-[#F4F6F4] hover:border-[#84A98C]/50'
                         }`}
                       >
-                        <span className="text-[#0071E3] font-mono font-bold text-[11px] pt-0.5">
+                        <span className="text-[#52796F] dark:text-[#84A98C] font-mono font-bold text-[11px] pt-0.5">
                           0{stepItem.id}
                         </span>
                         <div className="flex-1">
-                          <div className={`font-semibold leading-snug ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+                          <div className={`font-semibold leading-snug ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                             {stepItem.step}
                           </div>
-                          <div className="font-mono text-[10px] text-[#86868B] mt-0.5">
+                          <div className="font-mono text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70 mt-0.5">
                             {stepItem.benefit}
                           </div>
                         </div>
-                        <CheckCircle2 className={`w-4 h-4 text-[#0071E3] transition-opacity ${isPassed ? 'opacity-100' : 'opacity-0'}`} />
+                        <CheckCircle2 className={`w-4 h-4 text-[#84A98C] transition-opacity ${isPassed ? 'opacity-100' : 'opacity-0'}`} />
                       </div>
                     );
                   })}
@@ -796,10 +799,10 @@ export const LandingPage: React.FC = () => {
 
                 <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 font-sans text-xs shadow-xs relative overflow-hidden">
                   <div 
-                    className="absolute top-0 left-0 h-[3px] bg-[#34C759] transition-all duration-500" 
+                    className="absolute top-0 left-0 h-[3px] bg-[#84A98C] transition-all duration-500" 
                     style={{ width: `${simProgress}%` }}
                   />
-                  <div className="flex items-center justify-between text-[#34C759] font-bold mb-1.5 pt-0.5">
+                  <div className="flex items-center justify-between text-[#84A98C] font-bold mb-1.5 pt-0.5">
                     <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4" />
                       <span>ACCEPTED • {activeComp.verdict.tests}</span>
@@ -808,18 +811,18 @@ export const LandingPage: React.FC = () => {
                       {activeComp.verdict.percentile}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 text-[#86868B] font-mono text-[11px] pt-1.5 border-t border-emerald-500/20">
-                    <span>Time: <strong className={isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}>{activeComp.verdict.time}</strong></span>
-                    <span>Space: <strong className={isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}>{activeComp.verdict.space}</strong></span>
+                  <div className="flex items-center gap-4 text-[#52796F] dark:text-[#CAD2C5]/70 font-mono text-[11px] pt-1.5 border-t border-emerald-500/20">
+                    <span>Time: <strong className={isDarkMode ? 'text-white' : 'text-[#2F3E46]'}>{activeComp.verdict.time}</strong></span>
+                    <span>Space: <strong className={isDarkMode ? 'text-white' : 'text-[#2F3E46]'}>{activeComp.verdict.space}</strong></span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-5 mt-6 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between text-xs font-mono text-[#86868B]">
+              <div className="pt-5 mt-6 border-t border-[#CAD2C5]/40 dark:border-[#52796F]/30 flex items-center justify-between text-xs font-mono text-[#52796F] dark:text-[#CAD2C5]/70">
                 <span>Interview Outcome:</span>
-                <span className="text-[#0071E3] font-bold flex items-center gap-1">
+                <span className="text-[#52796F] dark:text-[#84A98C] font-bold flex items-center gap-1">
                   Passed with Senior Staff Feedback
-                  <Check className="w-3.5 h-3.5 text-[#0071E3]" />
+                  <Check className="w-3.5 h-3.5 text-[#84A98C]" />
                 </span>
               </div>
             </div>
@@ -839,7 +842,7 @@ export const LandingPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Product Value Narrative */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-500/10 border border-blue-500/30 text-[#0071E3]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#84A98C]/10 border border-[#84A98C]/30 text-[#52796F] dark:text-[#84A98C]">
               <Cpu className="w-3.5 h-3.5" />
               <span>THE ENGLO ADVANTAGE</span>
             </div>
@@ -854,7 +857,7 @@ export const LandingPage: React.FC = () => {
 
             <div className="space-y-4 pt-2">
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-blue-500/10 text-[#0071E3] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-[#84A98C]/10 text-[#52796F] dark:text-[#84A98C] flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5 font-bold" />
                 </div>
                 <div>
@@ -868,7 +871,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-500/10 text-[#34C759] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-emerald-500/10 text-[#84A98C] flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5 font-bold" />
                 </div>
                 <div>
@@ -882,7 +885,7 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-purple-500/10 text-[#AF00DB] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-[#52796F]/10 text-[#52796F] dark:text-[#84A98C] flex items-center justify-center shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5 font-bold" />
                 </div>
                 <div>
@@ -899,7 +902,7 @@ export const LandingPage: React.FC = () => {
             <div className="pt-2">
               <button
                 onClick={() => handleStartProblem('algo-1', 'algorithm')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0077ED] transition-all shadow-sm active:scale-95"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-[#84A98C] hover:bg-[#52796F] transition-all shadow-sm active:scale-95 cursor-pointer"
               >
                 <span>Try an Interactive Problem</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -919,8 +922,8 @@ export const LandingPage: React.FC = () => {
           ========================================================================= */}
       <section id="architecture" className={`py-24 border-t transition-colors duration-500 ${
         isDarkMode 
-          ? 'bg-[#0B0D13] border-white/[0.06]' 
-          : 'bg-[#F2F5FA] border-black/[0.06]'
+          ? 'bg-[#1E272C] border-white/[0.06]' 
+          : 'bg-[#EBF0EB] border-black/[0.06]'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -931,64 +934,64 @@ export const LandingPage: React.FC = () => {
 
             {/* Right Column: Distributed System Value Proposition */}
             <div className="lg:col-span-6 space-y-6 order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 border border-emerald-500/30 text-[#34C759]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#84A98C]/15 border border-[#84A98C]/30 text-[#52796F] dark:text-[#84A98C]">
                 <Network className="w-3.5 h-3.5" />
                 <span>DISTRIBUTED ARCHITECTURE STUDIO</span>
               </div>
 
-              <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+              <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                 Master L5 / L6 System Design with Visual Proof
               </h2>
 
-              <p className={`text-sm sm:text-base leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-[#6E6E73]'}`}>
+              <p className={`text-sm sm:text-base leading-relaxed ${isDarkMode ? 'text-neutral-300' : 'text-[#52796F]'}`}>
                 Senior engineering interviews test distributed topology. Model real cloud systems on an interactive canvas with instant capacity sizing, failover scenarios, and throughput analysis.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <div className={`p-4 rounded-2xl border transition-all ${
-                  isDarkMode ? 'bg-[#141722] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
+                  isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
                 }`}>
-                  <div className="text-xs font-bold text-[#0071E3] flex items-center gap-1.5 mb-1">
+                  <div className="text-xs font-bold text-[#84A98C] flex items-center gap-1.5 mb-1">
                     <Globe className="w-4 h-4" />
                     <span>Global CDN &amp; Ingress</span>
                   </div>
-                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}`}>
                     Simulate edge caching, DDoS absorption, and TLS termination before traffic hits microservices.
                   </p>
                 </div>
 
                 <div className={`p-4 rounded-2xl border transition-all ${
-                  isDarkMode ? 'bg-[#141722] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
+                  isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
                 }`}>
-                  <div className="text-xs font-bold text-[#FF9500] flex items-center gap-1.5 mb-1">
+                  <div className="text-xs font-bold text-[#D4A373] flex items-center gap-1.5 mb-1">
                     <Server className="w-4 h-4" />
                     <span>Rate Limiter &amp; Gateway</span>
                   </div>
-                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}`}>
                     Evaluate token bucket algorithms, Envoy routing, and circuit breakers under sudden traffic spikes.
                   </p>
                 </div>
 
                 <div className={`p-4 rounded-2xl border transition-all ${
-                  isDarkMode ? 'bg-[#141722] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
+                  isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
                 }`}>
-                  <div className="text-xs font-bold text-[#34C759] flex items-center gap-1.5 mb-1">
+                  <div className="text-xs font-bold text-[#84A98C] flex items-center gap-1.5 mb-1">
                     <Zap className="w-4 h-4" />
                     <span>Distributed Cache Tier</span>
                   </div>
-                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}`}>
                     Test Redis cluster replication, cache stampede prevention, and sub-millisecond retrieval.
                   </p>
                 </div>
 
                 <div className={`p-4 rounded-2xl border transition-all ${
-                  isDarkMode ? 'bg-[#141722] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
+                  isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.06] shadow-xs'
                 }`}>
-                  <div className="text-xs font-bold text-[#AF00DB] flex items-center gap-1.5 mb-1">
+                  <div className="text-xs font-bold text-[#52796F] dark:text-[#84A98C] flex items-center gap-1.5 mb-1">
                     <Database className="w-4 h-4" />
                     <span>Sharded Storage &amp; WAL</span>
                   </div>
-                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+                  <p className={`text-[11px] leading-relaxed ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}`}>
                     Calculate database IOPS, partition keys, read replicas, and write-ahead log persistence guarantees.
                   </p>
                 </div>
@@ -997,7 +1000,7 @@ export const LandingPage: React.FC = () => {
               <div className="pt-2">
                 <button
                   onClick={() => handleStartProblem('sys-1', 'system_design')}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0077ED] transition-all shadow-sm active:scale-95"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold text-white bg-[#84A98C] hover:bg-[#52796F] transition-all shadow-sm active:scale-95 cursor-pointer"
                 >
                   <span>Launch System Design Sandbox: URL Shortener</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -1012,15 +1015,15 @@ export const LandingPage: React.FC = () => {
           7. PROBLEM LEDGER (Curated Benchmark Sets)
           ========================================================================= */}
       <section id="problem-catalog" className={`py-24 border-t transition-colors duration-500 ${
-        isDarkMode ? 'bg-[#090A0D] border-white/[0.06]' : 'bg-white border-black/[0.06]'
+        isDarkMode ? 'bg-[#1E272C] border-white/[0.06]' : 'bg-[#F4F6F4] border-black/[0.06]'
       }`}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between pb-8 gap-6 border-b border-black/[0.06] dark:border-white/[0.06] mb-10">
             <div className="space-y-1">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#0071E3] font-bold">
+              <span className="font-mono text-xs uppercase tracking-widest text-[#84A98C] font-bold">
                 Problem Ledger
               </span>
-              <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+              <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                 Curated Challenge Sets
               </h2>
             </div>
@@ -1028,34 +1031,34 @@ export const LandingPage: React.FC = () => {
             {/* Filter Pills */}
             <div className="flex items-center gap-2 flex-wrap">
               <div className={`flex items-center p-1 rounded-full border ${
-                isDarkMode ? 'bg-[#141722] border-white/10' : 'bg-[#F5F5F7] border-black/[0.06]'
+                isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.06]'
               }`}>
                 <button
                   onClick={() => setCatalogFilter('all')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
                     catalogFilter === 'all' 
-                      ? isDarkMode ? 'bg-[#222736] text-white' : 'bg-white text-[#1D1D1F] shadow-xs' 
-                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                      ? isDarkMode ? 'bg-[#354F52] text-white shadow-xs' : 'bg-[#EBF0EB] text-[#2F3E46] shadow-xs' 
+                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#52796F] hover:text-[#2F3E46]'
                   }`}
                 >
                   All ({PROBLEMS.length})
                 </button>
                 <button
                   onClick={() => setCatalogFilter('algorithm')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
                     catalogFilter === 'algorithm' 
-                      ? isDarkMode ? 'bg-[#222736] text-white' : 'bg-white text-[#1D1D1F] shadow-xs' 
-                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                      ? isDarkMode ? 'bg-[#354F52] text-white shadow-xs' : 'bg-[#EBF0EB] text-[#2F3E46] shadow-xs' 
+                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#52796F] hover:text-[#2F3E46]'
                   }`}
                 >
                   Algorithms
                 </button>
                 <button
                   onClick={() => setCatalogFilter('system_design')}
-                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-full transition-all cursor-pointer ${
                     catalogFilter === 'system_design' 
-                      ? isDarkMode ? 'bg-[#222736] text-white' : 'bg-white text-[#1D1D1F] shadow-xs' 
-                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                      ? isDarkMode ? 'bg-[#354F52] text-white shadow-xs' : 'bg-[#EBF0EB] text-[#2F3E46] shadow-xs' 
+                      : isDarkMode ? 'text-neutral-400 hover:text-white' : 'text-[#52796F] hover:text-[#2F3E46]'
                   }`}
                 >
                   System Design
@@ -1064,7 +1067,7 @@ export const LandingPage: React.FC = () => {
 
               <button
                 onClick={() => setActiveView('dashboard')}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0071E3] hover:text-[#0077ED] transition-colors ml-2"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#84A98C] hover:text-[#52796F] transition-colors ml-2 cursor-pointer"
               >
                 <span>Full Ledger (24+)</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -1080,8 +1083,8 @@ export const LandingPage: React.FC = () => {
                 onClick={() => handleStartProblem(problem.id, problem.category)}
                 className={`p-6 rounded-2xl border flex flex-col justify-between gap-4 cursor-pointer transition-all duration-300 group ${
                   isDarkMode 
-                    ? 'bg-[#12141F] border-white/[0.08] hover:border-blue-500/50 hover:bg-[#151928]' 
-                    : 'bg-[#FBFBFD] border-black/[0.06] hover:bg-white hover:border-[#0071E3]/40 hover:shadow-sm'
+                    ? 'bg-[#2F3E46] border-white/[0.08] hover:border-[#84A98C]/50 hover:bg-[#354F52]' 
+                    : 'bg-white border-black/[0.06] hover:bg-[#EBF0EB] hover:border-[#84A98C]/40 hover:shadow-sm'
                 }`}
               >
                 <div className="space-y-2">
@@ -1089,29 +1092,29 @@ export const LandingPage: React.FC = () => {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         problem.difficulty === 'Easy'
-                          ? 'bg-emerald-500/10 text-[#34C759] border border-emerald-500/30'
+                          ? 'bg-emerald-500/10 text-[#84A98C] border border-emerald-500/30'
                           : problem.difficulty === 'Medium'
-                          ? 'bg-amber-500/10 text-[#FF9500] border border-amber-500/30'
-                          : 'bg-red-500/10 text-[#FF3B30] border border-red-500/30'
+                          ? 'bg-amber-500/10 text-[#D4A373] border border-amber-500/30'
+                          : 'bg-red-500/10 text-[#E07A5F] border border-red-500/30'
                       }`}
                     >
                       {problem.difficulty}
                     </span>
-                    <span className="font-mono text-[11px] text-[#86868B]">
+                    <span className="font-mono text-[11px] text-[#84A98C] dark:text-[#CAD2C5]">
                       {problem.category === 'algorithm' ? 'Algo-English' : 'System Design'}
                     </span>
                   </div>
 
-                  <h3 className={`text-base font-bold transition-colors line-clamp-1 group-hover:text-[#0071E3] ${
-                    isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+                  <h3 className={`text-base font-bold transition-colors line-clamp-1 group-hover:text-[#84A98C] ${
+                    isDarkMode ? 'text-white' : 'text-[#2F3E46]'
                   }`}>
                     {problem.title}
                   </h3>
 
                   <p className={`text-xs line-clamp-2 leading-relaxed font-normal ${
-                    isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'
+                    isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'
                   }`}>
-                    {problem.description}
+                    {problem.description.replace(/###.*?\n/g, '').replace(/```[\s\S]*?```/g, '').replace(/\*\*/g, '').replace(/`/g, '').replace(/\$O\((.*?)\)\$/g, 'O($1)')}
                   </p>
                 </div>
 
@@ -1121,7 +1124,7 @@ export const LandingPage: React.FC = () => {
                       <span
                         key={tag}
                         className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
-                          isDarkMode ? 'bg-white/5 text-neutral-400' : 'bg-neutral-100 text-[#6E6E73]'
+                          isDarkMode ? 'bg-white/5 text-[#CAD2C5]' : 'bg-neutral-100 text-[#52796F]'
                         }`}
                       >
                         {tag}
@@ -1129,7 +1132,7 @@ export const LandingPage: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="inline-flex items-center gap-1 font-bold text-[#0071E3] text-xs group-hover:translate-x-0.5 transition-transform">
+                  <div className="inline-flex items-center gap-1 font-bold text-[#84A98C] text-xs group-hover:translate-x-0.5 transition-transform">
                     <span>Solve</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
@@ -1144,21 +1147,21 @@ export const LandingPage: React.FC = () => {
           8. PRODUCT CALL TO ACTION & FOOTER
           ========================================================================= */}
       <footer className={`py-24 border-t transition-colors duration-500 relative overflow-hidden text-center ${
-        isDarkMode ? 'bg-[#07080B] border-white/[0.06]' : 'bg-[#F5F5F7] border-black/[0.06]'
+        isDarkMode ? 'bg-[#182024] border-white/[0.06]' : 'bg-[#F4F6F4] border-black/[0.06]'
       }`}>
         <div className="max-w-4xl mx-auto px-6 space-y-6 relative z-10">
-          <div className="w-12 h-12 rounded-2xl bg-[#0071E3] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-[#84A98C] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#84A98C]/20">
             <Layers className="w-6 h-6" />
           </div>
 
           <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${
-            isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+            isDarkMode ? 'text-white' : 'text-[#2F3E46]'
           }`}>
             Master the Interview. Prove the Architecture.
           </h2>
 
           <p className={`text-sm sm:text-base max-w-xl mx-auto leading-relaxed ${
-            isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'
+            isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'
           }`}>
             Join hundreds of software engineers preparing for senior and staff loops with algorithmic clarity. No credit card required.
           </p>
@@ -1169,36 +1172,36 @@ export const LandingPage: React.FC = () => {
               value={heroEmail}
               onChange={(e) => setHeroEmail(e.target.value)}
               placeholder="Enter your engineer email..."
-              className={`flex-1 px-4 py-2.5 rounded-full border text-xs focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] shadow-xs ${
+              className={`flex-1 px-4 py-2.5 rounded-full border text-xs focus:outline-none focus:ring-2 focus:ring-[#84A98C]/25 focus:border-[#84A98C] shadow-xs ${
                 isDarkMode 
-                  ? 'bg-[#141722] border-white/10 text-white placeholder-neutral-500' 
-                  : 'bg-white border-neutral-200/90 text-[#1D1D1F]'
+                  ? 'bg-[#2F3E46] border-white/10 text-white placeholder-neutral-400' 
+                  : 'bg-white border-neutral-200/90 text-[#2F3E46]'
               }`}
             />
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer"
             >
               Get Started Free
             </button>
           </form>
 
-          <div className="pt-10 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between text-xs text-[#86868B] font-mono gap-3">
+          <div className="pt-10 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between text-xs text-[#84A98C] dark:text-[#CAD2C5] font-mono gap-3">
             <span>© 2026 Englo Studio · Algorithmic Reasoning in Pure Logic</span>
             <div className="flex items-center gap-4">
-              <button onClick={() => setActiveView('dashboard')} className="hover:text-white transition-colors">
+              <button onClick={() => setActiveView('dashboard')} className="hover:text-[#52796F] dark:hover:text-white transition-colors cursor-pointer">
                 Dashboard
               </button>
               <span>•</span>
-              <a href="#how-it-works" className="hover:text-white transition-colors">
+              <a href="#how-it-works" className="hover:text-[#52796F] dark:hover:text-white transition-colors">
                 How It Works
               </a>
               <span>•</span>
-              <a href="#architecture" className="hover:text-white transition-colors">
+              <a href="#architecture" className="hover:text-[#52796F] dark:hover:text-white transition-colors">
                 Architecture
               </a>
               <span>•</span>
-              <a href="#problem-catalog" className="hover:text-white transition-colors">
+              <a href="#problem-catalog" className="hover:text-[#52796F] dark:hover:text-white transition-colors">
                 Problems
               </a>
             </div>
@@ -1219,20 +1222,20 @@ export const LandingPage: React.FC = () => {
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className={`mb-3 w-80 rounded-2xl border p-5 shadow-[0_12px_40px_rgba(0,0,0,0.3)] font-sans space-y-4 backdrop-blur-xl ${
                 isDarkMode 
-                  ? 'bg-[#121520]/95 border-white/10 text-white' 
-                  : 'bg-white/95 border-black/[0.08] text-[#1D1D1F]'
+                  ? 'bg-[#2F3E46]/95 border-white/10 text-white' 
+                  : 'bg-white/95 border-black/[0.08] text-[#2F3E46]'
               }`}
             >
               <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.06]">
                 <div className="flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-[#0071E3]" />
+                  <Sliders className="w-4 h-4 text-[#84A98C]" />
                   <span className="text-xs font-bold uppercase tracking-wider">
                     Tweaks &amp; Dials
                   </span>
                 </div>
                 <button
                   onClick={() => setIsTweaksOpen(false)}
-                  className="w-6 h-6 rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.05] flex items-center justify-center text-[#86868B] transition-colors"
+                  className="w-6 h-6 rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.05] flex items-center justify-center text-[#CAD2C5] transition-colors cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -1240,15 +1243,15 @@ export const LandingPage: React.FC = () => {
 
               {/* Theme Toggle Dial */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-mono font-bold text-[#86868B] uppercase">
+                <label className="text-[11px] font-mono font-bold text-[#84A98C] dark:text-[#CAD2C5] uppercase">
                   Theme Appearance
                 </label>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     onClick={() => isDarkMode && toggleDarkMode()}
-                    className={`py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    className={`py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                       !isDarkMode
-                        ? 'border-[#0071E3] bg-blue-50 text-[#0071E3]'
+                        ? 'border-[#84A98C] bg-[#84A98C]/15 text-[#52796F]'
                         : 'border-white/10 text-neutral-400 hover:bg-white/5'
                     }`}
                   >
@@ -1257,10 +1260,10 @@ export const LandingPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => !isDarkMode && toggleDarkMode()}
-                    className={`py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    className={`py-1.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                       isDarkMode
-                        ? 'border-[#0071E3] bg-blue-500/20 text-blue-400'
-                        : 'border-black/[0.06] text-[#6E6E73] hover:bg-neutral-50'
+                        ? 'border-[#84A98C] bg-[#84A98C]/20 text-[#84A98C]'
+                        : 'border-black/[0.06] text-[#52796F] hover:bg-neutral-50'
                     }`}
                   >
                     <Moon className="w-3.5 h-3.5" />
@@ -1271,57 +1274,57 @@ export const LandingPage: React.FC = () => {
 
               {/* Accent Color Dial */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-mono font-bold text-[#86868B] uppercase">
+                <label className="text-[11px] font-mono font-bold text-[#84A98C] dark:text-[#CAD2C5] uppercase">
                   Accent Color
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
                   <button
                     onClick={() => setAccentTheme('blue')}
-                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                       accentTheme === 'blue'
-                        ? 'border-[#0071E3] bg-blue-500/20 text-[#0071E3] dark:text-blue-400'
+                        ? 'border-[#84A98C] bg-[#84A98C]/20 text-[#52796F] dark:text-[#84A98C]'
                         : 'border-black/[0.06] dark:border-white/10 text-neutral-400'
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-[#0071E3]" />
-                    <span>Blue</span>
+                    <span className="w-2 h-2 rounded-full bg-[#84A98C]" />
+                    <span>Sage</span>
                   </button>
                   <button
                     onClick={() => setAccentTheme('emerald')}
-                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                       accentTheme === 'emerald'
-                        ? 'border-[#10B981] bg-emerald-500/20 text-[#10B981]'
+                        ? 'border-[#52796F] bg-[#52796F]/20 text-[#52796F] dark:text-[#CAD2C5]'
                         : 'border-black/[0.06] dark:border-white/10 text-neutral-400'
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-[#10B981]" />
-                    <span>Emerald</span>
+                    <span className="w-2 h-2 rounded-full bg-[#52796F]" />
+                    <span>Forest</span>
                   </button>
                   <button
                     onClick={() => setAccentTheme('graphite')}
-                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                    className={`py-1 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                       accentTheme === 'graphite'
-                        ? 'border-neutral-500 bg-neutral-500/20 text-white'
+                        ? 'border-[#354F52] bg-[#354F52]/20 text-[#354F52] dark:text-white'
                         : 'border-black/[0.06] dark:border-white/10 text-neutral-400'
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-neutral-400" />
-                    <span>Graphite</span>
+                    <span className="w-2 h-2 rounded-full bg-[#354F52]" />
+                    <span>Spruce</span>
                   </button>
                 </div>
               </div>
 
               {/* Density Mode Dial */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-mono font-bold text-[#86868B] uppercase">
+                <label className="text-[11px] font-mono font-bold text-[#84A98C] dark:text-[#CAD2C5] uppercase">
                   Information Density
                 </label>
                 <div className="grid grid-cols-2 gap-1.5">
                   <button
                     onClick={() => setDensityMode('standard')}
-                    className={`py-1 px-2 rounded-lg text-xs font-bold border transition-all ${
+                    className={`py-1 px-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                       densityMode === 'standard'
-                        ? 'border-[#0071E3] bg-blue-500/20 text-[#0071E3] dark:text-blue-400'
+                        ? 'border-[#84A98C] bg-[#84A98C]/20 text-[#52796F] dark:text-[#84A98C]'
                         : 'border-black/[0.06] dark:border-white/10 text-neutral-400'
                     }`}
                   >
@@ -1329,9 +1332,9 @@ export const LandingPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDensityMode('compact')}
-                    className={`py-1 px-2 rounded-lg text-xs font-bold border transition-all ${
+                    className={`py-1 px-2 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                       densityMode === 'compact'
-                        ? 'border-[#0071E3] bg-blue-500/20 text-[#0071E3] dark:text-blue-400'
+                        ? 'border-[#84A98C] bg-[#84A98C]/20 text-[#52796F] dark:text-[#84A98C]'
                         : 'border-black/[0.06] dark:border-white/10 text-neutral-400'
                     }`}
                   >
@@ -1346,7 +1349,7 @@ export const LandingPage: React.FC = () => {
         {/* Floating Toggle Button */}
         <button
           onClick={() => setIsTweaksOpen(!isTweaksOpen)}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-bold shadow-[0_4px_16px_rgba(0,113,227,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-bold shadow-[0_4px_16px_rgba(132,169,140,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
         >
           <Sliders className="w-3.5 h-3.5" />
           <span>Tweaks</span>

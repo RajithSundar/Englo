@@ -63,13 +63,13 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
       id="workspace-split-container"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="flex-1 flex flex-col md:flex-row h-[calc(100vh-3.5rem)] w-full overflow-hidden relative bg-[#FBFBFD]"
+      className="flex-1 flex flex-col md:flex-row h-[calc(100vh-3.5rem)] w-full overflow-hidden relative bg-[#FBFBFD] dark:bg-[#090A0E]"
     >
       {/* Left Pane (Problem Description) */}
       <div
         id="workspace-left-pane"
         style={{ width: `${splitPercentage}%` }}
-        className="h-full flex-shrink-0 hidden md:flex flex-col border-r border-black/[0.06] bg-white overflow-hidden"
+        className="h-full flex-shrink-0 hidden md:flex flex-col border-r border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#0D1117] overflow-hidden"
       >
         {leftPane}
       </div>
@@ -94,8 +94,8 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         <div
           className={`w-[2px] h-full transition-colors ${
             isDragging
-              ? 'bg-[#0071E3]'
-              : 'bg-neutral-200 group-hover:bg-[#0071E3]/70'
+              ? 'bg-[#84A98C]'
+              : 'bg-neutral-200 dark:bg-white/10 group-hover:bg-[#84A98C]/70'
           }`}
         />
 
@@ -103,19 +103,19 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         <div
           className={`absolute w-3.5 h-7 rounded-full flex flex-col items-center justify-center gap-0.5 border shadow-2xs transition-all ${
             isDragging
-              ? 'bg-white border-[#0071E3] scale-110 shadow-sm'
-              : 'bg-white border-neutral-300 group-hover:border-[#0071E3]'
+              ? 'bg-white dark:bg-[#2F3E46] border-[#84A98C] scale-110 shadow-sm'
+              : 'bg-white dark:bg-[#2F3E46] border-neutral-300 dark:border-white/20 group-hover:border-[#84A98C]'
           }`}
         >
-          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#0071E3]" />
-          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#0071E3]" />
+          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#84A98C]" />
+          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#84A98C]" />
         </div>
       </div>
 
       {/* Right Pane (Interactive Workspace) */}
       <div
         id="workspace-right-pane"
-        className="flex-1 h-full min-w-0 flex flex-col bg-[#FBFBFD] overflow-hidden relative"
+        className="flex-1 h-full min-w-0 flex flex-col bg-[#F4F6F4] dark:bg-[#1E272C] overflow-hidden relative"
       >
         {rightPane}
       </div>

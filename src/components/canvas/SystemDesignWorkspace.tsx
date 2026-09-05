@@ -14,9 +14,10 @@ import {
   BackgroundVariant,
   useReactFlow
 } from '@xyflow/react';
-import { Lightbulb, RotateCcw, Play, Sparkles } from 'lucide-react';
+import { Lightbulb, RotateCcw, Play, Sparkles, Zap, Layers } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { Problem, SystemNodeData } from '../../types';
+import { audioService } from '../../services/audioService';
 import { SystemNode } from './SystemNode';
 import { NodePalette } from './NodePalette';
 import { NodeConfigPanel } from './NodeConfigPanel';
@@ -50,6 +51,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
   const { screenToFlowPosition } = useReactFlow();
 
   const [activeConsoleTab, setActiveConsoleTab] = useState<'scenarios' | 'metrics' | 'recommendations'>('scenarios');
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
 
   // Load problem nodes/edges or default
   const currentData = canvasData[problem.id] || {
@@ -85,7 +87,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
         {
           ...params,
           animated: true,
-          style: { stroke: '#0071E3', strokeWidth: 2 }
+          style: { stroke: '#84A98C', strokeWidth: 2 }
         },
         edges
       );
@@ -211,14 +213,72 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
     setSelectedNodeId(newNodeId);
   }, [selectedNode, nodes, edges, problem.id, setCanvasData, setSelectedNodeId]);
 
+  const handleChaosSurge = useCallback(() => {
+    audioService.playTap();
+    setConsoleExpanded(false);
+
+    // Simulate 10x traffic spike on current topology
+    // Find compute and storage nodes without sufficient capacity/redundancy
+    const nextNodes = nodes.map((node) => {
+      const d = node.data as unknown as SystemNodeData;
+      const isDb = d.category === 'storage';
+      const isCompute = d.category === 'compute';
+      const replicas = d.config?.replicas || 1;
+      const mode = d.config?.mode || '';
+
+      // Databases with Single Node or replicas < 2 fail under 100k spike
+      if (isDb && (replicas < 2 || mode === 'Single Node' || (!mode.includes('Replica') && !mode.includes('Sharded') && !mode.includes('Multi-AZ')))) {
+        return {
+          ...node,
+          data: {
+            ...d,
+            status: 'error' as const,
+            metrics: { rps: '98k req/s', latency: '1,420ms (SPOF OVERLOAD)' }
+          }
+        };
+      }
+
+      // Compute nodes with single replica under 10x traffic experience high bottleneck
+      if (isCompute && replicas < 3) {
+        return {
+          ...node,
+          data: {
+            ...d,
+            status: 'warning' as const,
+            metrics: { rps: '45k req/s', latency: '480ms (CPU Throttling)' }
+          }
+        };
+      }
+
+      // Resilient nodes
+      return {
+        ...node,
+        data: {
+          ...d,
+          status: 'healthy' as const,
+          metrics: { rps: '100k req/s', latency: '8ms (Resilient)' }
+        }
+      };
+    });
+
+    setCanvasData(problem.id, nextNodes, edges);
+
+    const hasFailure = nextNodes.some((n) => (n.data as any).status === 'error');
+    if (hasFailure) {
+      audioService.playAlert();
+    } else {
+      audioService.playSuccessChime();
+    }
+  }, [nodes, edges, problem.id, setCanvasData, setConsoleExpanded]);
+
   const currentEvaluation = archEvaluations[problem.id] || null;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#FBFBFD] relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#FBFBFD] dark:bg-[#090A0E] relative">
       {/* Middle: Palette + Canvas */}
       <div className="flex-1 flex min-h-0 relative overflow-hidden">
         {/* Node Palette Draggable Tray */}
-        <NodePalette onAddNode={handleAddNodeFromPalette} />
+        {isPaletteOpen && <NodePalette onAddNode={handleAddNodeFromPalette} />}
 
         {/* Canvas Area */}
         <div ref={reactFlowWrapper} className="flex-1 h-full relative">
@@ -236,36 +296,59 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
             snapToGrid={true}
             snapGrid={[16, 16]}
             fitView
-            fitViewOptions={{ padding: 0.2 }}
+            fitViewOptions={{ padding: 0.35, includeHiddenNodes: false }}
             defaultEdgeOptions={{
               animated: true,
-              style: { stroke: '#0071E3', strokeWidth: 2 }
+              style: { stroke: '#84A98C', strokeWidth: 2 }
             }}
           >
             <Background
               variant={BackgroundVariant.Dots}
               gap={16}
               size={1.5}
-              color="#E5E5EA"
+              color="#84A98C"
             />
-            <Controls className="!bg-white !border-neutral-200/90 !text-[#1D1D1F] !shadow-apple [&>button]:!border-neutral-200 [&>button]:!bg-white [&>button]:!fill-[#1D1D1F] [&>button:hover]:!bg-[#F5F5F7]" />
+            <Controls className="!bg-white dark:!bg-[#2F3E46] !border-[#CAD2C5]/80 dark:!border-[#52796F]/40 !text-[#2F3E46] dark:!text-white !shadow-apple [&>button]:!border-[#CAD2C5]/80 dark:[&>button]:!border-[#52796F]/40 [&>button]:!bg-white dark:[&>button]:!bg-[#2F3E46] [&>button]:!fill-[#2F3E46] dark:[&>button]:!fill-white [&>button:hover]:!bg-[#CAD2C5]/20 dark:[&>button:hover]:!bg-white/10" />
             <MiniMap
-              nodeColor={() => '#0071E3'}
-              maskColor="rgba(245, 245, 247, 0.7)"
-              className="!bg-white !border-neutral-200/90 !rounded-xl !shadow-apple"
+              nodeColor={() => '#84A98C'}
+              maskColor="rgba(47, 62, 70, 0.6)"
+              className="!pointer-events-none !bg-white dark:!bg-[#2F3E46] !border-[#CAD2C5]/80 dark:!border-[#52796F]/40 !rounded-xl !shadow-apple"
             />
           </ReactFlow>
 
           {/* Top Canvas Action Bar */}
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/90 backdrop-blur-md p-1.5 rounded-full border border-black/[0.06] shadow-apple">
+          <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/90 dark:bg-[#2F3E46]/90 backdrop-blur-md p-1.5 rounded-full border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-apple">
+            {/* Toggle Palette Button */}
+            <button
+              type="button"
+              id="btn-toggle-palette"
+              onClick={() => setIsPaletteOpen(!isPaletteOpen)}
+              className="px-2.5 py-1 rounded-full bg-[#F4F6F4] dark:bg-[#1E272C] hover:bg-[#CAD2C5]/30 dark:hover:bg-white/10 text-[#52796F] dark:text-[#CAD2C5] hover:text-[#2F3E46] dark:hover:text-white border border-[#CAD2C5]/80 dark:border-[#52796F]/40 text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              title={isPaletteOpen ? 'Hide Component Palette' : 'Show Component Palette'}
+            >
+              <Layers className="w-3.5 h-3.5 text-[#52796F] dark:text-[#84A98C]" />
+              <span>{isPaletteOpen ? 'Hide Palette' : 'Palette'}</span>
+            </button>
+            {/* Chaos Surge Button */}
+            <button
+              type="button"
+              onClick={handleChaosSurge}
+              className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-red-500 hover:from-amber-600 hover:to-red-600 text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer"
+              title="Stress test topology under 10x Black Friday / Flash Sale traffic surge"
+            >
+              <Zap className="w-3.5 h-3.5 fill-current" />
+              <span>Chaos Surge (10x)</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
+                audioService.playTap();
                 setConsoleExpanded(true);
                 runArchEvaluation(problem.id);
               }}
               disabled={isEvaluating}
-              className="px-3 py-1 rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs disabled:opacity-60"
+              className="px-3 py-1 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-[#2F3E46] hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs disabled:opacity-60 cursor-pointer"
               title="Run distributed system simulation"
             >
               {isEvaluating ? (
@@ -275,7 +358,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5 fill-white" />
+                  <Play className="w-3.5 h-3.5 fill-current" />
                   <span>Simulate Topology</span>
                 </>
               )}
@@ -289,7 +372,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
                     loadSolution(problem.id);
                   }
                 }}
-                className="px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-[#0071E3] border border-blue-200/70 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs"
+                className="px-3 py-1 rounded-full bg-[#CAD2C5]/30 dark:bg-[#354F52]/60 hover:bg-[#CAD2C5]/50 dark:hover:bg-[#354F52] text-[#52796F] dark:text-[#84A98C] border border-[#CAD2C5] dark:border-[#52796F]/50 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer"
                 title="Inspect the optimal reference system architecture"
               >
                 <Lightbulb className="w-3.5 h-3.5" />
@@ -304,7 +387,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
                   resetProblem(problem.id);
                 }
               }}
-              className="px-3 py-1 rounded-full bg-[#F5F5F7] hover:bg-neutral-200 text-[#6E6E73] hover:text-[#1D1D1F] border border-neutral-200/80 text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95"
+              className="px-3 py-1 rounded-full bg-[#F5F5F7] dark:bg-white/[0.06] hover:bg-neutral-200 dark:hover:bg-white/10 text-[#6E6E73] dark:text-neutral-300 hover:text-[#1D1D1F] dark:hover:text-white border border-neutral-200/80 dark:border-white/10 text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
               title="Reset canvas to starter state"
             >
               <RotateCcw className="w-3.5 h-3.5" />

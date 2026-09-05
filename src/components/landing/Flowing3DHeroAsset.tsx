@@ -277,11 +277,11 @@ export const Flowing3DHeroAsset: React.FC = () => {
             style={{ transformStyle: 'preserve-3d' }}
           >
             <div
-              className="absolute w-[480px] h-[480px] rounded-full border border-dashed border-[#0071E3]/40 animate-[spin_32s_linear_infinite]"
+              className="absolute w-[480px] h-[480px] rounded-full border border-dashed border-[#84A98C]/40 animate-[spin_32s_linear_infinite]"
               style={{ transform: 'rotateX(68deg) rotateY(18deg) translateZ(-40px)' }}
             />
             <div
-              className="absolute w-[560px] h-[560px] rounded-full border border-dashed border-[#34C759]/35 animate-[spin_44s_linear_infinite_reverse]"
+              className="absolute w-[560px] h-[560px] rounded-full border border-dashed border-[#52796F]/35 animate-[spin_44s_linear_infinite_reverse]"
               style={{ transform: 'rotateX(-52deg) rotateY(30deg) translateZ(-60px)' }}
             />
           </div>
@@ -291,18 +291,18 @@ export const Flowing3DHeroAsset: React.FC = () => {
             <div className="flex items-center gap-3">
               {/* macOS Window Dots */}
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#FF5F56] border border-black/10 inline-block" />
-                <span className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-black/10 inline-block" />
-                <span className="w-3 h-3 rounded-full bg-[#27C93F] border border-black/10 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-[#E07A5F] border border-black/10 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-[#D4A373] border border-black/10 inline-block" />
+                <span className="w-3 h-3 rounded-full bg-[#84A98C] border border-black/10 inline-block" />
               </div>
 
               <div className="flex items-center gap-2 pl-2">
-                <span className="flex h-2 w-2 rounded-full bg-[#0071E3] animate-pulse" />
-                <span className={`font-mono text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+                <span className="flex h-2 w-2 rounded-full bg-[#84A98C] animate-pulse" />
+                <span className={`font-mono text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                   {currentSnippet.title}
                 </span>
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
-                  isDarkMode ? 'bg-white/5 border-white/10 text-neutral-300' : 'bg-neutral-100 border-black/5 text-[#6E6E73]'
+                  isDarkMode ? 'bg-white/5 border-white/10 text-neutral-300' : 'bg-[#EBF0EB] border-[#CAD2C5] text-[#52796F]'
                 }`}>
                   {currentSnippet.technique}
                 </span>
@@ -311,7 +311,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
 
             {/* Algorithm Switcher Tabs */}
             <div className={`flex items-center p-0.5 rounded-full border ${
-              isDarkMode ? 'bg-white/5 border-white/10' : 'bg-neutral-100 border-black/5'
+              isDarkMode ? 'bg-white/5 border-white/10' : 'bg-[#EBF0EB] border-[#CAD2C5]'
             }`}>
               {SNIPPETS.map((snip, idx) => (
                 <button
@@ -325,7 +325,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                   }}
                   className={`px-3 py-1 text-[11px] font-mono font-semibold rounded-full transition-all cursor-pointer ${
                     snippetIndex === idx
-                      ? 'bg-[#0071E3] text-white shadow-xs'
+                      ? 'bg-[#84A98C] text-white shadow-xs'
                       : 'text-neutral-400 hover:text-white'
                   }`}
                 >
@@ -353,20 +353,20 @@ export const Flowing3DHeroAsset: React.FC = () => {
               return (
                 <div key={idx} className="flex items-start gap-2.5">
                   <span className={`text-[11px] pt-0.5 select-none font-bold ${
-                    isPastLine ? 'text-[#34C759]' : 'text-[#0071E3]'
+                    isPastLine ? 'text-[#84A98C]' : 'text-[#52796F]'
                   }`}>
                     0{idx + 1}
                   </span>
                   <div className="flex-1">
-                    <span className={isDarkMode ? 'text-neutral-100' : 'text-[#1D1D1F]'}>
+                    <span className={isDarkMode ? 'text-neutral-100' : 'text-[#2F3E46]'}>
                       {displayedText}
                     </span>
                     {isCurrentLine && (
-                      <span className="inline-block w-2 h-4 ml-0.5 bg-[#0071E3] animate-pulse align-middle" />
+                      <span className="inline-block w-2 h-4 ml-0.5 bg-[#84A98C] animate-pulse align-middle" />
                     )}
                   </div>
                   {isPastLine && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#34C759] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#84A98C] shrink-0 mt-0.5" />
                   )}
                 </div>
               );
@@ -380,22 +380,22 @@ export const Flowing3DHeroAsset: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-xl flex items-center justify-center shrink-0 border ${
                   isVerified 
-                    ? 'bg-emerald-500/15 border-emerald-500/30 text-[#34C759]' 
-                    : 'bg-blue-500/10 border-blue-500/20 text-[#0071E3]'
+                    ? 'bg-emerald-500/15 border-emerald-500/30 text-[#84A98C]' 
+                    : 'bg-[#84A98C]/15 border-[#84A98C]/25 text-[#52796F]'
                 }`}>
                   {isVerified ? <CheckCircle2 className="w-4 h-4" /> : <Cpu className="w-4 h-4 animate-spin" />}
                 </div>
 
                 <div className="text-left">
                   <div className={`text-xs font-bold flex items-center gap-1.5 ${
-                    isVerified ? 'text-[#34C759]' : isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+                    isVerified ? 'text-[#84A98C]' : isDarkMode ? 'text-white' : 'text-[#2F3E46]'
                   }`}>
                     <span>{isVerified ? 'INVARIANTS VERIFIED' : 'TESTING BOUNDS & INVARIANTS...'}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-blue-500/10 text-[#0071E3] font-bold">
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#84A98C]/15 text-[#52796F] font-bold">
                       {currentSnippet.complexity}
                     </span>
                   </div>
-                  <div className="text-[11px] font-mono text-[#86868B] mt-0.5">
+                  <div className="text-[11px] font-mono text-[#84A98C] dark:text-[#CAD2C5] mt-0.5">
                     Single-pass algorithmic proof • Zero syntax traps
                   </div>
                 </div>
@@ -410,7 +410,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                   }}
                   title={isPaused ? 'Resume Typewriter' : 'Pause Typewriter'}
                   className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
-                    isDarkMode ? 'border-white/10 hover:bg-white/10 text-neutral-300' : 'border-black/10 hover:bg-black/5 text-[#6E6E73]'
+                    isDarkMode ? 'border-white/10 hover:bg-white/10 text-neutral-300' : 'border-black/10 hover:bg-black/5 text-[#52796F]'
                   }`}
                 >
                   {isPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5" />}
@@ -422,7 +422,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                     setActiveProblem('algo-1');
                     setActiveView('algo_workspace');
                   }}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0077ED] transition-all shadow-xs cursor-pointer active:scale-95"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white bg-[#84A98C] hover:bg-[#52796F] transition-all shadow-xs cursor-pointer active:scale-95"
                 >
                   <span>Solve Challenge</span>
                   <ArrowRight className="w-3 h-3" />
@@ -459,14 +459,14 @@ export const Flowing3DHeroAsset: React.FC = () => {
               }}
               className={`pointer-events-auto w-[380px] rounded-2xl p-4 border shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-colors duration-300 ${
                 isDarkMode 
-                  ? 'bg-[#10131E]/95 border-white/15 text-white' 
-                  : 'bg-white/95 border-black/10 text-[#1D1D1F]'
+                  ? 'bg-[#2F3E46]/95 border-white/15 text-white' 
+                  : 'bg-white/95 border-black/10 text-[#2F3E46]'
               }`}
             >
               {/* Companion Header Pill */}
               <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#0071E3] text-white shadow-xs flex items-center gap-1.5">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#84A98C] text-white shadow-xs flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                     <span>3D Companion · {CHAPTER_NAMES[activeChapter]}</span>
                   </span>
@@ -476,7 +476,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                   <button
                     onClick={() => setIsExpanded(true)}
                     title="Expand 3D Asset"
-                    className="p-1 rounded-md text-[#86868B] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    className="p-1 rounded-md text-[#CAD2C5] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
@@ -485,25 +485,25 @@ export const Flowing3DHeroAsset: React.FC = () => {
 
               {/* Compact Typewriter Snippet Body */}
               <div className="py-3 font-mono text-[11px] leading-relaxed space-y-1.5 text-left">
-                <div className="flex items-center justify-between text-[#86868B] text-[10px]">
+                <div className="flex items-center justify-between text-[#84A98C] dark:text-[#CAD2C5] text-[10px]">
                   <span>Algorithmic Invariant:</span>
-                  <span className="text-[#0071E3] font-bold">{currentSnippet.title}</span>
+                  <span className="text-[#84A98C] font-bold">{currentSnippet.title}</span>
                 </div>
                 
                 <div className={`p-2.5 rounded-xl border ${
-                  isDarkMode ? 'bg-black/30 border-white/5' : 'bg-neutral-50 border-black/5'
+                  isDarkMode ? 'bg-black/30 border-white/5' : 'bg-[#F4F6F4] border-black/5'
                 }`}>
                   <div className="flex items-start gap-2">
-                    <span className="text-[#0071E3] font-bold select-none pt-0.5 text-[10px]">
+                    <span className="text-[#52796F] font-bold select-none pt-0.5 text-[10px]">
                       0{Math.min(lineIndex + 1, currentSnippet.lines.length)}
                     </span>
                     <div className="flex-1">
-                      <span className={isDarkMode ? 'text-neutral-200' : 'text-[#1D1D1F]'}>
+                      <span className={isDarkMode ? 'text-neutral-200' : 'text-[#2F3E46]'}>
                         {lineIndex < currentSnippet.lines.length
                           ? currentSnippet.lines[lineIndex].slice(0, charIndex)
                           : currentSnippet.lines[currentSnippet.lines.length - 1]}
                       </span>
-                      <span className="inline-block w-1.5 h-3 ml-0.5 bg-[#0071E3] animate-pulse align-middle" />
+                      <span className="inline-block w-1.5 h-3 ml-0.5 bg-[#84A98C] animate-pulse align-middle" />
                     </div>
                   </div>
                 </div>
@@ -511,7 +511,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
 
               {/* Compact Footer Status */}
               <div className="pt-2.5 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px]">
-                <div className="flex items-center gap-1.5 text-[#34C759] font-mono font-bold">
+                <div className="flex items-center gap-1.5 text-[#84A98C] font-mono font-bold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{currentSnippet.complexity}</span>
                 </div>
@@ -521,7 +521,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                     setActiveProblem('algo-1');
                     setActiveView('algo_workspace');
                   }}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0071E3] text-white text-[10px] font-bold hover:bg-[#0077ED] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#84A98C] text-white text-[10px] font-bold hover:bg-[#52796F] transition-colors cursor-pointer"
                 >
                   <span>Solve</span>
                   <ArrowRight className="w-3 h-3" />
@@ -546,7 +546,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
               exit={{ opacity: 0, scale: 0.92 }}
               transition={{ type: 'spring', stiffness: 300, damping: 28 }}
               className={`relative w-full max-w-3xl rounded-3xl p-6 sm:p-8 border shadow-2xl ${
-                isDarkMode ? 'bg-[#10131E] border-white/15 text-white' : 'bg-white border-black/10 text-[#1D1D1F]'
+                isDarkMode ? 'bg-[#2F3E46] border-white/15 text-white' : 'bg-white border-black/10 text-[#2F3E46]'
               }`}
             >
               {/* Close Button */}
@@ -560,12 +560,12 @@ export const Flowing3DHeroAsset: React.FC = () => {
               {/* Modal Header */}
               <div className="flex items-center gap-3 pb-5 border-b border-black/[0.06] dark:border-white/[0.08]">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#FF5F56]" />
-                  <span className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
-                  <span className="w-3 h-3 rounded-full bg-[#27C93F]" />
+                  <span className="w-3 h-3 rounded-full bg-[#E07A5F]" />
+                  <span className="w-3 h-3 rounded-full bg-[#D4A373]" />
+                  <span className="w-3 h-3 rounded-full bg-[#84A98C]" />
                 </div>
                 <span className="font-mono text-sm font-bold pl-2">{currentSnippet.title}</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-[#0071E3] font-bold">
+                <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#84A98C]/15 text-[#52796F] font-bold">
                   {currentSnippet.complexity}
                 </span>
               </div>
@@ -574,16 +574,16 @@ export const Flowing3DHeroAsset: React.FC = () => {
               <div className="py-6 space-y-3 font-mono text-sm leading-relaxed text-left">
                 {currentSnippet.lines.map((line, idx) => (
                   <div key={idx} className="flex items-start gap-3">
-                    <span className="text-[#0071E3] font-bold select-none text-xs pt-0.5">0{idx + 1}</span>
+                    <span className="text-[#84A98C] font-bold select-none text-xs pt-0.5">0{idx + 1}</span>
                     <span className="flex-1">{line}</span>
-                    <CheckCircle2 className="w-4 h-4 text-[#34C759] shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-[#84A98C] shrink-0 mt-0.5" />
                   </div>
                 ))}
               </div>
 
               {/* Modal Footer */}
               <div className="pt-4 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-mono text-[#34C759] font-bold">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#84A98C] font-bold">
                   <CheckCircle2 className="w-4 h-4" />
                   <span>All Invariants Verified Single-Pass</span>
                 </div>
@@ -593,7 +593,7 @@ export const Flowing3DHeroAsset: React.FC = () => {
                     setActiveProblem('algo-1');
                     setActiveView('algo_workspace');
                   }}
-                  className="px-5 py-2 rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
                 >
                   Solve Challenge Now
                 </button>

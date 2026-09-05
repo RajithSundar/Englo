@@ -18,28 +18,28 @@ export const FloatingParallaxAssets: React.FC = () => {
       {/* 1. Ambient Apple Gradient Lights */}
       <motion.div
         style={{ y: yLayer1, rotate: rotateOrb1 }}
-        className="absolute top-28 left-[10%] w-72 h-72 rounded-full bg-gradient-to-tr from-blue-400/15 to-sky-300/10 blur-3xl"
+        className="absolute top-28 left-[10%] w-72 h-72 rounded-full bg-gradient-to-tr from-[#84A98C]/20 to-[#52796F]/10 blur-3xl"
       />
       <motion.div
         style={{ y: yLayer2, rotate: rotateOrb2 }}
-        className="absolute top-[45rem] right-[8%] w-80 h-80 rounded-full bg-gradient-to-bl from-purple-400/12 via-indigo-300/8 to-transparent blur-3xl"
+        className="absolute top-[45rem] right-[8%] w-80 h-80 rounded-full bg-gradient-to-bl from-[#52796F]/15 via-[#354F52]/10 to-transparent blur-3xl"
       />
       <motion.div
         style={{ y: yLayer3 }}
-        className="absolute top-[85rem] left-[15%] w-96 h-96 rounded-full bg-gradient-to-tr from-emerald-400/10 via-teal-300/8 to-transparent blur-3xl"
+        className="absolute top-[85rem] left-[15%] w-96 h-96 rounded-full bg-gradient-to-tr from-[#84A98C]/15 via-[#CAD2C5]/10 to-transparent blur-3xl"
       />
 
       {/* 2. Floating 3D Glass Logic Orbs & Badges (Layer 1 - Slow) */}
       <motion.div
         style={{ y: yLayer1, scale: scalePill }}
-        className="absolute top-48 right-[12%] hidden xl:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/70 backdrop-blur-md border border-black/[0.06] shadow-apple text-xs font-mono text-[#1D1D1F]"
+        className="absolute top-48 right-[12%] hidden xl:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/70 backdrop-blur-md border border-black/[0.06] shadow-apple text-xs font-mono text-[#2F3E46]"
       >
-        <div className="w-6 h-6 rounded-lg bg-blue-50 border border-blue-200/70 flex items-center justify-center text-[#0071E3]">
+        <div className="w-6 h-6 rounded-lg bg-[#84A98C]/15 border border-[#84A98C]/30 flex items-center justify-center text-[#52796F]">
           <Terminal className="w-3.5 h-3.5" />
         </div>
         <div>
-          <div className="text-[10px] text-[#86868B] uppercase">Invariant</div>
-          <div className="font-semibold text-[#0071E3]">O(N) Deterministic</div>
+          <div className="text-[10px] text-[#84A98C] uppercase">Invariant</div>
+          <div className="font-semibold text-[#52796F]">O(N) Deterministic</div>
         </div>
       </motion.div>
 

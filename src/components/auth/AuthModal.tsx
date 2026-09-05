@@ -13,8 +13,9 @@ export const AuthModal: React.FC = () => {
       <div className="relative w-full max-w-[440px] animate-in zoom-in-95 duration-200">
         {/* Close Button */}
         <button
+          id="auth-modal-close-btn"
           onClick={() => setAuthModalOpen(false)}
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-[#86868B] hover:text-[#1D1D1F] flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 dark:bg-white/10 dark:hover:bg-white/20 text-[#86868B] hover:text-[#1D1D1F] dark:text-neutral-400 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           title="Close Modal"
         >
           <X className="w-4 h-4" />

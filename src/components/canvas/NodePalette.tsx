@@ -160,10 +160,10 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
   };
 
   const categories: { id: SystemNodeCategory; label: string; color: string }[] = [
-    { id: 'client', label: 'Client Devices', color: 'text-sky-600' },
-    { id: 'network', label: 'Network & Routing', color: 'text-[#0071E3]' },
-    { id: 'compute', label: 'Compute & Execution', color: 'text-purple-600' },
-    { id: 'storage', label: 'Storage & Caching', color: 'text-emerald-600' }
+    { id: 'client', label: 'Client Devices', color: 'text-[#354F52] dark:text-[#CAD2C5]' },
+    { id: 'network', label: 'Network & Routing', color: 'text-[#52796F] dark:text-[#84A98C]' },
+    { id: 'compute', label: 'Compute & Execution', color: 'text-[#52796F] dark:text-[#CAD2C5]' },
+    { id: 'storage', label: 'Storage & Caching', color: 'text-[#84A98C]' }
   ];
 
   const onDragStart = (e: React.DragEvent, item: PaletteItem) => {
@@ -174,13 +174,13 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
   return (
     <div
       id="node-palette-sidebar"
-      className="w-64 border-r border-black/[0.06] bg-white flex flex-col h-full select-none overflow-y-auto flex-shrink-0"
+      className="w-64 border-r border-[#CAD2C5]/40 dark:border-[#52796F]/30 bg-white dark:bg-[#2F3E46] flex flex-col h-full select-none overflow-y-auto flex-shrink-0"
     >
       {/* Palette Header */}
-      <div className="p-3.5 border-b border-black/[0.06] bg-white flex items-center justify-between">
+      <div className="p-3.5 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 bg-white dark:bg-[#2F3E46] flex items-center justify-between">
         <div>
-          <span className="text-xs font-bold text-[#1D1D1F] tracking-tight">Component Palette</span>
-          <p className="text-[10px] text-[#86868B] font-mono">Drag or tap (+) to place on canvas</p>
+          <span className="text-xs font-bold text-[#2F3E46] dark:text-white tracking-tight">Component Palette</span>
+          <p className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70 font-mono">Drag or tap (+) to place on canvas</p>
         </div>
       </div>
 
@@ -195,7 +195,7 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
               <button
                 type="button"
                 onClick={() => toggleCategory(cat.id)}
-                className="w-full flex items-center justify-between px-2 py-1 text-xs font-semibold font-mono text-[#86868B] hover:text-[#1D1D1F] uppercase tracking-wider rounded transition-colors"
+                className="w-full flex items-center justify-between px-2 py-1 text-xs font-semibold font-mono text-[#52796F] dark:text-[#CAD2C5]/70 hover:text-[#2F3E46] dark:hover:text-white uppercase tracking-wider rounded transition-colors cursor-pointer"
               >
                 <span className={`flex items-center gap-1.5 ${cat.color}`}>
                   {cat.label}
@@ -213,19 +213,19 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
                         key={item.type}
                         draggable
                         onDragStart={(e) => onDragStart(e, item)}
-                        className="group flex items-center justify-between p-2 rounded-xl bg-[#FBFBFD] hover:bg-[#F5F5F7] border border-neutral-200/70 hover:border-neutral-300 cursor-grab active:cursor-grabbing transition-all shadow-2xs"
+                        className="group flex items-center justify-between p-2 rounded-xl bg-[#F4F6F4] dark:bg-[#1E272C] hover:bg-[#CAD2C5]/20 dark:hover:bg-[#354F52]/60 border border-[#CAD2C5]/60 dark:border-[#52796F]/40 hover:border-[#84A98C]/50 dark:hover:border-[#84A98C]/50 cursor-grab active:cursor-grabbing transition-all shadow-2xs"
                         title={`${item.label} - ${item.description}`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <GripVertical className="w-3.5 h-3.5 text-neutral-400 group-hover:text-[#6E6E73] flex-shrink-0" />
-                          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-[#1D1D1F] group-hover:text-[#0071E3] flex-shrink-0 border border-neutral-200/80 shadow-2xs">
+                          <GripVertical className="w-3.5 h-3.5 text-[#CAD2C5] dark:text-[#52796F] group-hover:text-[#52796F] dark:group-hover:text-[#CAD2C5] flex-shrink-0" />
+                          <div className="w-7 h-7 rounded-lg bg-white dark:bg-[#2F3E46] flex items-center justify-center text-[#2F3E46] dark:text-white group-hover:text-[#52796F] dark:group-hover:text-[#84A98C] flex-shrink-0 border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-2xs">
                             <Icon className="w-3.5 h-3.5" />
                           </div>
                           <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-semibold text-[#1D1D1F] truncate">
+                            <span className="text-xs font-semibold text-[#2F3E46] dark:text-white truncate">
                               {item.label}
                             </span>
-                            <span className="text-[10px] text-[#86868B] truncate">
+                            <span className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70 truncate">
                               {item.description}
                             </span>
                           </div>
@@ -238,7 +238,7 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
                             e.stopPropagation();
                             onAddNode(item);
                           }}
-                          className="w-6 h-6 rounded-full bg-white hover:bg-[#0071E3] text-[#6E6E73] hover:text-white flex items-center justify-center transition-colors flex-shrink-0 border border-neutral-200 shadow-2xs active:scale-95"
+                          className="w-6 h-6 rounded-full bg-white dark:bg-[#2F3E46] hover:bg-[#84A98C] dark:hover:bg-[#84A98C] text-[#52796F] dark:text-[#CAD2C5] hover:text-[#2F3E46] dark:hover:text-[#2F3E46] flex items-center justify-center transition-colors flex-shrink-0 border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-2xs active:scale-95 cursor-pointer"
                           title="Add to canvas"
                         >
                           <Plus className="w-3 h-3" />

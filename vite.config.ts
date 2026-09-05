@@ -87,6 +87,10 @@ export default defineConfig(() => {
           ? null
           : {
               ignored: [
+                '**/recordings/**',
+                '**/*.mp4',
+                '**/*.webm',
+                '**/scripts/**',
                 '**/*.zip',
                 '**/dist/**',
                 '**/.git/**',
@@ -94,6 +98,11 @@ export default defineConfig(() => {
                 '**/.agents/**',
                 '**/.agent/**',
                 '**/.ontoindex/**',
+                '**/.claude/**',
+                '**/data/**',
+                '**/scratch/**',
+                '**/*.json',
+                '**/*.log'
               ],
             },
     },

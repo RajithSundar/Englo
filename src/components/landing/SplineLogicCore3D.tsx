@@ -36,10 +36,10 @@ export const SplineLogicCore3D: React.FC = () => {
   };
 
   const INVARIANTS = [
-    { label: 'Map Lookup', formula: 'seen[complement]', complexity: 'O(1) Access', color: '#0071E3' },
-    { label: 'Bound Guard', formula: '0 ≤ i < length', complexity: 'Zero Panic', color: '#34C759' },
-    { label: 'Space Bound', formula: 'Space ≤ O(N)', complexity: 'Bounded Heap', color: '#AF00DB' },
-    { label: 'Time Guarantee', formula: 'Single Pass Loop', complexity: 'O(N) Optimal', color: '#FF9500' }
+    { label: 'Map Lookup', formula: 'seen[complement]', complexity: 'O(1) Access', color: '#84A98C' },
+    { label: 'Bound Guard', formula: '0 ≤ i < length', complexity: 'Zero Panic', color: '#84A98C' },
+    { label: 'Space Bound', formula: 'Space ≤ O(N)', complexity: 'Bounded Heap', color: '#52796F' },
+    { label: 'Time Guarantee', formula: 'Single Pass Loop', complexity: 'O(N) Optimal', color: '#D4A373' }
   ];
 
   return (
@@ -58,8 +58,8 @@ export const SplineLogicCore3D: React.FC = () => {
         }}
         className={`relative w-[340px] sm:w-[400px] h-[360px] rounded-3xl p-6 flex flex-col justify-between transition-colors duration-300 ${
           isDarkMode 
-            ? 'bg-[#12141C]/90 border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]' 
-            : 'bg-white/90 border border-black/[0.08] shadow-[0_24px_60px_rgba(0,113,227,0.12)]'
+            ? 'bg-[#2F3E46]/90 border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]' 
+            : 'bg-white/90 border border-black/[0.08] shadow-[0_24px_60px_rgba(132,169,140,0.15)]'
         } backdrop-blur-xl`}
       >
         {/* Ambient Core Radial Glow */}
@@ -67,23 +67,23 @@ export const SplineLogicCore3D: React.FC = () => {
           className="absolute inset-0 rounded-3xl pointer-events-none opacity-50 blur-2xl transition-opacity duration-300"
           style={{
             background: isDarkMode
-              ? 'radial-gradient(circle at 50% 50%, rgba(0, 113, 227, 0.25), rgba(52, 199, 89, 0.1), transparent 70%)'
-              : 'radial-gradient(circle at 50% 50%, rgba(0, 113, 227, 0.15), rgba(52, 199, 89, 0.08), transparent 70%)'
+              ? 'radial-gradient(circle at 50% 50%, rgba(132, 169, 140, 0.25), rgba(82, 121, 111, 0.1), transparent 70%)'
+              : 'radial-gradient(circle at 50% 50%, rgba(132, 169, 140, 0.18), rgba(82, 121, 111, 0.08), transparent 70%)'
           }}
         />
 
         {/* Top Status Header */}
         <div className="flex items-center justify-between z-10">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#0071E3] animate-ping" />
-            <span className={`text-[11px] font-mono font-bold tracking-wider uppercase ${isDarkMode ? 'text-blue-400' : 'text-[#0071E3]'}`}>
+            <div className="w-2.5 h-2.5 rounded-full bg-[#84A98C] animate-ping" />
+            <span className={`text-[11px] font-mono font-bold tracking-wider uppercase ${isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}`}>
               3D Semantic Logic Engine
             </span>
           </div>
           <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
             isDarkMode 
-              ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800/60' 
-              : 'bg-emerald-50 text-[#1E7E34] border-emerald-200'
+              ? 'bg-[#354F52] text-[#CAD2C5] border-white/10' 
+              : 'bg-[#EBF0EB] text-[#52796F] border-[#CAD2C5]'
           }`}>
             Live Proof
           </span>
@@ -93,7 +93,7 @@ export const SplineLogicCore3D: React.FC = () => {
         <div className="relative w-full h-[180px] flex items-center justify-center my-auto" style={{ transformStyle: 'preserve-3d' }}>
           {/* Outer Orbital Ring 1 */}
           <div
-            className="absolute w-44 h-44 rounded-full border border-dashed border-[#0071E3]/40 animate-[spin_18s_linear_infinite]"
+            className="absolute w-44 h-44 rounded-full border border-dashed border-[#84A98C]/40 animate-[spin_18s_linear_infinite]"
             style={{
               transform: 'rotateX(68deg) rotateY(18deg)',
               transformStyle: 'preserve-3d'
@@ -102,7 +102,7 @@ export const SplineLogicCore3D: React.FC = () => {
 
           {/* Counter-Rotating Orbital Ring 2 */}
           <div
-            className="absolute w-52 h-52 rounded-full border border-dashed border-[#34C759]/40 animate-[spin_24s_linear_infinite_reverse]"
+            className="absolute w-52 h-52 rounded-full border border-dashed border-[#52796F]/40 animate-[spin_24s_linear_infinite_reverse]"
             style={{
               transform: 'rotateX(-55deg) rotateY(35deg)',
               transformStyle: 'preserve-3d'
@@ -124,18 +124,18 @@ export const SplineLogicCore3D: React.FC = () => {
               scale: [1, 1.06, 1],
               boxShadow: isDarkMode
                 ? [
-                    '0 0 25px rgba(0,113,227,0.5)',
-                    '0 0 45px rgba(0,113,227,0.8)',
-                    '0 0 25px rgba(0,113,227,0.5)'
+                    '0 0 25px rgba(132,169,140,0.5)',
+                    '0 0 45px rgba(132,169,140,0.8)',
+                    '0 0 25px rgba(132,169,140,0.5)'
                   ]
                 : [
-                    '0 0 20px rgba(0,113,227,0.3)',
-                    '0 0 35px rgba(0,113,227,0.55)',
-                    '0 0 20px rgba(0,113,227,0.3)'
+                    '0 0 20px rgba(132,169,140,0.3)',
+                    '0 0 35px rgba(132,169,140,0.55)',
+                    '0 0 20px rgba(132,169,140,0.3)'
                   ]
             }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#0071E3] via-[#0099FF] to-[#34C759] flex items-center justify-center text-white shadow-lg cursor-pointer z-10"
+            className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#84A98C] via-[#52796F] to-[#354F52] flex items-center justify-center text-white shadow-lg cursor-pointer z-10"
             style={{ transform: 'translateZ(40px)' }}
           >
             <Cpu className="w-8 h-8 text-white animate-pulse" />
@@ -150,14 +150,14 @@ export const SplineLogicCore3D: React.FC = () => {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className={`absolute top-1 left-2 sm:left-4 px-3 py-1.5 rounded-xl border text-[10px] font-mono shadow-md backdrop-blur-md cursor-pointer transition-all ${
               activeInvariant === 0
-                ? 'border-[#0071E3] bg-blue-50/90 dark:bg-blue-950/80 text-[#0071E3] dark:text-blue-300 scale-105'
-                : 'border-black/[0.08] dark:border-white/10 bg-white/80 dark:bg-[#1A1D27]/80 text-[#6E6E73] dark:text-neutral-300'
+                ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52] text-[#52796F] dark:text-[#CAD2C5] scale-105'
+                : 'border-black/[0.08] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80 text-[#52796F] dark:text-neutral-300'
             }`}
             onClick={() => setActiveInvariant(0)}
             style={{ transform: 'translateZ(60px)' }}
           >
             <div className="font-bold flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-[#34C759]" />
+              <CheckCircle2 className="w-3 h-3 text-[#84A98C]" />
               <span>seen = &#123;&#125;</span>
             </div>
           </motion.div>
@@ -171,14 +171,14 @@ export const SplineLogicCore3D: React.FC = () => {
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
             className={`absolute bottom-2 right-2 sm:right-4 px-3 py-1.5 rounded-xl border text-[10px] font-mono shadow-md backdrop-blur-md cursor-pointer transition-all ${
               activeInvariant === 1
-                ? 'border-[#34C759] bg-emerald-50/90 dark:bg-emerald-950/80 text-[#1E7E34] dark:text-emerald-300 scale-105'
-                : 'border-black/[0.08] dark:border-white/10 bg-white/80 dark:bg-[#1A1D27]/80 text-[#6E6E73] dark:text-neutral-300'
+                ? 'border-[#52796F] bg-[#52796F]/15 dark:bg-[#354F52] text-[#52796F] dark:text-[#CAD2C5] scale-105'
+                : 'border-black/[0.08] dark:border-white/10 bg-white/80 dark:bg-[#1E272C]/80 text-[#52796F] dark:text-neutral-300'
             }`}
             onClick={() => setActiveInvariant(1)}
             style={{ transform: 'translateZ(50px)' }}
           >
             <div className="font-bold flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#FF9500]" />
+              <Sparkles className="w-3 h-3 text-[#D4A373]" />
               <span>target − nums[i]</span>
             </div>
           </motion.div>
@@ -187,16 +187,16 @@ export const SplineLogicCore3D: React.FC = () => {
         {/* Invariant Detail Bar */}
         <div className="z-10 pt-3 border-t border-black/[0.06] dark:border-white/[0.08]">
           <div className="flex items-center justify-between text-xs font-mono mb-1">
-            <span className={`font-semibold ${isDarkMode ? 'text-neutral-200' : 'text-[#1D1D1F]'}`}>
+            <span className={`font-semibold ${isDarkMode ? 'text-neutral-200' : 'text-[#2F3E46]'}`}>
               {INVARIANTS[activeInvariant].label}
             </span>
-            <span className="text-[#34C759] font-bold">
+            <span className="text-[#84A98C] font-bold">
               {INVARIANTS[activeInvariant].complexity}
             </span>
           </div>
-          <div className="flex items-center justify-between text-[11px] font-mono text-[#86868B]">
+          <div className="flex items-center justify-between text-[11px] font-mono text-[#84A98C] dark:text-[#CAD2C5]">
             <span>Invariant Rule:</span>
-            <span className={isDarkMode ? 'text-blue-300' : 'text-[#0071E3]'}>
+            <span className={isDarkMode ? 'text-[#CAD2C5]' : 'text-[#52796F]'}>
               {INVARIANTS[activeInvariant].formula}
             </span>
           </div>

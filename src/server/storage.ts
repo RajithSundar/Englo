@@ -11,6 +11,7 @@ export interface UserProfile {
   lastActiveDate: string | null;
   activityDates: string[];
   solvedProblemIds: string[];
+  password?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -109,7 +110,7 @@ class StorageEngine {
     return this.data.users[email.toLowerCase()] || null;
   }
 
-  public getOrCreateUser(email: string, handle?: string, name?: string, role?: string): UserProfile {
+  public getOrCreateUser(email: string, handle?: string, name?: string, role?: string, password?: string): UserProfile {
     this.init();
     const key = email.toLowerCase();
     const existing = this.data.users[key];
@@ -119,6 +120,7 @@ class StorageEngine {
       if (handle) existing.handle = handle;
       if (name) existing.name = name;
       if (role) existing.role = role;
+      if (password) existing.password = password;
       existing.updatedAt = new Date().toISOString();
       this.save();
       return existing;
@@ -135,6 +137,7 @@ class StorageEngine {
       lastActiveDate: today,
       activityDates: [today],
       solvedProblemIds: [],
+      password: password,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -142,6 +145,15 @@ class StorageEngine {
     this.data.users[key] = newUser;
     this.save();
     return newUser;
+  }
+
+  public verifyPassword(email: string, passwordAttempt?: string): { success: boolean; user?: UserProfile } {
+    this.init();
+    const user = this.getUser(email);
+    if (!user) return { success: false };
+    if (!user.password || !passwordAttempt) return { success: true, user };
+    if (user.password === passwordAttempt) return { success: true, user };
+    return { success: false };
   }
 
   public recordUserActivity(email: string, dateStr?: string, streak?: number): UserProfile {

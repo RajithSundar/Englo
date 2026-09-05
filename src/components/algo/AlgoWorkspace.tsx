@@ -24,7 +24,7 @@ export const AlgoWorkspace: React.FC<AlgoWorkspaceProps> = ({ problem }) => {
   const currentEvaluation = algoEvaluations[problem.id] || null;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#FBFBFD]">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#F4F6F4] dark:bg-[#1E272C]">
       {/* Upper Editor Pane */}
       <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <AlgoEditor

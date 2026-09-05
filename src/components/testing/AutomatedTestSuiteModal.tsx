@@ -199,6 +199,43 @@ export const AutomatedTestSuiteModal: React.FC = () => {
           durationMs: Math.round(performance.now() - start)
         };
       }
+    },
+    {
+      id: 'test-rzp-algo',
+      category: 'Algo-English',
+      name: 'Razorpay Double-Entry Ledger Transfer (algo-6)',
+      description: 'Verifies deterministic locking min(A,B)->max(A,B), solvency invariant, and zero-sum balance conservation.',
+      run: async () => {
+        const start = performance.now();
+        const problem = PROBLEMS.find((p) => p.id === 'algo-6')!;
+        const solutionText = problem.solutionAlgoEnglish || '';
+        const result = evaluateAlgoEnglish(problem, solutionText);
+        const passed = result.passed && result.score >= 80 && result.testCases.length === 42;
+        return {
+          passed,
+          message: `Passed ${result.testCases.filter(t => t.passed).length}/42 invariant permutations. Zero-sum ledger delta verified.`,
+          durationMs: Math.round(performance.now() - start)
+        };
+      }
+    },
+    {
+      id: 'test-rzp-sys',
+      category: 'System Design',
+      name: 'Razorpay High-Throughput Payment Gateway (sys-6)',
+      description: 'Tests distributed Redis idempotency lock, worker replication, and double-entry SQL persistence.',
+      run: async () => {
+        const start = performance.now();
+        const problem = PROBLEMS.find((p) => p.id === 'sys-6')!;
+        const nodes = problem.solutionArchNodes || [];
+        const edges = problem.solutionArchEdges || [];
+        const result = evaluateArchitecture(problem, nodes, edges);
+        const passed = result.passed && result.score >= 75;
+        return {
+          passed,
+          message: `Topology score: ${result.score}/100. Throughput: ${result.throughputScore}%, Reliability: ${result.reliabilityScore}%. Zero SPOF.`,
+          durationMs: Math.round(performance.now() - start)
+        };
+      }
     }
   ];
 
@@ -229,65 +266,67 @@ export const AutomatedTestSuiteModal: React.FC = () => {
   const passedCount = (Object.values(testResults) as Array<{ passed: boolean }>).filter((r) => r.passed).length;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
-      <div className="bg-white/95 backdrop-blur-xl border border-black/[0.08] rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-[0_24px_64px_rgba(0,0,0,0.14)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
+      <div className="bg-white/95 dark:bg-[#2F3E46]/95 backdrop-blur-xl border border-black/[0.08] dark:border-white/10 rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-[0_24px_64px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-[#2F3E46] dark:text-[#CAD2C5]">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-black/[0.06] flex items-center justify-between bg-white">
+        <div className="px-6 py-4 border-b border-black/[0.06] dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#2F3E46]">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#0071E3] flex items-center justify-center text-white shadow-2xs">
+            <div className="w-8 h-8 rounded-xl bg-[#84A98C] flex items-center justify-center text-white shadow-2xs">
               <CheckSquare className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#1D1D1F] flex items-center gap-2">
+              <h2 className="text-base font-bold text-[#2F3E46] dark:text-white flex items-center gap-2">
                 <span>Platform Verification Matrix</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-[#34C759] border border-emerald-200/70 font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-[#84A98C] border border-[#84A98C]/30 dark:bg-emerald-950/40 dark:border-emerald-800/60 font-semibold">
                   CI/CD Verified
                 </span>
               </h2>
-              <p className="text-xs text-[#6E6E73]">
+              <p className="text-xs text-[#52796F] dark:text-neutral-400">
                 Automated regression &amp; invariant tests for Problem Ledger, Algo-English, and Topology Canvas.
               </p>
             </div>
           </div>
 
           <button
+            id="test-matrix-close-btn"
             onClick={() => setTestRunnerOpen(false)}
-            className="p-1 rounded-full text-[#86868B] hover:text-[#1D1D1F] hover:bg-neutral-100 transition-colors"
+            className="p-1.5 rounded-full text-[#84A98C] hover:text-[#2F3E46] dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            title="Close Modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Body: Test Assertions List */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-3 font-sans text-xs bg-[#FBFBFD]">
+        <div className="flex-1 overflow-y-auto p-6 space-y-3 font-sans text-xs bg-[#F4F6F4] dark:bg-[#1E272C]">
           {testDefinitions.map((test) => {
             const res = testResults[test.id];
 
             return (
               <div
                 key={test.id}
-                className="bg-white border border-black/[0.06] rounded-2xl p-4 space-y-1.5 hover:border-neutral-300 transition-colors shadow-2xs"
+                className="bg-white dark:bg-[#354F52] border border-black/[0.06] dark:border-white/10 rounded-2xl p-4 space-y-1.5 hover:border-[#84A98C]/40 dark:hover:border-white/20 transition-colors shadow-2xs"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F7] border border-neutral-200/60 text-[#6E6E73] font-mono">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EBF0EB] dark:bg-white/[0.06] border border-[#CAD2C5] dark:border-white/10 text-[#52796F] dark:text-neutral-400 font-mono">
                       {test.category}
                     </span>
-                    <span className="font-semibold text-[#1D1D1F] text-xs">
+                    <span className="font-semibold text-[#2F3E46] dark:text-white text-xs">
                       {test.name}
                     </span>
                   </div>
 
                   <div>
                     {!res ? (
-                      <span className="text-[10px] text-[#86868B] italic">Ready</span>
+                      <span className="text-[10px] text-[#84A98C] dark:text-neutral-400 italic">Ready</span>
                     ) : res.passed ? (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#34C759] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/70">
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#84A98C] bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-emerald-200/70 dark:border-emerald-800/60">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Passed ({res.durationMs}ms)
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#FF3B30] bg-red-50 px-2.5 py-0.5 rounded-full border border-red-200/70">
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#E07A5F] bg-red-50 dark:bg-red-950/40 px-2.5 py-0.5 rounded-full border border-red-200/70 dark:border-red-800/60">
                         <XCircle className="w-3.5 h-3.5" />
                         Failed
                       </span>
@@ -295,12 +334,12 @@ export const AutomatedTestSuiteModal: React.FC = () => {
                   </div>
                 </div>
 
-                <p className="text-[#6E6E73] text-[11px] leading-relaxed">
+                <p className="text-[#52796F] dark:text-neutral-400 text-[11px] leading-relaxed">
                   {test.description}
                 </p>
 
                 {res && (
-                  <div className="text-[11px] font-mono p-2.5 rounded-xl bg-[#F5F5F7] border border-neutral-200/70 text-[#1D1D1F]">
+                  <div className="text-[11px] font-mono p-2.5 rounded-xl bg-[#F4F6F4] dark:bg-white/[0.04] border border-neutral-200/70 dark:border-white/10 text-[#2F3E46] dark:text-neutral-200">
                     {res.message}
                   </div>
                 )}
@@ -310,11 +349,11 @@ export const AutomatedTestSuiteModal: React.FC = () => {
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-black/[0.06] bg-white flex items-center justify-between">
-          <div className="text-xs text-[#6E6E73]">
+        <div className="px-6 py-4 border-t border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#2F3E46] flex items-center justify-between">
+          <div className="text-xs text-[#52796F] dark:text-neutral-400">
             {totalRun > 0 ? (
               <span>
-                Results: <strong className="text-[#34C759]">{passedCount}</strong> / {testDefinitions.length} Tests Passing
+                Results: <strong className="text-[#84A98C]">{passedCount}</strong> / {testDefinitions.length} Tests Passing
               </span>
             ) : (
               <span>7 comprehensive automated assertions ready to execute.</span>
@@ -323,8 +362,9 @@ export const AutomatedTestSuiteModal: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
+              id="test-matrix-footer-close-btn"
               onClick={() => setTestRunnerOpen(false)}
-              className="px-4 py-2 rounded-full text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-neutral-100 transition-colors"
+              className="px-4 py-2 rounded-full text-xs font-semibold text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
             >
               Close
             </button>
@@ -333,7 +373,7 @@ export const AutomatedTestSuiteModal: React.FC = () => {
               id="modal-run-all-tests-btn"
               onClick={handleRunAllTests}
               disabled={isRunning}
-              className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold bg-[#0071E3] hover:bg-[#0077ED] text-white shadow-[0_2px_8px_rgba(0,113,227,0.25)] transition-all active:scale-97 disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold bg-[#84A98C] hover:bg-[#52796F] text-white shadow-[0_2px_8px_rgba(132,169,140,0.25)] transition-all active:scale-97 disabled:opacity-50 cursor-pointer"
             >
               {isRunning ? (
                 <>

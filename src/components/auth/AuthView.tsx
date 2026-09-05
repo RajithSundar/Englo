@@ -58,11 +58,11 @@ export const AuthView: React.FC<AuthViewProps> = ({
   };
 
   // Quick 1-click Demo Sign-In
-  const handleQuickDemo = (demoType: 'staff' | 'candidate') => {
-    if (demoType === 'staff') {
-      authenticateUser('staff.engineer@apple.com', '@staff_engineer', 'Staff Architect', 'Principal Distributed Systems');
-    } else {
-      authenticateUser('alex.chen@berkeley.edu', '@alex_chen', 'Alex Chen', 'L5 Candidate');
+  const handleQuickDemo = (demoType: 'staff' | 'candidate' | 'evaluator') => {
+    if (demoType === 'staff' || demoType === 'candidate') {
+      authenticateUser('alex.dev@englo.sh', '@alex_dev', 'Alex Dev', 'Staff Software Engineer');
+    } else if (demoType === 'evaluator') {
+      authenticateUser('hiring.manager@razorpay.com', '@hiring_manager', 'Hiring Manager', 'Hiring Manager (Evaluator)');
     }
     if (onClose) onClose();
   };
@@ -110,13 +110,13 @@ export const AuthView: React.FC<AuthViewProps> = ({
   const passwordScore = getPasswordStrength();
 
   return (
-    <div className={`min-h-[calc(100vh-3.5rem)] flex flex-col justify-center items-center py-10 px-4 select-none ${isModal ? 'min-h-0 py-2 px-0' : 'bg-[#FBFBFD]'}`}>
+    <div className={`flex-1 overflow-y-auto w-full h-full flex flex-col justify-center items-center py-10 px-4 select-none ${isModal ? 'min-h-0 py-2 px-0 overflow-visible' : 'bg-[#F4F6F4] dark:bg-[#1E272C]'}`}>
       {/* Top return breadcrumb if on full view */}
       {!isModal && (
         <div className="w-full max-w-[440px] mb-4 flex items-center justify-between">
           <button
             onClick={() => setActiveView('landing')}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6E6E73] hover:text-[#1D1D1F] transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#52796F] hover:text-[#2F3E46] dark:hover:text-white transition-colors cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
             <span>Back to Englo Overview</span>
@@ -125,21 +125,21 @@ export const AuthView: React.FC<AuthViewProps> = ({
       )}
 
       {/* Main Apple Squircle Card */}
-      <div className="w-full max-w-[440px] bg-white rounded-3xl border border-black/[0.06] shadow-apple p-7 sm:p-9 relative overflow-hidden">
+      <div className="w-full max-w-[440px] bg-white dark:bg-[#2F3E46] rounded-3xl border border-black/[0.06] dark:border-white/10 shadow-apple p-7 sm:p-9 relative overflow-hidden text-[#2F3E46] dark:text-[#CAD2C5]">
         {/* Soft atmospheric ambient glow at top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 bg-gradient-to-b from-blue-50 to-transparent blur-2xl -z-10 pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 bg-gradient-to-b from-[#84A98C]/15 dark:from-[#52796F]/20 to-transparent blur-2xl -z-10 pointer-events-none" />
 
         {/* Brand Icon & Heading */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-11 h-11 rounded-2xl bg-[#0071E3] flex items-center justify-center text-white shadow-sm mb-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#84A98C] flex items-center justify-center text-white shadow-sm mb-3.5">
             <Layers className="w-5 h-5 text-white" />
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1D1D1F]">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#2F3E46] dark:text-white">
             {mode === 'login' ? 'Sign in to Englo Studio' : 'Create Engineer ID'}
           </h2>
 
-          <p className="text-xs text-[#6E6E73] mt-1 max-w-xs leading-relaxed">
+          <p className="text-xs text-[#52796F] dark:text-neutral-400 mt-1 max-w-xs leading-relaxed">
             {mode === 'login'
               ? 'Resume your algorithmic reasoning progress and system design topologies.'
               : 'Master algorithms with pure logic and Cupertino precision.'}
@@ -147,7 +147,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         </div>
 
         {/* Segmented Control Switcher */}
-        <div className="flex items-center bg-[#F5F5F7] p-1 rounded-full border border-neutral-200/80 mb-6">
+        <div className="flex items-center bg-[#EBF0EB] dark:bg-white/[0.06] p-1 rounded-full border border-[#CAD2C5] dark:border-white/10 mb-6">
           <button
             type="button"
             onClick={() => {
@@ -157,8 +157,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
             }}
             className={`flex-1 py-1.5 text-xs font-semibold rounded-full transition-all cursor-pointer ${
               mode === 'login'
-                ? 'bg-white text-[#1D1D1F] shadow-xs'
-                : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                ? 'bg-white dark:bg-white/15 text-[#2F3E46] dark:text-white shadow-xs'
+                : 'text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white'
             }`}
           >
             Sign In
@@ -172,8 +172,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
             }}
             className={`flex-1 py-1.5 text-xs font-semibold rounded-full transition-all cursor-pointer ${
               mode === 'register'
-                ? 'bg-white text-[#1D1D1F] shadow-xs'
-                : 'text-[#6E6E73] hover:text-[#1D1D1F]'
+                ? 'bg-white dark:bg-white/15 text-[#2F3E46] dark:text-white shadow-xs'
+                : 'text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white'
             }`}
           >
             Create Account
@@ -182,7 +182,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
         {/* Error Alert Box */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl border border-red-200/80 bg-red-50/60 text-xs text-[#FF3B30] flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl border border-red-200/80 dark:border-red-800/60 bg-red-50/60 dark:bg-red-950/40 text-xs text-[#FF3B30] dark:text-red-400 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -193,7 +193,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
           <button
             type="button"
             onClick={() => handleQuickDemo('staff')}
-            className="w-full py-2.5 px-4 rounded-xl bg-[#1D1D1F] hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] cursor-pointer"
+            className="w-full py-2.5 px-4 rounded-xl bg-[#1D1D1F] hover:bg-black dark:bg-white/10 dark:hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] cursor-pointer"
           >
             {/* Apple Logo SVG */}
             <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 170 170">
@@ -205,7 +205,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
           <button
             type="button"
             onClick={() => handleQuickDemo('candidate')}
-            className="w-full py-2.5 px-4 rounded-xl bg-[#F5F5F7] hover:bg-neutral-200/80 text-[#1D1D1F] border border-neutral-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+            className="w-full py-2.5 px-4 rounded-xl bg-[#F5F5F7] dark:bg-white/[0.06] hover:bg-neutral-200/80 dark:hover:bg-white/10 text-[#1D1D1F] dark:text-white border border-neutral-200 dark:border-white/10 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
           >
             {/* GitHub Logo SVG */}
             <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -217,8 +217,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
         {/* Divider */}
         <div className="relative flex items-center justify-center mb-5">
-          <div className="border-t border-neutral-200 w-full" />
-          <span className="bg-white px-3 text-[11px] text-[#86868B] uppercase font-mono font-medium tracking-wider shrink-0">
+          <div className="border-t border-neutral-200 dark:border-white/10 w-full" />
+          <span className="bg-white dark:bg-[#2F3E46] px-3 text-[11px] text-[#84A98C] dark:text-neutral-400 uppercase font-mono font-medium tracking-wider shrink-0">
             or with email
           </span>
         </div>
@@ -229,41 +229,41 @@ export const AuthView: React.FC<AuthViewProps> = ({
           {mode === 'register' && (
             <>
               <div>
-                <label className="block text-[11px] font-semibold text-[#1D1D1F] mb-1">
+                <label className="block text-[11px] font-semibold text-[#2F3E46] dark:text-neutral-200 mb-1">
                   Full Name
                 </label>
                 <div className="relative flex items-center">
-                  <User className="w-4 h-4 text-[#86868B] absolute left-3.5 pointer-events-none" />
+                  <User className="w-4 h-4 text-[#84A98C] dark:text-neutral-400 absolute left-3.5 pointer-events-none" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder="e.g. Ada Lovelace"
-                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 bg-[#FBFBFD] text-xs text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] focus:bg-white transition-all shadow-2xs"
+                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 dark:border-white/10 bg-[#F4F6F4] dark:bg-[#1E272C] text-xs text-[#2F3E46] dark:text-white placeholder:text-[#84A98C] dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#84A98C]/25 focus:border-[#84A98C] focus:bg-white dark:focus:bg-[#1E272C] transition-all shadow-2xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-[#1D1D1F] mb-1">
+                <label className="block text-[11px] font-semibold text-[#2F3E46] dark:text-neutral-200 mb-1">
                   Engineer Handle
                 </label>
                 <div className="relative flex items-center">
-                  <AtSign className="w-4 h-4 text-[#86868B] absolute left-3.5 pointer-events-none" />
+                  <AtSign className="w-4 h-4 text-[#84A98C] dark:text-neutral-400 absolute left-3.5 pointer-events-none" />
                   <input
                     type="text"
                     value={handle}
                     onChange={(e) => setHandle(e.target.value)}
                     placeholder="@handle"
-                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 bg-[#FBFBFD] text-xs font-mono text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] focus:bg-white transition-all shadow-2xs"
+                    className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 dark:border-white/10 bg-[#F4F6F4] dark:bg-[#1E272C] text-xs font-mono text-[#2F3E46] dark:text-white placeholder:text-[#84A98C] dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#84A98C]/25 focus:border-[#84A98C] focus:bg-white dark:focus:bg-[#1E272C] transition-all shadow-2xs"
                   />
                 </div>
               </div>
 
               {/* Target Engineering Track */}
               <div>
-                <label className="block text-[11px] font-semibold text-[#1D1D1F] mb-1">
+                <label className="block text-[11px] font-semibold text-[#2F3E46] dark:text-neutral-200 mb-1">
                   Primary Engineering Focus
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -272,8 +272,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     onClick={() => setTrack('algo')}
                     className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border transition-all text-center cursor-pointer ${
                       track === 'algo'
-                        ? 'border-[#0071E3] bg-blue-50/60 text-[#0071E3] font-semibold'
-                        : 'border-neutral-200 bg-white text-[#6E6E73] hover:border-neutral-300'
+                        ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52]/40 text-[#52796F] dark:text-[#84A98C] font-semibold'
+                        : 'border-neutral-200 dark:border-white/10 bg-white dark:bg-[#1E272C] text-[#52796F] dark:text-neutral-400 hover:border-neutral-300 dark:hover:border-white/20'
                     }`}
                   >
                     Algorithms
@@ -283,8 +283,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     onClick={() => setTrack('system_design')}
                     className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border transition-all text-center cursor-pointer ${
                       track === 'system_design'
-                        ? 'border-[#0071E3] bg-blue-50/60 text-[#0071E3] font-semibold'
-                        : 'border-neutral-200 bg-white text-[#6E6E73] hover:border-neutral-300'
+                        ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52]/40 text-[#52796F] dark:text-[#84A98C] font-semibold'
+                        : 'border-neutral-200 dark:border-white/10 bg-white dark:bg-[#1E272C] text-[#52796F] dark:text-neutral-400 hover:border-neutral-300 dark:hover:border-white/20'
                     }`}
                   >
                     Architecture
@@ -294,8 +294,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     onClick={() => setTrack('both')}
                     className={`py-1.5 px-2 rounded-lg text-[11px] font-medium border transition-all text-center cursor-pointer ${
                       track === 'both'
-                        ? 'border-[#0071E3] bg-blue-50/60 text-[#0071E3] font-semibold'
-                        : 'border-neutral-200 bg-white text-[#6E6E73] hover:border-neutral-300'
+                        ? 'border-[#84A98C] bg-[#84A98C]/15 dark:bg-[#354F52]/40 text-[#52796F] dark:text-[#84A98C] font-semibold'
+                        : 'border-neutral-200 dark:border-white/10 bg-white dark:bg-[#1E272C] text-[#52796F] dark:text-neutral-400 hover:border-neutral-300 dark:hover:border-white/20'
                     }`}
                   >
                     Dual Studio
@@ -307,18 +307,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
           {/* Email */}
           <div>
-            <label className="block text-[11px] font-semibold text-[#1D1D1F] mb-1">
+            <label className="block text-[11px] font-semibold text-[#2F3E46] dark:text-neutral-200 mb-1">
               Work or Personal Email
             </label>
             <div className="relative flex items-center">
-              <Mail className="w-4 h-4 text-[#86868B] absolute left-3.5 pointer-events-none" />
+              <Mail className="w-4 h-4 text-[#84A98C] dark:text-neutral-400 absolute left-3.5 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => handleEmailChange(e.target.value)}
                 placeholder="engineer@company.com"
-                className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 bg-[#FBFBFD] text-xs text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] focus:bg-white transition-all shadow-2xs"
+                className="w-full pl-10 pr-4 py-2 rounded-xl border border-neutral-200 dark:border-white/10 bg-[#F4F6F4] dark:bg-[#1E272C] text-xs text-[#2F3E46] dark:text-white placeholder:text-[#84A98C] dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#84A98C]/25 focus:border-[#84A98C] focus:bg-white dark:focus:bg-[#1E272C] transition-all shadow-2xs"
               />
             </div>
           </div>
@@ -326,33 +326,33 @@ export const AuthView: React.FC<AuthViewProps> = ({
           {/* Password */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-[11px] font-semibold text-[#1D1D1F]">
+              <label className="block text-[11px] font-semibold text-[#2F3E46] dark:text-neutral-200">
                 Password
               </label>
               {mode === 'login' && (
                 <button
                   type="button"
                   onClick={() => alert('Demo Reset: You can use any 6+ character password or click 1-Click Demo Login.')}
-                  className="text-[10px] text-[#0071E3] hover:underline cursor-pointer"
+                  className="text-[10px] text-[#52796F] dark:text-[#84A98C] hover:underline cursor-pointer"
                 >
                   Forgot password?
                 </button>
               )}
             </div>
             <div className="relative flex items-center">
-              <Lock className="w-4 h-4 text-[#86868B] absolute left-3.5 pointer-events-none" />
+              <Lock className="w-4 h-4 text-[#84A98C] dark:text-neutral-400 absolute left-3.5 pointer-events-none" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-2 rounded-xl border border-neutral-200 bg-[#FBFBFD] text-xs font-mono text-[#1D1D1F] placeholder:text-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] focus:bg-white transition-all shadow-2xs"
+                className="w-full pl-10 pr-10 py-2 rounded-xl border border-neutral-200 dark:border-white/10 bg-[#F4F6F4] dark:bg-[#1E272C] text-xs font-mono text-[#2F3E46] dark:text-white placeholder:text-[#84A98C] dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#84A98C]/25 focus:border-[#84A98C] focus:bg-white dark:focus:bg-[#1E272C] transition-all shadow-2xs"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="p-1 absolute right-3 text-[#86868B] hover:text-[#1D1D1F] transition-colors cursor-pointer"
+                className="p-1 absolute right-3 text-[#84A98C] hover:text-[#2F3E46] dark:text-neutral-400 dark:hover:text-white transition-colors cursor-pointer"
                 title={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -362,18 +362,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
             {/* Password strength meter for registration */}
             {mode === 'register' && password && (
               <div className="mt-2 space-y-1">
-                <div className="h-1 w-full bg-[#F5F5F7] rounded-full overflow-hidden">
+                <div className="h-1 w-full bg-[#EBF0EB] dark:bg-white/10 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-300 ${
                       passwordScore < 50
-                        ? 'bg-[#FF3B30] w-1/3'
+                        ? 'bg-[#E07A5F] w-1/3'
                         : passwordScore < 100
-                        ? 'bg-[#FF9500] w-2/3'
-                        : 'bg-[#34C759] w-full'
+                        ? 'bg-[#D4A373] w-2/3'
+                        : 'bg-[#84A98C] w-full'
                     }`}
                   />
                 </div>
-                <div className="flex justify-between text-[10px] font-mono text-[#86868B]">
+                <div className="flex justify-between text-[10px] font-mono text-[#84A98C] dark:text-neutral-400">
                   <span>Strength</span>
                   <span>{passwordScore < 50 ? 'Weak' : passwordScore < 100 ? 'Good' : 'Cupertino Grade'}</span>
                 </div>
@@ -383,12 +383,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
           {/* Remember Me Checkbox */}
           <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-xs text-[#6E6E73]">
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-[#52796F] dark:text-neutral-400">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded border-neutral-300 text-[#0071E3] focus:ring-[#0071E3]"
+                className="rounded border-neutral-300 dark:border-neutral-700 text-[#84A98C] focus:ring-[#84A98C]"
               />
               <span>Remember me on this device</span>
             </label>
@@ -398,7 +398,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 py-2.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(0,113,227,0.25)] hover:shadow-[0_6px_20px_rgba(0,113,227,0.35)] transition-all active:scale-[0.98] disabled:opacity-75 cursor-pointer"
+            className="w-full mt-2 py-2.5 px-4 rounded-xl bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(132,169,140,0.25)] hover:shadow-[0_6px_20px_rgba(132,169,140,0.35)] transition-all active:scale-[0.98] disabled:opacity-75 cursor-pointer"
           >
             {isSubmitting ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -411,14 +411,24 @@ export const AuthView: React.FC<AuthViewProps> = ({
           </button>
         </form>
 
-        {/* 1-Click Fast Demo Pill */}
-        <div className="mt-5 pt-4 border-t border-neutral-100 flex items-center justify-center">
+        {/* 1-Click Fast Demo Pills */}
+        <div className="mt-5 pt-4 border-t border-neutral-100 dark:border-white/10 flex flex-col gap-2 items-center justify-center">
           <button
             type="button"
-            onClick={() => handleQuickDemo('staff')}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50/70 hover:bg-blue-100/80 text-[#0071E3] text-[11px] font-medium border border-blue-200/50 transition-colors cursor-pointer"
+            id="btn-quick-demo-evaluator"
+            onClick={() => handleQuickDemo('evaluator')}
+            className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50/70 hover:bg-purple-100/80 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 text-[11px] font-semibold border border-purple-200/50 dark:border-purple-800/60 transition-colors cursor-pointer"
           >
-            <Sparkles className="w-3 h-3 text-[#0071E3]" />
+            <ShieldCheck className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+            <span>1-Click Demo Login (Hiring Manager)</span>
+          </button>
+          <button
+            type="button"
+            id="btn-quick-demo-staff"
+            onClick={() => handleQuickDemo('staff')}
+            className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-[#84A98C]/15 hover:bg-[#84A98C]/25 dark:bg-[#354F52]/40 text-[#52796F] dark:text-[#CAD2C5] text-[11px] font-medium border border-[#84A98C]/30 transition-colors cursor-pointer"
+          >
+            <Sparkles className="w-3 h-3 text-[#84A98C]" />
             <span>1-Click Demo Login (Staff Engineer)</span>
           </button>
         </div>

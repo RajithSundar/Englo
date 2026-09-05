@@ -134,25 +134,25 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
       }`}>
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-blue-500/10 text-[#0071E3] border border-blue-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-[#84A98C]/15 text-[#52796F] dark:text-[#84A98C] border border-[#84A98C]/30">
               Format Independent AI
             </span>
-            <span className="flex h-2 w-2 rounded-full bg-[#34C759] animate-pulse" />
-            <span className={`text-xs font-mono font-semibold ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+            <span className="flex h-2 w-2 rounded-full bg-[#84A98C] animate-pulse" />
+            <span className={`text-xs font-mono font-semibold ${isDarkMode ? 'text-neutral-400' : 'text-[#52796F]'}`}>
               Zero Syntax Rigidity
             </span>
           </div>
-          <h3 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+          <h3 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
             Express Your Algorithm Your Way
           </h3>
-          <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#6E6E73]'}`}>
+          <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-[#52796F]'}`}>
             Write a continuous paragraph, crisp bullet points, or sequential steps. Englo parses your underlying mathematical logic and invariant proofs — never your formatting style.
           </p>
         </div>
 
         {/* Live Format Selector Tabs */}
         <div className={`flex items-center p-1 rounded-2xl border shadow-2xs self-start md:self-auto flex-wrap gap-1 ${
-          isDarkMode ? 'bg-[#151926] border-white/10' : 'bg-white border-black/[0.08]'
+          isDarkMode ? 'bg-[#2F3E46] border-white/10' : 'bg-white border-black/[0.08]'
         }`}>
           {FORMAT_SAMPLES.map((sample) => {
             const Icon = sample.icon;
@@ -164,10 +164,10 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
                 onClick={() => handleSelectFormat(sample.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                   isSelected
-                    ? 'bg-[#0071E3] text-white shadow-xs scale-[1.02]'
+                    ? 'bg-[#84A98C] text-white shadow-xs scale-[1.02]'
                     : isDarkMode
                     ? 'text-neutral-400 hover:text-white hover:bg-white/5'
-                    : 'text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-black/[0.04]'
+                    : 'text-[#52796F] hover:text-[#2F3E46] hover:bg-black/[0.04]'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -185,18 +185,18 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
           <div>
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-[#0071E3]" />
-                <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+                <Terminal className="w-4 h-4 text-[#84A98C]" />
+                <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                   Candidate Input ({activeFormat.title})
                 </span>
-                <span className="text-[11px] font-mono text-[#86868B]">
+                <span className="text-[11px] font-mono text-[#84A98C] dark:text-[#CAD2C5]">
                   • {activeFormat.wordCount} words
                 </span>
               </div>
               <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold border ${
                 isDarkMode 
-                  ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' 
-                  : 'bg-blue-50 text-[#0071E3] border-blue-200/60'
+                  ? 'bg-[#354F52] text-[#CAD2C5] border-white/10' 
+                  : 'bg-[#84A98C]/15 text-[#52796F] border-[#84A98C]/30'
               }`}>
                 {activeFormat.badge}
               </span>
@@ -205,12 +205,12 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
             {/* Code / Text Presentation Box */}
             <div className={`rounded-2xl border p-4 sm:p-5 font-mono text-[12px] sm:text-[13px] leading-6 sm:leading-7 transition-all duration-300 relative overflow-hidden ${
               isDarkMode 
-                ? 'bg-[#080A10] border-white/10 text-neutral-200 shadow-inner' 
-                : 'bg-[#FBFBFD] border-black/[0.06] text-[#1D1D1F] shadow-inner'
+                ? 'bg-[#1E272C] border-white/10 text-neutral-200 shadow-inner' 
+                : 'bg-[#F4F6F4] border-black/[0.06] text-[#2F3E46] shadow-inner'
             }`}>
               {/* Animated Parsing Shimmer Beam */}
               {isParsing && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0071E3]/20 to-transparent animate-pulse pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#84A98C]/20 to-transparent animate-pulse pointer-events-none" />
               )}
               
               <div className="whitespace-pre-wrap select-text">
@@ -220,14 +220,14 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
           </div>
 
           {/* Under-editor format acceptance note */}
-          <div className="mt-4 pt-3 flex items-center justify-between text-xs text-[#86868B] font-mono">
-            <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+          <div className="mt-4 pt-3 flex items-center justify-between text-xs text-[#84A98C] dark:text-[#CAD2C5] font-mono">
+            <span className="flex items-center gap-1.5 text-[#84A98C] font-semibold">
               <Check className="w-3.5 h-3.5" />
               No "Step 1" required — write how you naturally explain logic
             </span>
             <button
               onClick={() => handleSelectFormat(activeFormatId)}
-              className="text-[#0071E3] hover:underline cursor-pointer font-bold"
+              className="text-[#84A98C] hover:underline cursor-pointer font-bold"
             >
               Re-scan logic ↺
             </button>
@@ -236,17 +236,17 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
 
         {/* Right Side: Englo Universal Logic Verification Output */}
         <div className={`lg:col-span-5 p-6 sm:p-7 flex flex-col justify-between transition-colors ${
-          isDarkMode ? 'bg-[#0D1018]' : 'bg-[#FAFBFC]'
+          isDarkMode ? 'bg-[#1E272C]' : 'bg-[#FAFBFC]'
         }`}>
           <div>
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/[0.06] dark:border-white/[0.06]">
               <div className="flex items-center gap-2">
-                <Cpu className={`w-4 h-4 text-[#34C759] ${isParsing ? 'animate-spin' : ''}`} />
-                <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#1D1D1F]'}`}>
+                <Cpu className={`w-4 h-4 text-[#84A98C] ${isParsing ? 'animate-spin' : ''}`} />
+                <span className={`text-xs font-bold tracking-tight ${isDarkMode ? 'text-white' : 'text-[#2F3E46]'}`}>
                   Universal Logic Matrix
                 </span>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-[#34C759] border border-emerald-500/30 flex items-center gap-1">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#84A98C]/15 text-[#52796F] dark:text-[#84A98C] border border-[#84A98C]/30 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" />
                 100% Invariant Verified
               </span>
@@ -257,28 +257,28 @@ export const MultiFormatPitchAsset: React.FC<{ isDarkMode?: boolean }> = ({ isDa
               <div className={`p-3 rounded-xl border transition-all ${
                 isDarkMode ? 'bg-white/[0.03] border-white/10' : 'bg-white border-black/[0.06]'
               }`}>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-[#86868B] font-bold">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-[#84A98C] dark:text-[#CAD2C5] font-bold">
                   Extracted Data Structure
                 </div>
                 <div className={`text-xs font-bold mt-0.5 flex items-center justify-between ${
-                  isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+                  isDarkMode ? 'text-white' : 'text-[#2F3E46]'
                 }`}>
                   <span>{activeFormat.extractedInvariants.dataStructure}</span>
-                  <Check className="w-3.5 h-3.5 text-[#34C759]" />
+                  <Check className="w-3.5 h-3.5 text-[#84A98C]" />
                 </div>
               </div>
 
               <div className={`p-3 rounded-xl border transition-all ${
                 isDarkMode ? 'bg-white/[0.03] border-white/10' : 'bg-white border-black/[0.06]'
               }`}>
-                <div className="text-[10px] font-mono uppercase tracking-wider text-[#86868B] font-bold">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-[#84A98C] dark:text-[#CAD2C5] font-bold">
                   Lookup &amp; Invariant Logic
                 </div>
                 <div className={`text-xs font-bold mt-0.5 flex items-center justify-between ${
-                  isDarkMode ? 'text-white' : 'text-[#1D1D1F]'
+                  isDarkMode ? 'text-white' : 'text-[#2F3E46]'
                 }`}>
-                  <span className="font-mono text-[11px] text-[#0071E3]">{activeFormat.extractedInvariants.lookupLogic}</span>
-                  <Check className="w-3.5 h-3.5 text-[#34C759]" />
+                  <span className="font-mono text-[11px] text-[#84A98C]">{activeFormat.extractedInvariants.lookupLogic}</span>
+                  <Check className="w-3.5 h-3.5 text-[#84A98C]" />
                 </div>
               </div>
 
