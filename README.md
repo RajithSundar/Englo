@@ -13,8 +13,8 @@
 
 * **Production Web App**: [https://englo-studio-95017413334.us-central1.run.app](https://englo-studio-95017413334.us-central1.run.app)
 * **System Health Endpoint**: [https://englo-studio-95017413334.us-central1.run.app/api/health](https://englo-studio-95017413334.us-central1.run.app/api/health)
-* **Hosting Platform**: Google Cloud Run (`us-central1`), automated serverless container revision with TLS/HTTPS.
-* **AI Engine**: Google Cloud Vertex AI (`gemini-2.5-flash`).
+* **Hosting Platform**: Google Cloud Run (`us-central1`), automated serverless container revision with TLS/HTTPS
+* **AI Engine**: Google Cloud Vertex AI (`gemini-2.5-flash`)
 
 ---
 
