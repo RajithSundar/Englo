@@ -1,16 +1,5 @@
 import React from 'react';
-import {
-  X,
-  Settings,
-  Trash2,
-  Copy,
-  Layers,
-  CheckCircle2,
-  Server,
-  Database,
-  Cpu,
-  Radio
-} from 'lucide-react';
+import { X, Trash2, Copy } from 'lucide-react';
 import { SystemNodeData } from '../../types';
 
 interface NodeConfigPanelProps {
@@ -31,7 +20,6 @@ export const NodeConfigPanel: React.FC<NodeConfigPanelProps> = ({
   const isDB = nodeData.subType === 'sql_db' || nodeData.subType === 'nosql_db';
   const isCache = nodeData.subType === 'redis_cache';
   const isCompute = nodeData.category === 'compute';
-  const isNetwork = nodeData.category === 'network';
 
   const handleConfigChange = (key: string, value: any) => {
     onUpdate({
@@ -45,60 +33,58 @@ export const NodeConfigPanel: React.FC<NodeConfigPanelProps> = ({
   return (
     <div
       id="node-config-panel"
-      className="absolute top-4 right-4 w-80 bg-white/95 dark:bg-[#2F3E46]/95 backdrop-blur-md border border-[#CAD2C5] dark:border-[#52796F]/50 rounded-2xl shadow-apple-hover p-4 z-40 text-xs text-[#2F3E46] dark:text-[#CAD2C5] select-none space-y-4 animate-in fade-in slide-in-from-right-2 duration-200"
+      role="dialog"
+      aria-label={`Configure ${nodeData.label}`}
+      className="absolute top-[4.5rem] right-4 w-72 max-h-[calc(100%-5.5rem)] overflow-y-auto glass-strong rounded-xl p-4 z-40 text-sm text-ink-2 space-y-4"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 pb-2.5">
-        <div className="flex items-center gap-2">
-          <Settings className="w-4 h-4 text-[#52796F] dark:text-[#84A98C]" />
-          <span className="font-bold text-[#2F3E46] dark:text-white text-sm">Node Configuration</span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="text-sm font-medium text-ink truncate">Configure</h2>
+          <p className="text-xs text-muted capitalize">{nodeData.category} · {nodeData.subType.replace(/_/g, ' ')}</p>
         </div>
         <button
+          type="button"
           onClick={onClose}
-          className="p-1 rounded-full text-[#52796F] dark:text-[#CAD2C5]/70 hover:text-[#2F3E46] dark:hover:text-white hover:bg-[#CAD2C5]/30 dark:hover:bg-white/10 transition-colors cursor-pointer"
+          className="btn-icon border-transparent w-8 h-8"
+          aria-label="Close configuration"
+          title="Close"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Label Name */}
-      <div className="space-y-1">
-        <label className="text-[11px] font-semibold text-[#52796F] dark:text-[#CAD2C5]/70">Component Label</label>
+      <div className="space-y-1.5">
+        <label htmlFor="node-label-input" className="label block">Label</label>
         <input
+          id="node-label-input"
           type="text"
           value={nodeData.label}
           onChange={(e) => onUpdate({ label: e.target.value })}
-          className="w-full px-3 py-1.5 bg-[#F4F6F4] dark:bg-[#1E272C] border border-[#CAD2C5]/80 dark:border-[#52796F]/50 rounded-xl text-[#2F3E46] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#84A98C]/30 focus:border-[#84A98C] text-xs transition-all"
+          className="field"
         />
       </div>
 
-      {/* Database Specific Controls */}
       {isDB && (
-        <div className="space-y-3 bg-[#F4F6F4] dark:bg-[#1E272C] p-3 rounded-xl border border-[#CAD2C5]/60 dark:border-[#52796F]/40">
-          <div className="text-[11px] font-semibold text-[#2F3E46] dark:text-white flex items-center gap-1.5">
-            <Database className="w-3.5 h-3.5 text-[#52796F] dark:text-[#84A98C]" />
-            <span>Database Replication Topology</span>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70">Architecture Topology</label>
+        <div className="space-y-4 pt-4 border-t border-rule">
+          <div className="space-y-1.5">
+            <label htmlFor="db-mode-select" className="label block">Replication topology</label>
             <select
               id="db-mode-select"
               value={nodeData.config?.mode || 'Primary-Replica'}
               onChange={(e) => handleConfigChange('mode', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-white dark:bg-[#2F3E46] border border-[#CAD2C5]/80 dark:border-[#52796F]/40 rounded-xl text-[#2F3E46] dark:text-white focus:outline-none focus:border-[#84A98C] cursor-pointer text-xs"
+              className="field cursor-pointer"
             >
-              <option value="Primary-Replica">Primary-Replica (Active/Passive Failover)</option>
-              <option value="Sharded">Sharded / Distributed Hash Ring</option>
-              <option value="Multi-Region">Multi-Region Active-Active</option>
-              <option value="Single Node">Single Standalone Node (SPOF)</option>
+              <option value="Primary-Replica">Primary-replica (failover)</option>
+              <option value="Sharded">Sharded (hash ring)</option>
+              <option value="Multi-Region">Multi-region active-active</option>
+              <option value="Single Node">Single node (single point of failure)</option>
             </select>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex justify-between text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70">
-              <span>Read Replicas:</span>
-              <span className="font-mono font-bold text-[#2F3E46] dark:text-white">{nodeData.config?.replicas || 2} nodes</span>
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-baseline">
+              <label htmlFor="db-replicas-input" className="label">Read replicas</label>
+              <span className="text-xs text-ink tabular-nums">{nodeData.config?.replicas || 2}</span>
             </div>
             <input
               id="db-replicas-input"
@@ -107,77 +93,57 @@ export const NodeConfigPanel: React.FC<NodeConfigPanelProps> = ({
               max="10"
               value={nodeData.config?.replicas || 2}
               onChange={(e) => handleConfigChange('replicas', parseInt(e.target.value))}
-              className="w-full accent-[#84A98C] cursor-pointer"
+              className="w-full accent-accent cursor-pointer"
             />
           </div>
         </div>
       )}
 
-      {/* Cache Specific Controls */}
       {isCache && (
-        <div className="space-y-3 bg-[#F4F6F4] dark:bg-[#1E272C] p-3 rounded-xl border border-[#CAD2C5]/60 dark:border-[#52796F]/40">
-          <div className="text-[11px] font-semibold text-[#2F3E46] dark:text-white flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-[#84A98C]" />
-            <span>Cache Invalidation &amp; Eviction</span>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70">Eviction Algorithm</label>
-            <select
-              value={nodeData.config?.cachePolicy || 'LRU'}
-              onChange={(e) => handleConfigChange('cachePolicy', e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-white dark:bg-[#2F3E46] border border-[#CAD2C5]/80 dark:border-[#52796F]/40 rounded-xl text-[#2F3E46] dark:text-white focus:outline-none focus:border-[#84A98C] cursor-pointer text-xs"
-            >
-              <option value="LRU">Least Recently Used (LRU)</option>
-              <option value="LFU">Least Frequently Used (LFU)</option>
-              <option value="FIFO">First In First Out (FIFO)</option>
-            </select>
-          </div>
+        <div className="space-y-1.5 pt-4 border-t border-rule">
+          <label htmlFor="cache-policy-select" className="label block">Eviction policy</label>
+          <select
+            id="cache-policy-select"
+            value={nodeData.config?.cachePolicy || 'LRU'}
+            onChange={(e) => handleConfigChange('cachePolicy', e.target.value)}
+            className="field cursor-pointer"
+          >
+            <option value="LRU">Least recently used (LRU)</option>
+            <option value="LFU">Least frequently used (LFU)</option>
+            <option value="FIFO">First in, first out (FIFO)</option>
+          </select>
         </div>
       )}
 
-      {/* Compute Specific Controls */}
       {isCompute && (
-        <div className="space-y-3 bg-[#F4F6F4] dark:bg-[#1E272C] p-3 rounded-xl border border-[#CAD2C5]/60 dark:border-[#52796F]/40">
-          <div className="text-[11px] font-semibold text-[#2F3E46] dark:text-white flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5 text-[#52796F] dark:text-[#CAD2C5]" />
-            <span>Autoscaling &amp; Concurrency</span>
+        <div className="space-y-1.5 pt-4 border-t border-rule">
+          <div className="flex justify-between items-baseline">
+            <label htmlFor="compute-replicas-input" className="label">Instances</label>
+            <span className="text-xs text-ink tabular-nums">{nodeData.config?.replicas || 3}</span>
           </div>
-
-          <div className="space-y-1">
-            <div className="flex justify-between text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70">
-              <span>Instance Count:</span>
-              <span className="font-mono font-bold text-[#2F3E46] dark:text-white">{nodeData.config?.replicas || 3} units</span>
-            </div>
-            <input
-              type="range"
-              min="1"
-              max="20"
-              value={nodeData.config?.replicas || 3}
-              onChange={(e) => handleConfigChange('replicas', parseInt(e.target.value))}
-              className="w-full accent-[#84A98C] cursor-pointer"
-            />
-          </div>
+          <input
+            id="compute-replicas-input"
+            type="range"
+            min="1"
+            max="20"
+            value={nodeData.config?.replicas || 3}
+            onChange={(e) => handleConfigChange('replicas', parseInt(e.target.value))}
+            className="w-full accent-accent cursor-pointer"
+          />
         </div>
       )}
 
-      {/* Actions (Duplicate / Delete) */}
-      <div className="pt-2 border-t border-black/[0.06] dark:border-white/10 flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={onDuplicate}
-          className="flex-1 py-1.5 px-3 rounded-full bg-[#F5F5F7] dark:bg-white/[0.06] hover:bg-neutral-200 dark:hover:bg-white/10 text-[#1D1D1F] dark:text-white border border-neutral-200 dark:border-white/10 flex items-center justify-center gap-1.5 transition-colors font-medium cursor-pointer"
-        >
-          <Copy className="w-3 h-3 text-[#6E6E73] dark:text-neutral-400" />
+      <div className="pt-4 border-t border-rule flex items-center gap-2">
+        <button type="button" onClick={onDuplicate} className="btn flex-1">
+          <Copy className="w-3.5 h-3.5" />
           <span>Duplicate</span>
         </button>
-
         <button
           type="button"
           onClick={onDelete}
-          className="py-1.5 px-3 rounded-full bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/50 text-[#FF3B30] border border-red-200 dark:border-red-800/60 flex items-center justify-center gap-1.5 transition-colors font-medium cursor-pointer"
+          className="btn text-bad border-bad/50 hover:border-bad"
         >
-          <Trash2 className="w-3 h-3" />
+          <Trash2 className="w-3.5 h-3.5" />
           <span>Remove</span>
         </button>
       </div>

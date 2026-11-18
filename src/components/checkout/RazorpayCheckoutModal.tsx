@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import {
-  CreditCard,
-  ShieldCheck,
-  CheckCircle2,
-  X,
-  Zap,
-  Sparkles,
-  ArrowRight,
-  Lock,
-  Building2,
-  Check
-} from 'lucide-react';
+import { CheckCircle2, X, Check } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { audioService } from '../../services/audioService';
 
@@ -18,6 +7,11 @@ interface RazorpayCheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const PLANS: Array<{ id: 'fast_track' | 'enterprise'; name: string; price: string; note: string }> = [
+  { id: 'fast_track', name: 'Candidate Fast-Track', price: '₹999', note: 'Priority verification for one candidate' },
+  { id: 'enterprise', name: 'Evaluator Pro Pass', price: '₹4,999', note: '100 candidate credits and chaos reports' }
+];
 
 export const RazorpayCheckoutModal: React.FC<RazorpayCheckoutModalProps> = ({
   isOpen,
@@ -188,7 +182,7 @@ export const RazorpayCheckoutModal: React.FC<RazorpayCheckoutModalProps> = ({
           planId: selectedPlan
         },
         theme: {
-          color: '#84A98C'
+          color: '#00C8FF'
         },
         modal: {
           ondismiss: () => {
@@ -207,200 +201,153 @@ export const RazorpayCheckoutModal: React.FC<RazorpayCheckoutModalProps> = ({
     }
   };
 
+  const handleClose = () => {
+    audioService.playTap();
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim backdrop-blur-sm">
       <div
-        className="relative w-full max-w-lg bg-white dark:bg-[#2F3E46] rounded-3xl border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="glass-strong rounded-xl w-full max-w-lg max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="checkout-modal-title"
+        aria-labelledby="razorpay-checkout-modal-title"
       >
-        {/* Header with Razorpay Logo Badge */}
-        <div className="p-6 bg-gradient-to-br from-[#84A98C]/15 via-[#EBF0EB] to-white dark:from-[#84A98C]/20 dark:via-[#2F3E46] dark:to-[#1E272C] border-b border-black/[0.06] dark:border-white/10 relative">
-          <button
-            onClick={() => {
-              audioService.playTap();
-              onClose();
-            }}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white transition-colors cursor-pointer"
-            title="Close"
-          >
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 flex items-start justify-between gap-4 border-b border-rule">
+          <div className="min-w-0">
+            <h2 id="razorpay-checkout-modal-title" className="text-lg font-medium tracking-tight text-ink">
+              Evaluator Pro &amp; assessment credits
+            </h2>
+            <p className="text-sm text-muted mt-1">
+              Pay with Razorpay; the server verifies the payment signature.
+            </p>
+          </div>
+          <button type="button" onClick={handleClose} className="btn-icon shrink-0" aria-label="Close" title="Close">
             <X className="w-4 h-4" />
           </button>
-
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-[#84A98C] flex items-center justify-center text-white shadow-sm">
-              <CreditCard className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#52796F] dark:text-[#84A98C] font-bold">
-                  Razorpay Standard Gateway
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-[#84A98C]/15 text-[#52796F] dark:text-[#84A98C] border border-[#84A98C]/30 font-semibold">
-                  Orders API v1
-                </span>
-              </div>
-              <h2 id="razorpay-checkout-modal-title" className="text-lg font-bold text-[#2F3E46] dark:text-white">
-                Evaluator Pro &amp; Assessment Credits
-              </h2>
-            </div>
-          </div>
-          <p className="text-xs text-[#52796F] dark:text-neutral-400">
-            Using Razorpay's Orders API on the backend, hiring managers purchase enterprise assessment tokens with server-side HMAC SHA-256 verification.
-          </p>
         </div>
 
-        {/* Body Content */}
-        <div className="p-6 space-y-4">
+        {/* Body */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-5">
           {successReceipt ? (
-            <div className="space-y-4 text-center py-4">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-7 h-7" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-[#2F3E46] dark:text-white">Payment Verified Successfully!</h3>
-                <p className="text-xs text-[#52796F] dark:text-neutral-400 mt-1">
-                  Razorpay HMAC SHA256 signature verified. Your Evaluator Pro entitlement is now active.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-200/80 dark:border-white/10 text-left font-mono text-xs space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-[#84A98C]">Plan:</span>
-                  <strong className="text-[#2F3E46] dark:text-white">{successReceipt.planName}</strong>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#84A98C]">Amount Paid:</span>
-                  <strong className="text-emerald-600 dark:text-emerald-400">{successReceipt.amountFormatted}</strong>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#84A98C]">Razorpay Order ID:</span>
-                  <span className="text-[#52796F] dark:text-[#84A98C] truncate max-w-[200px]">{successReceipt.orderId}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#84A98C]">Payment ID:</span>
-                  <span className="text-neutral-700 dark:text-neutral-300 truncate max-w-[200px]">{successReceipt.paymentId}</span>
-                </div>
-                <div className="flex justify-between border-t border-neutral-200/60 dark:border-white/10 pt-2 text-[11px]">
-                  <span className="text-[#84A98C]">Signature Verification:</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">HMAC-SHA256 Validated ✓</span>
+            <>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-ok shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="text-base font-medium text-ink">Payment verified</h3>
+                  <p className="text-sm text-muted mt-0.5">Evaluator Pro is now active on your account.</p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  audioService.playTap();
-                  onClose();
-                }}
-                className="w-full py-2.5 rounded-xl bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
-              >
-                Access Evaluator Dashboard
-              </button>
-            </div>
+              <dl className="text-sm divide-y divide-rule border-y border-rule">
+                <div className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted">Plan</dt>
+                  <dd className="text-ink">{successReceipt.planName}</dd>
+                </div>
+                <div className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted">Amount paid</dt>
+                  <dd className="font-mono text-ink">{successReceipt.amountFormatted}</dd>
+                </div>
+                <div className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted shrink-0">Order ID</dt>
+                  <dd className="font-mono text-xs text-ink-2 truncate">{successReceipt.orderId}</dd>
+                </div>
+                <div className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted shrink-0">Payment ID</dt>
+                  <dd className="font-mono text-xs text-ink-2 truncate">{successReceipt.paymentId}</dd>
+                </div>
+                <div className="flex justify-between gap-4 py-2.5">
+                  <dt className="text-muted">Signature</dt>
+                  <dd className="text-ok">Verified</dd>
+                </div>
+              </dl>
+            </>
           ) : (
             <>
-              {/* Plan Selection Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Plan 1 */}
-                <div
-                  onClick={() => setSelectedPlan('fast_track')}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer ${
-                    selectedPlan === 'fast_track'
-                      ? 'border-[#84A98C] bg-[#84A98C]/10 ring-2 ring-[#84A98C]/20 shadow-sm'
-                      : 'border-neutral-200 dark:border-white/10 bg-neutral-50/50 dark:bg-white/[0.02] hover:border-neutral-300'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-[#2F3E46] dark:text-white">Candidate Fast-Track</span>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedPlan === 'fast_track' ? 'border-[#84A98C] bg-[#84A98C]' : 'border-neutral-300'}`}>
-                      {selectedPlan === 'fast_track' && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
-                    </div>
-                  </div>
-                  <div className="text-xl font-bold text-[#2F3E46] dark:text-white">₹999</div>
-                  <div className="text-[10px] text-[#84A98C] dark:text-neutral-400 mt-1">Single candidate priority verification badge</div>
-                </div>
-
-                {/* Plan 2: Enterprise Evaluator */}
-                <div
-                  onClick={() => setSelectedPlan('enterprise')}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer relative ${
-                    selectedPlan === 'enterprise'
-                      ? 'border-[#84A98C] bg-[#84A98C]/10 ring-2 ring-[#84A98C]/20 shadow-sm'
-                      : 'border-neutral-200 dark:border-white/10 bg-neutral-50/50 dark:bg-white/[0.02] hover:border-neutral-300'
-                  }`}
-                >
-                  <span className="absolute -top-2 right-3 text-[9px] font-semibold bg-[#84A98C] text-white px-2 py-0.2 rounded-full uppercase tracking-wider">
-                    Recommended
-                  </span>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-[#2F3E46] dark:text-white">Evaluator Pro Pass</span>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedPlan === 'enterprise' ? 'border-[#84A98C] bg-[#84A98C]' : 'border-neutral-300'}`}>
-                      {selectedPlan === 'enterprise' && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
-                    </div>
-                  </div>
-                  <div className="text-xl font-bold text-[#2F3E46] dark:text-white">₹4,999</div>
-                  <div className="text-[10px] text-[#84A98C] dark:text-neutral-400 mt-1">100 candidate credits + live chaos telemetry</div>
-                </div>
+              {/* Plan selection */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Plan">
+                {PLANS.map((plan) => {
+                  const active = selectedPlan === plan.id;
+                  return (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={active}
+                      onClick={() => setSelectedPlan(plan.id)}
+                      className={`text-left p-4 rounded-xl border transition-colors cursor-pointer ${
+                        active
+                          ? 'border-accent bg-accent/10 shadow-glow-1'
+                          : 'border-rule hover:border-rule-2'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-medium text-ink">{plan.name}</span>
+                        <span
+                          className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                            active ? 'border-accent bg-accent' : 'border-rule-2'
+                          }`}
+                        >
+                          {active && <Check className="w-2.5 h-2.5 text-accent-ink stroke-[3]" />}
+                        </span>
+                      </div>
+                      <div className="font-mono text-lg text-ink mt-2">{plan.price}</div>
+                      <div className="text-xs text-muted mt-1">{plan.note}</div>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Inclusions */}
-              <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/10 text-xs space-y-2">
-                <div className="flex items-center gap-2 text-[#2F3E46] dark:text-neutral-200 font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  <span>100 Candidate Invariant &amp; Distributed Systems Assessment Tokens</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#2F3E46] dark:text-neutral-200 font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  <span>Real-time Black Friday 10x Chaos Surge stress testing reports</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#2F3E46] dark:text-neutral-200 font-medium">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  <span>Cryptographic tamper-proof candidate verification audit trail</span>
-                </div>
+              <div>
+                <div className="label mb-1">Included</div>
+                <ul className="text-sm text-ink-2 divide-y divide-rule border-y border-rule">
+                  <li className="py-2.5">100 invariant and distributed-systems assessment tokens</li>
+                  <li className="py-2.5">Black Friday 10x chaos surge stress reports</li>
+                  <li className="py-2.5">Tamper-evident candidate verification audit trail</li>
+                </ul>
               </div>
 
               {errorMessage && (
-                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-600 dark:text-red-300">
+                <div className="p-3 rounded-lg bg-bad-soft border border-bad/40 text-sm text-bad" role="alert">
                   {errorMessage}
                 </div>
               )}
+            </>
+          )}
+        </div>
 
-              {/* Payment Buttons */}
-              <div className="space-y-2 pt-2">
-                <button
-                  type="button"
-                  id="btn-razorpay-checkout"
-                  onClick={() => handleInitiatePayment('standard')}
-                  disabled={isLoading}
-                  className="w-full py-3 rounded-xl bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-98 disabled:opacity-60 cursor-pointer"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  <span>
-                    {isLoading ? 'Processing via Razorpay...' : `Pay ₹${selectedPlan === 'fast_track' ? '999' : '4,999'} with Razorpay`}
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-
-                {/* Instant Sandbox Testnet Authorization Button */}
-                <button
-                  type="button"
-                  id="btn-razorpay-sandbox-authorize"
-                  onClick={() => handleInitiatePayment('sandbox_instant')}
-                  disabled={isLoading}
-                  className="w-full py-2.5 rounded-xl bg-neutral-100 dark:bg-white/10 hover:bg-neutral-200 dark:hover:bg-white/15 text-[#2F3E46] dark:text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer border border-neutral-200 dark:border-white/10 shadow-2xs"
-                  title="Authorize payment via Razorpay Orders API testnet"
-                >
-                  <Zap className="w-3.5 h-3.5 text-[#84A98C]" />
-                  <span>Authorize Payment (Razorpay Testnet)</span>
-                </button>
-              </div>
-
-              <div className="flex items-center justify-center gap-2 text-[10px] text-[#84A98C] dark:text-neutral-400">
-                <Lock className="w-3 h-3 text-emerald-600" />
-                <span>Secured by Razorpay Payments Engine • 256-bit SSL Encryption</span>
-              </div>
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-rule flex flex-wrap items-center justify-end gap-2">
+          {successReceipt ? (
+            <button type="button" onClick={handleClose} className="btn-primary">
+              Access Evaluator Dashboard
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                id="btn-razorpay-sandbox-authorize"
+                onClick={() => handleInitiatePayment('sandbox_instant')}
+                disabled={isLoading}
+                className="btn"
+                title="Authorize payment via Razorpay Orders API testnet"
+              >
+                Authorize on testnet
+              </button>
+              <button
+                type="button"
+                id="btn-razorpay-checkout"
+                onClick={() => handleInitiatePayment('standard')}
+                disabled={isLoading}
+                className="btn-primary"
+              >
+                {isLoading
+                  ? 'Processing…'
+                  : `Pay ${selectedPlan === 'fast_track' ? '₹999' : '₹4,999'} with Razorpay`}
+              </button>
             </>
           )}
         </div>

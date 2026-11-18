@@ -32,7 +32,7 @@ function renderInline(text: string): React.ReactNode[] {
 
     if (boldText !== undefined) {
       elements.push(
-        <strong key={match.index} className="font-bold text-[#2F3E46] dark:text-white">
+        <strong key={match.index} className="font-semibold text-ink">
           {boldText}
         </strong>
       );
@@ -40,7 +40,7 @@ function renderInline(text: string): React.ReactNode[] {
       elements.push(
         <code
           key={match.index}
-          className="px-1.5 py-0.5 rounded-md bg-[#CAD2C5]/30 dark:bg-[#1E272C] font-mono text-[11px] text-[#52796F] dark:text-[#84A98C] font-semibold border border-[#CAD2C5]/60 dark:border-[#52796F]/30"
+          className="px-1.5 py-0.5 rounded-md bg-paper-3 font-mono text-[0.875em] text-ink"
         >
           {codeText}
         </code>
@@ -49,14 +49,14 @@ function renderInline(text: string): React.ReactNode[] {
       elements.push(
         <span
           key={match.index}
-          className="inline-flex items-center px-1.5 py-0.2 rounded font-mono text-[11px] font-semibold bg-[#CAD2C5]/20 dark:bg-[#354F52] text-[#354F52] dark:text-[#CAD2C5] border border-[#CAD2C5] dark:border-[#52796F]/50"
+          className="px-1.5 py-0.5 rounded-md bg-paper-3 font-mono text-[0.875em] text-ink"
         >
           {mathText}
         </span>
       );
     } else if (italicText !== undefined) {
       elements.push(
-        <em key={match.index} className="italic text-[#52796F] dark:text-[#CAD2C5]/90">
+        <em key={match.index} className="italic">
           {italicText}
         </em>
       );
@@ -86,7 +86,7 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, c
       const text = paragraphBuffer.join(' ').trim();
       if (text) {
         blocks.push(
-          <p key={`p-${blocks.length}`} className="leading-relaxed text-xs text-[#2F3E46] dark:text-[#CAD2C5]/90 my-2">
+          <p key={`p-${blocks.length}`} className="text-base leading-7 text-ink-2 my-3">
             {renderInline(text)}
           </p>
         );
@@ -100,8 +100,8 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, c
       const isOrdered = currentList.type === 'ol';
       const ListTag = isOrdered ? 'ol' : 'ul';
       const listClass = isOrdered
-        ? 'list-decimal list-outside pl-5 space-y-1.5 my-2.5 text-xs text-[#2F3E46] dark:text-[#CAD2C5]/90 leading-relaxed'
-        : 'list-disc list-outside pl-5 space-y-1.5 my-2.5 text-xs text-[#2F3E46] dark:text-[#CAD2C5]/90 leading-relaxed';
+        ? 'list-decimal list-outside pl-5 space-y-1.5 my-3 text-base text-ink-2 leading-7 marker:text-muted'
+        : 'list-disc list-outside pl-5 space-y-1.5 my-3 text-base text-ink-2 leading-7 marker:text-muted';
 
       blocks.push(
         <ListTag key={`list-${blocks.length}`} className={listClass}>
@@ -133,12 +133,9 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, c
       const title = headingMatch[2];
 
       blocks.push(
-        <div key={`h-${blocks.length}`} className="pt-3 pb-1">
-          <h4 className="text-[13px] font-bold tracking-tight text-[#2F3E46] dark:text-white flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#84A98C] inline-block" />
-            {renderInline(title)}
-          </h4>
-        </div>
+        <h4 key={`h-${blocks.length}`} className="pt-4 pb-0.5 text-base font-medium tracking-tight text-ink">
+          {renderInline(title)}
+        </h4>
       );
       continue;
     }
@@ -177,5 +174,5 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, c
   flushParagraph();
   flushList();
 
-  return <div className={`space-y-1 ${className}`}>{blocks}</div>;
+  return <div className={`${className}`.trim() || undefined}>{blocks}</div>;
 };

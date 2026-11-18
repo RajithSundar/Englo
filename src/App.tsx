@@ -104,7 +104,7 @@ export default function App() {
 
   if (activeView === 'landing') {
     return (
-      <div className="min-h-screen bg-[#F4F6F4] dark:bg-[#1E272C] text-[#2F3E46] dark:text-[#CAD2C5] font-sans selection:bg-[#52796F] selection:text-[#CAD2C5]">
+      <div className="min-h-screen bg-paper text-ink font-sans selection:bg-accent-hi selection:text-paper">
         <LandingPage />
         {/* Quick Authentication Modal */}
         <AuthModal />
@@ -135,7 +135,7 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen bg-[#F4F6F4] dark:bg-[#1E272C] text-[#2F3E46] dark:text-[#CAD2C5] flex flex-col font-sans selection:bg-[#52796F] selection:text-[#CAD2C5] overflow-hidden">
+    <div className="h-screen bg-paper text-ink flex flex-col font-sans selection:bg-accent-hi selection:text-paper overflow-hidden">
       {/* Global Navigation Bar */}
       <Navbar />
 

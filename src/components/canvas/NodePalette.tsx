@@ -15,7 +15,6 @@ import {
   Archive,
   ChevronDown,
   ChevronRight,
-  GripVertical,
   Plus
 } from 'lucide-react';
 import { SystemNodeCategory, SystemNodeType } from '../../types';
@@ -159,11 +158,11 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
     setCollapsedCategories((prev) => ({ ...prev, [cat]: !prev[cat] }));
   };
 
-  const categories: { id: SystemNodeCategory; label: string; color: string }[] = [
-    { id: 'client', label: 'Client Devices', color: 'text-[#354F52] dark:text-[#CAD2C5]' },
-    { id: 'network', label: 'Network & Routing', color: 'text-[#52796F] dark:text-[#84A98C]' },
-    { id: 'compute', label: 'Compute & Execution', color: 'text-[#52796F] dark:text-[#CAD2C5]' },
-    { id: 'storage', label: 'Storage & Caching', color: 'text-[#84A98C]' }
+  const categories: { id: SystemNodeCategory; label: string }[] = [
+    { id: 'client', label: 'Client' },
+    { id: 'network', label: 'Network' },
+    { id: 'compute', label: 'Compute' },
+    { id: 'storage', label: 'Storage' }
   ];
 
   const onDragStart = (e: React.DragEvent, item: PaletteItem) => {
@@ -172,86 +171,71 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
   };
 
   return (
-    <div
+    <aside
       id="node-palette-sidebar"
-      className="w-64 border-r border-[#CAD2C5]/40 dark:border-[#52796F]/30 bg-white dark:bg-[#2F3E46] flex flex-col h-full select-none overflow-y-auto flex-shrink-0"
+      aria-label="Components"
+      className="w-56 glass-strong rounded-none border-0 border-r flex flex-col h-full select-none overflow-y-auto flex-shrink-0"
     >
-      {/* Palette Header */}
-      <div className="p-3.5 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 bg-white dark:bg-[#2F3E46] flex items-center justify-between">
-        <div>
-          <span className="text-xs font-bold text-[#2F3E46] dark:text-white tracking-tight">Component Palette</span>
-          <p className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70 font-mono">Drag or tap (+) to place on canvas</p>
-        </div>
+      <div className="px-4 pt-4 pb-3">
+        <h2 className="text-sm font-medium text-ink">Components</h2>
+        <p className="text-xs text-muted mt-0.5">Drag onto the canvas, or press +</p>
       </div>
 
-      {/* Categories */}
-      <div className="p-2 space-y-3">
+      <div className="px-2 pb-4 space-y-3">
         {categories.map((cat) => {
           const isCollapsed = collapsedCategories[cat.id];
           const items = PALETTE_ITEMS.filter((i) => i.category === cat.id);
 
           return (
-            <div key={cat.id} className="space-y-1">
+            <div key={cat.id}>
               <button
                 type="button"
                 onClick={() => toggleCategory(cat.id)}
-                className="w-full flex items-center justify-between px-2 py-1 text-xs font-semibold font-mono text-[#52796F] dark:text-[#CAD2C5]/70 hover:text-[#2F3E46] dark:hover:text-white uppercase tracking-wider rounded transition-colors cursor-pointer"
+                aria-expanded={!isCollapsed}
+                className="label w-full flex items-center justify-between px-2 h-7 rounded-lg hover:text-ink transition-colors cursor-pointer"
               >
-                <span className={`flex items-center gap-1.5 ${cat.color}`}>
-                  {cat.label}
-                </span>
+                <span>{cat.label}</span>
                 {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
               </button>
 
               {!isCollapsed && (
-                <div className="space-y-1 pl-1">
+                <ul className="mt-0.5 space-y-0.5">
                   {items.map((item) => {
                     const Icon = item.icon;
 
                     return (
-                      <div
+                      <li
                         key={item.type}
                         draggable
                         onDragStart={(e) => onDragStart(e, item)}
-                        className="group flex items-center justify-between p-2 rounded-xl bg-[#F4F6F4] dark:bg-[#1E272C] hover:bg-[#CAD2C5]/20 dark:hover:bg-[#354F52]/60 border border-[#CAD2C5]/60 dark:border-[#52796F]/40 hover:border-[#84A98C]/50 dark:hover:border-[#84A98C]/50 cursor-grab active:cursor-grabbing transition-all shadow-2xs"
-                        title={`${item.label} - ${item.description}`}
+                        className="group flex items-center gap-2.5 h-9 pl-2 pr-1 rounded-lg border border-transparent hover:bg-paper-3 hover:border-rule cursor-grab active:cursor-grabbing transition-colors"
+                        title={`${item.label}: ${item.description}`}
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <GripVertical className="w-3.5 h-3.5 text-[#CAD2C5] dark:text-[#52796F] group-hover:text-[#52796F] dark:group-hover:text-[#CAD2C5] flex-shrink-0" />
-                          <div className="w-7 h-7 rounded-lg bg-white dark:bg-[#2F3E46] flex items-center justify-center text-[#2F3E46] dark:text-white group-hover:text-[#52796F] dark:group-hover:text-[#84A98C] flex-shrink-0 border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-2xs">
-                            <Icon className="w-3.5 h-3.5" />
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-semibold text-[#2F3E46] dark:text-white truncate">
-                              {item.label}
-                            </span>
-                            <span className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70 truncate">
-                              {item.description}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Tap to add button */}
+                        <Icon className="w-4 h-4 text-muted group-hover:text-accent shrink-0 transition-colors" />
+                        <span className="flex-1 min-w-0 text-[13px] text-ink-2 group-hover:text-ink truncate">
+                          {item.label}
+                        </span>
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             onAddNode(item);
                           }}
-                          className="w-6 h-6 rounded-full bg-white dark:bg-[#2F3E46] hover:bg-[#84A98C] dark:hover:bg-[#84A98C] text-[#52796F] dark:text-[#CAD2C5] hover:text-[#2F3E46] dark:hover:text-[#2F3E46] flex items-center justify-center transition-colors flex-shrink-0 border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-2xs active:scale-95 cursor-pointer"
+                          className="w-7 h-7 rounded-full flex items-center justify-center text-muted hover:text-accent hover:bg-accent/15 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 transition shrink-0 cursor-pointer"
+                          aria-label={`Add ${item.label} to canvas`}
                           title="Add to canvas"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-3.5 h-3.5" />
                         </button>
-                      </div>
+                      </li>
                     );
                   })}
-                </div>
+                </ul>
               )}
             </div>
           );
         })}
       </div>
-    </div>
+    </aside>
   );
 };

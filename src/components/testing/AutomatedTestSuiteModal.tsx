@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
-import {
-  CheckCircle2,
-  XCircle,
-  Play,
-  X,
-  CheckSquare,
-  Sparkles,
-  ShieldCheck,
-  Cpu,
-  RefreshCw,
-  Terminal,
-  Network
-} from 'lucide-react';
+import { CheckCircle2, XCircle, Play, X, RefreshCw } from 'lucide-react';
 import { PROBLEMS } from '../../data/problems';
 import { evaluateAlgoEnglish } from '../../services/algoEvaluator';
 import { evaluateArchitecture } from '../../services/systemDesignEvaluator';
@@ -266,124 +254,117 @@ export const AutomatedTestSuiteModal: React.FC = () => {
   const passedCount = (Object.values(testResults) as Array<{ passed: boolean }>).filter((r) => r.passed).length;
 
   return (
-    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
-      <div className="bg-white/95 dark:bg-[#2F3E46]/95 backdrop-blur-xl border border-black/[0.08] dark:border-white/10 rounded-3xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-[0_24px_64px_rgba(0,0,0,0.25)] overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-[#2F3E46] dark:text-[#CAD2C5]">
-        {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-black/[0.06] dark:border-white/10 flex items-center justify-between bg-white dark:bg-[#2F3E46]">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#84A98C] flex items-center justify-center text-white shadow-2xs">
-              <CheckSquare className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-[#2F3E46] dark:text-white flex items-center gap-2">
-                <span>Platform Verification Matrix</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-[#84A98C] border border-[#84A98C]/30 dark:bg-emerald-950/40 dark:border-emerald-800/60 font-semibold">
-                  CI/CD Verified
-                </span>
-              </h2>
-              <p className="text-xs text-[#52796F] dark:text-neutral-400">
-                Automated regression &amp; invariant tests for Problem Ledger, Algo-English, and Topology Canvas.
-              </p>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim backdrop-blur-sm select-none">
+      <div
+        className="glass-strong rounded-xl w-full max-w-2xl max-h-[calc(100dvh-2rem)] sm:max-h-[85vh] flex flex-col overflow-hidden text-ink"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="test-matrix-title"
+      >
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 flex items-start justify-between gap-4 border-b border-rule">
+          <div className="min-w-0">
+            <h2 id="test-matrix-title" className="text-lg font-medium tracking-tight text-ink">
+              Platform test suite
+            </h2>
+            <p className="text-sm text-muted mt-1">
+              Regression checks for the problem set, Algo-English, system design and app state.
+            </p>
           </div>
-
           <button
+            type="button"
             id="test-matrix-close-btn"
             onClick={() => setTestRunnerOpen(false)}
-            className="p-1.5 rounded-full text-[#84A98C] hover:text-[#2F3E46] dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            title="Close Modal"
+            className="btn-icon shrink-0"
+            aria-label="Close"
+            title="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Body: Test Assertions List */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-3 font-sans text-xs bg-[#F4F6F4] dark:bg-[#1E272C]">
-          {testDefinitions.map((test) => {
-            const res = testResults[test.id];
+        {/* Body: assertions */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-6">
+          <ul className="divide-y divide-rule">
+            {testDefinitions.map((test) => {
+              const res = testResults[test.id];
 
-            return (
-              <div
-                key={test.id}
-                className="bg-white dark:bg-[#354F52] border border-black/[0.06] dark:border-white/10 rounded-2xl p-4 space-y-1.5 hover:border-[#84A98C]/40 dark:hover:border-white/20 transition-colors shadow-2xs"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EBF0EB] dark:bg-white/[0.06] border border-[#CAD2C5] dark:border-white/10 text-[#52796F] dark:text-neutral-400 font-mono">
-                      {test.category}
-                    </span>
-                    <span className="font-semibold text-[#2F3E46] dark:text-white text-xs">
-                      {test.name}
-                    </span>
+              return (
+                <li key={test.id} className="py-4 space-y-1.5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-ink">{test.name}</div>
+                      <div className="label mt-0.5">{test.category}</div>
+                    </div>
+
+                    <div className="shrink-0 text-xs">
+                      {!res ? (
+                        <span className="text-muted">Not run</span>
+                      ) : res.passed ? (
+                        <span className="flex items-center gap-1 text-ok">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Passed <span className="font-mono text-muted">{res.durationMs}ms</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-bad">
+                          <XCircle className="w-3.5 h-3.5" />
+                          Failed
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <div>
-                    {!res ? (
-                      <span className="text-[10px] text-[#84A98C] dark:text-neutral-400 italic">Ready</span>
-                    ) : res.passed ? (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#84A98C] bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full border border-emerald-200/70 dark:border-emerald-800/60">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Passed ({res.durationMs}ms)
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-[#E07A5F] bg-red-50 dark:bg-red-950/40 px-2.5 py-0.5 rounded-full border border-red-200/70 dark:border-red-800/60">
-                        <XCircle className="w-3.5 h-3.5" />
-                        Failed
-                      </span>
-                    )}
-                  </div>
-                </div>
+                  <p className="text-sm text-muted leading-relaxed">{test.description}</p>
 
-                <p className="text-[#52796F] dark:text-neutral-400 text-[11px] leading-relaxed">
-                  {test.description}
-                </p>
-
-                {res && (
-                  <div className="text-[11px] font-mono p-2.5 rounded-xl bg-[#F4F6F4] dark:bg-white/[0.04] border border-neutral-200/70 dark:border-white/10 text-[#2F3E46] dark:text-neutral-200">
-                    {res.message}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  {res && (
+                    <div className="text-xs font-mono px-3 py-2 rounded-lg bg-paper-3 text-ink-2">
+                      {res.message}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
-        {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#2F3E46] flex items-center justify-between">
-          <div className="text-xs text-[#52796F] dark:text-neutral-400">
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-rule flex flex-wrap items-center justify-between gap-3">
+          <div className="text-sm text-muted">
             {totalRun > 0 ? (
               <span>
-                Results: <strong className="text-[#84A98C]">{passedCount}</strong> / {testDefinitions.length} Tests Passing
+                <span className="font-mono text-ink">{passedCount}</span> of {testDefinitions.length} passing
               </span>
             ) : (
-              <span>7 comprehensive automated assertions ready to execute.</span>
+              <span>{testDefinitions.length} tests ready</span>
             )}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
+              type="button"
               id="test-matrix-footer-close-btn"
               onClick={() => setTestRunnerOpen(false)}
-              className="px-4 py-2 rounded-full text-xs font-semibold text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              className="btn-quiet"
             >
               Close
             </button>
 
             <button
+              type="button"
               id="modal-run-all-tests-btn"
               onClick={handleRunAllTests}
               disabled={isRunning}
-              className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold bg-[#84A98C] hover:bg-[#52796F] text-white shadow-[0_2px_8px_rgba(132,169,140,0.25)] transition-all active:scale-97 disabled:opacity-50 cursor-pointer"
+              className="btn-primary"
             >
               {isRunning ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Executing Assertions...</span>
+                  <span>Running…</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5 fill-white" />
-                  <span>Run Automated Test Suite</span>
+                  <Play className="w-3.5 h-3.5" />
+                  <span>Run all tests</span>
                 </>
               )}
             </button>

@@ -63,18 +63,18 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
       id="workspace-split-container"
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="flex-1 flex flex-col md:flex-row h-[calc(100vh-3.5rem)] w-full overflow-hidden relative bg-[#FBFBFD] dark:bg-[#090A0E]"
+      className="flex-1 flex flex-col md:flex-row h-[calc(100vh-3.5rem)] w-full overflow-hidden relative bg-paper"
     >
       {/* Left Pane (Problem Description) */}
       <div
         id="workspace-left-pane"
         style={{ width: `${splitPercentage}%` }}
-        className="h-full flex-shrink-0 hidden md:flex flex-col border-r border-black/[0.06] dark:border-white/10 bg-white dark:bg-[#0D1117] overflow-hidden"
+        className="h-full flex-shrink-0 hidden md:flex flex-col bg-paper overflow-hidden"
       >
         {leftPane}
       </div>
 
-      {/* Resizable Divider (iPad Pro Touch Optimized with 44px hit area) */}
+      {/* Resizable divider */}
       <div
         id="workspace-resize-handle"
         onPointerDown={handlePointerDown}
@@ -83,39 +83,34 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         aria-valuemin={minPercentage}
         aria-valuemax={maxPercentage}
         tabIndex={0}
-        title="Drag to resize problem description and workspace panes"
+        title="Drag to resize"
+        aria-label="Resize panes"
+        aria-orientation="vertical"
         className="hidden md:flex relative items-center justify-center cursor-col-resize group z-20 flex-shrink-0"
         style={{ width: '12px', marginLeft: '-6px', marginRight: '-6px' }}
       >
-        {/* Generous touch target area (>= 44px width for iPad Apple Pencil / touch) */}
-        <div className="absolute inset-y-0 -left-4 -right-4 w-[48px] h-full cursor-col-resize" />
+        {/* Wide invisible hit area for touch and pen */}
+        <div className="absolute inset-y-0 -left-4 -right-4 cursor-col-resize" />
 
-        {/* Visual divider line */}
+        {/* Hairline */}
         <div
-          className={`w-[2px] h-full transition-colors ${
-            isDragging
-              ? 'bg-[#84A98C]'
-              : 'bg-neutral-200 dark:bg-white/10 group-hover:bg-[#84A98C]/70'
+          className={`w-px h-full transition-colors ${
+            isDragging ? 'bg-accent shadow-glow-1' : 'bg-rule group-hover:bg-accent/60'
           }`}
         />
 
-        {/* Center tactile pill indicator */}
+        {/* Grip */}
         <div
-          className={`absolute w-3.5 h-7 rounded-full flex flex-col items-center justify-center gap-0.5 border shadow-2xs transition-all ${
-            isDragging
-              ? 'bg-white dark:bg-[#2F3E46] border-[#84A98C] scale-110 shadow-sm'
-              : 'bg-white dark:bg-[#2F3E46] border-neutral-300 dark:border-white/20 group-hover:border-[#84A98C]'
+          className={`absolute w-1 h-8 rounded-full transition-colors ${
+            isDragging ? 'bg-accent shadow-glow-1' : 'bg-rule-2 group-hover:bg-accent/70'
           }`}
-        >
-          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#84A98C]" />
-          <div className="w-1 h-1 rounded-full bg-neutral-400 group-hover:bg-[#84A98C]" />
-        </div>
+        />
       </div>
 
       {/* Right Pane (Interactive Workspace) */}
       <div
         id="workspace-right-pane"
-        className="flex-1 h-full min-w-0 flex flex-col bg-[#F4F6F4] dark:bg-[#1E272C] overflow-hidden relative"
+        className="flex-1 h-full min-w-0 flex flex-col bg-paper overflow-hidden relative"
       >
         {rightPane}
       </div>

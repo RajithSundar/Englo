@@ -1,18 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import {
-  FileText,
-  Plus,
-  Hash,
-  Clock,
-  Sparkles,
-  HelpCircle,
-  RotateCcw,
-  Lightbulb,
-  Play,
-  ChevronDown,
-  Mic,
-  MicOff
-} from 'lucide-react';
+import { RotateCcw, Lightbulb, Play, ChevronDown, Mic, MicOff, Loader2 } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { audioService } from '../../services/audioService';
 
@@ -87,6 +74,7 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
   }, []);
 
   const [isListening, setIsListening] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const recognitionRef = useRef<any>(null);
 
   const insertVoiceTranscript = useCallback((spokenText: string) => {
@@ -215,129 +203,90 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
     }
   };
 
+
+  const menuItemClass =
+    'w-full text-left px-2.5 py-2 rounded-lg text-sm text-ink-2 hover:text-ink hover:bg-paper-3 flex items-start gap-2.5 transition-colors cursor-pointer';
+
   return (
-    <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#2F3E46] text-[#2F3E46] dark:text-[#CAD2C5] overflow-hidden">
-      {/* Editor Top Toolbar */}
-      <div className="h-10 px-4 border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 bg-white dark:bg-[#2F3E46] flex items-center justify-between flex-shrink-0 select-none">
-        <div className="flex items-center gap-2 text-xs text-[#52796F] dark:text-[#CAD2C5]/70">
-          <FileText className="w-3.5 h-3.5 text-[#52796F] dark:text-[#84A98C]" />
-          <span className="font-semibold text-[#2F3E46] dark:text-white">Algo-English Editor</span>
-          <span className="text-[#CAD2C5] dark:text-[#52796F]">|</span>
-          <span className="text-[11px] text-[#52796F] dark:text-[#CAD2C5]/60 font-mono">
-            {lines.length} lines • {wordCount} words
+    <div className="flex-1 flex flex-col min-h-0 bg-paper text-ink overflow-hidden">
+      {/* Toolbar */}
+      <div className="h-12 px-4 border-b border-rule flex items-center justify-between gap-3 flex-shrink-0 select-none">
+        <div className="flex items-baseline gap-3 min-w-0">
+          <span className="text-sm font-medium text-ink">Your answer</span>
+          <span className="hidden sm:inline text-xs text-muted truncate">
+            {lines.length} lines, {wordCount} words
           </span>
         </div>
 
-        {/* Right Toolbar Actions */}
-        <div className="flex items-center gap-2">
-          {/* Cupertino Templates Dropdown */}
+        <div className="flex items-center gap-1">
+          {/* Format menu: templates plus the rarely used reference solution */}
           <div className="relative" ref={templateMenuRef}>
             <button
               type="button"
               onClick={() => setIsTemplateMenuOpen(!isTemplateMenuOpen)}
-              className="px-2.5 py-1 rounded-full bg-[#F4F6F4] dark:bg-[#354F52]/60 hover:bg-[#CAD2C5]/30 dark:hover:bg-[#354F52] text-[#2F3E46] dark:text-[#CAD2C5] border border-[#CAD2C5]/80 dark:border-[#52796F]/40 transition-all flex items-center gap-1.5 active:scale-95 text-xs font-medium cursor-pointer"
-              title="Insert algorithmic format scaffold"
+              className="btn-quiet h-8"
+              aria-haspopup="menu"
+              aria-expanded={isTemplateMenuOpen}
+              title="Insert a format scaffold"
             >
-              <Sparkles className="w-3 h-3 text-[#52796F] dark:text-[#84A98C]" />
-              <span>Templates</span>
-              <ChevronDown className={`w-3 h-3 text-[#52796F] dark:text-[#CAD2C5]/60 transition-transform duration-150 ${isTemplateMenuOpen ? 'rotate-180' : ''}`} />
+              <span>Format</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform duration-150 ${isTemplateMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isTemplateMenuOpen && (
-              <div className="absolute right-0 top-8 w-60 bg-white/95 dark:bg-[#2F3E46]/95 backdrop-blur-md rounded-xl border border-[#CAD2C5] dark:border-[#52796F]/50 shadow-apple p-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
-                <div className="px-2 py-1 text-[10px] font-mono font-bold text-[#52796F] dark:text-[#CAD2C5]/70 uppercase tracking-wider border-b border-[#CAD2C5]/40 dark:border-[#52796F]/30 mb-1">
-                  Insert Scaffold
-                </div>
+              <div role="menu" className="glass-strong absolute right-0 top-10 w-64 rounded-xl p-1.5 z-50">
+                <div className="label px-2.5 pt-1 pb-1.5">Insert a scaffold</div>
+                {TEMPLATES.map((t) => (
+                  <button
+                    key={t.name}
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      insertTemplate(t.text);
+                      setIsTemplateMenuOpen(false);
+                    }}
+                    className={menuItemClass}
+                  >
+                    <span className="w-5 shrink-0 text-center font-mono text-xs text-muted leading-5">{t.glyph}</span>
+                    <span className="flex-1">
+                      <span className="block text-ink">{t.name}</span>
+                      <span className="block text-xs text-muted">{t.note}</span>
+                    </span>
+                  </button>
+                ))}
+                <div className="my-1.5 h-px bg-rule" />
                 <button
                   type="button"
+                  role="menuitem"
                   onClick={() => {
-                    insertTemplate('We can solve this by maintaining [data structure]. As we iterate through [input], we check [condition] and update [state]. Once [termination], we return [result].');
                     setIsTemplateMenuOpen(false);
+                    if (window.confirm('Load reference solution? This will replace your current editor content with the optimal solution.')) {
+                      loadSolution(problemId);
+                    }
                   }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#F4F6F4] dark:hover:bg-[#354F52] text-xs text-[#2F3E46] dark:text-[#CAD2C5] flex items-center gap-2.5 transition-colors cursor-pointer"
+                  className={menuItemClass}
+                  title="Inspect the optimal reference solution"
                 >
-                  <span className="w-5 h-5 rounded-md bg-[#CAD2C5]/30 dark:bg-[#354F52] text-[#52796F] dark:text-[#84A98C] flex items-center justify-center font-serif text-xs font-bold">¶</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[#2F3E46] dark:text-white">Flowing Paragraph</div>
-                    <div className="text-[10px] text-[#52796F] dark:text-[#CAD2C5]/70">Natural prose invariants</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    insertTemplate('- Maintain [data structure] to store [purpose]\n- For each [element] in [collection]:\n  - Calculate [lookup/condition]\n  - If match found: return [result]\n  - Otherwise: record into [data structure]\n- If no solution found: return [default]');
-                    setIsTemplateMenuOpen(false);
-                  }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#F4F6F4] dark:hover:bg-[#354F52] text-xs text-[#2F3E46] dark:text-[#CAD2C5] flex items-center gap-2.5 transition-colors cursor-pointer"
-                >
-                  <span className="w-5 h-5 rounded-md bg-[#CAD2C5]/30 dark:bg-[#354F52] text-[#52796F] dark:text-[#CAD2C5] flex items-center justify-center text-xs font-bold">•</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[#2F3E46] dark:text-white">Bullet Points</div>
-                    <div className="text-[10px] text-[#86868B] dark:text-neutral-400">Hierarchical logic points</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    insertTemplate('Step 1: Initialize [data_structure] to store [purpose].\nStep 2: Traverse [input] and check [condition].\nStep 3: Return [result].');
-                    setIsTemplateMenuOpen(false);
-                  }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#F5F5F7] dark:hover:bg-white/5 text-xs text-[#1D1D1F] dark:text-neutral-200 flex items-center gap-2.5 transition-colors cursor-pointer"
-                >
-                  <span className="w-5 h-5 rounded-md bg-amber-50 dark:bg-amber-950/50 text-[#FF9500] flex items-center justify-center font-mono text-[11px] font-bold">1.</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[#1D1D1F] dark:text-white">Numbered Steps</div>
-                    <div className="text-[10px] text-[#86868B] dark:text-neutral-400">Sequential algorithm execution</div>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    insertTemplate('Complexity Analysis:\n- Time Complexity: O(...) because [reason].\n- Space Complexity: O(...) because [reason].');
-                    setIsTemplateMenuOpen(false);
-                  }}
-                  className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#F5F5F7] dark:hover:bg-white/5 text-xs text-[#1D1D1F] dark:text-neutral-200 flex items-center gap-2.5 transition-colors cursor-pointer"
-                >
-                  <span className="w-5 h-5 rounded-md bg-emerald-50 dark:bg-emerald-950/50 text-[#34C759] flex items-center justify-center font-mono text-xs font-bold">∑</span>
-                  <div className="flex-1">
-                    <div className="font-semibold text-[#1D1D1F] dark:text-white">Complexity Bounds</div>
-                    <div className="text-[10px] text-[#86868B] dark:text-neutral-400">Asymptotic time &amp; space</div>
-                  </div>
+                  <Lightbulb className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
+                  <span className="flex-1 text-ink">Show reference solution</span>
                 </button>
               </div>
             )}
           </div>
-          {/* Speech-to-Logic Voice Dictation Button */}
+
+          {/* Voice dictation */}
           <button
             type="button"
             onClick={toggleDictation}
-            className={`px-2.5 py-1 rounded-full border transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95 shadow-2xs cursor-pointer ${
-              isListening
-                ? 'bg-red-500 text-white border-red-600 animate-pulse'
-                : 'bg-[#F5F5F7] dark:bg-white/[0.06] hover:bg-neutral-200/80 dark:hover:bg-white/10 text-[#1D1D1F] dark:text-neutral-200 border-neutral-200/70 dark:border-white/10'
-            }`}
-            title={isListening ? 'Click to stop listening' : 'Dictate algorithmic logic aloud using Speech-to-Logic'}
+            aria-pressed={isListening}
+            className={`btn-quiet h-8 ${isListening ? 'text-bad hover:text-bad' : ''}`}
+            title={isListening ? 'Stop dictation' : 'Dictate your answer aloud'}
           >
-            {isListening ? <MicOff className="w-3 h-3" /> : <Mic className="w-3 h-3 text-[#FF3B30]" />}
-            <span>{isListening ? 'Listening...' : 'Dictate'}</span>
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            <span className="hidden lg:inline">{isListening ? 'Listening' : 'Dictate'}</span>
           </button>
 
-          {/* Solution Button */}
-          <button
-            type="button"
-            onClick={() => {
-              if (window.confirm('Load reference solution? This will replace your current editor content with the optimal solution.')) {
-                loadSolution(problemId);
-              }
-            }}
-            className="px-2.5 py-1 rounded-full bg-[#CAD2C5]/30 dark:bg-[#354F52]/60 hover:bg-[#CAD2C5]/50 dark:hover:bg-[#354F52] text-[#52796F] dark:text-[#84A98C] border border-[#CAD2C5] dark:border-[#52796F]/50 transition-all flex items-center gap-1.5 text-xs font-semibold active:scale-95 shadow-2xs cursor-pointer"
-            title="Inspect the optimal reference solution"
-          >
-            <Lightbulb className="w-3 h-3" />
-            <span>Solution</span>
-          </button>
-
-          {/* Reset Action */}
+          {/* Reset to starter */}
           <button
             type="button"
             onClick={() => {
@@ -345,72 +294,77 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
                 resetProblem(problemId);
               }
             }}
-            className="p-1 rounded-full hover:bg-[#CAD2C5]/30 dark:hover:bg-white/10 text-[#52796F] dark:text-[#CAD2C5]/70 hover:text-[#2F3E46] dark:hover:text-white transition-colors cursor-pointer"
-            title="Reset code to clean state"
+            className="btn-quiet h-8"
+            title="Reset to the starter text"
+            aria-label="Reset to the starter text"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-4 h-4" />
           </button>
 
-          {/* Primary Run Logic Button */}
+          <span className="hidden md:inline-flex items-center gap-1 ml-2 mr-1" aria-hidden="true">
+            <span className="kbd">Ctrl</span>
+            <span className="kbd">Enter</span>
+          </span>
+
+          {/* Run */}
           <button
             type="button"
             onClick={handleRun}
             disabled={isEvaluating}
-            className="px-3.5 py-1 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-[#2F3E46] hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs disabled:opacity-60 cursor-pointer"
-            title="Evaluate plain-English algorithm (⌘+Enter)"
+            className="btn-primary h-8 ml-1"
+            title="Evaluate your plain-English algorithm (Ctrl/Cmd + Enter)"
           >
             {isEvaluating ? (
               <>
-                <Sparkles className="w-3 h-3 animate-spin" />
-                <span>Verifying...</span>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>Checking</span>
               </>
             ) : (
               <>
-                <Play className="w-3 h-3 fill-current" />
-                <span>Run Logic</span>
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Run</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Voice Dictation Active Banner */}
+      {/* Dictation status */}
       {isListening && (
-        <div className="bg-red-500/10 dark:bg-red-950/30 border-b border-red-500/20 px-4 py-1.5 flex items-center justify-between text-xs text-red-700 dark:text-red-400">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-            </span>
-            <span className="font-medium">Voice Dictation Active:</span>
-            <span>Speak your algorithm aloud — natural sentences will be automatically transcribed into the editor.</span>
-          </div>
-          <button
-            type="button"
-            onClick={toggleDictation}
-            className="text-[11px] font-semibold text-red-600 dark:text-red-300 hover:underline cursor-pointer"
-          >
-            Stop Mic
+        <div className="px-4 py-2 border-b border-rule flex items-center justify-between gap-3 text-sm text-ink-2">
+          <span className="flex items-center gap-2 min-w-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-bad shrink-0" />
+            <span className="truncate">Listening. What you say is typed at the cursor.</span>
+          </span>
+          <button type="button" onClick={toggleDictation} className="text-sm font-medium text-bad hover:underline cursor-pointer shrink-0">
+            Stop
           </button>
         </div>
       )}
 
-      {/* Editor Body with Monospaced Lines */}
-      <div className="flex-1 flex min-h-0 relative font-mono text-[13px] leading-6 overflow-hidden bg-white dark:bg-[#1E272C]">
-        {/* Line Numbers Column */}
+      {/* Editor body */}
+      <div className="flex-1 flex min-h-0 relative font-mono text-[14px] leading-7 overflow-hidden">
+        {/* Line numbers */}
         <div
           ref={lineNumbersRef}
           aria-hidden="true"
-          className="w-12 bg-[#F4F6F4] dark:bg-[#2F3E46] text-[#52796F] dark:text-[#CAD2C5]/50 select-none py-3 px-2 text-right border-r border-[#CAD2C5]/40 dark:border-[#52796F]/30 overflow-hidden flex-shrink-0 font-mono"
+          className="w-12 text-muted/60 select-none py-4 pr-3 text-right overflow-hidden flex-shrink-0"
         >
           {Array.from({ length: lineCount }).map((_, i) => (
-            <div key={i} className="h-6 leading-6 text-[12px]">
+            <div key={i} className="h-7 leading-7 text-xs">
               {i + 1}
             </div>
           ))}
         </div>
 
-        {/* Text Area */}
+        {/* Neon spine on the active editor */}
+        <div
+          aria-hidden="true"
+          className={`absolute left-12 top-4 bottom-4 w-[2px] rounded-full bg-accent shadow-glow-1 transition-opacity duration-200 ${
+            isFocused ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+
         <textarea
           ref={textareaRef}
           id="algo-english-textarea"
@@ -418,23 +372,52 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onScroll={handleScroll}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           disabled={disabled}
-          placeholder="Describe your algorithm in whatever format feels natural — continuous prose paragraphs, bulleted explanations, numbered points, or algorithmic logic...
-
-e.g. (Continuous Paragraph):
-We can solve this efficiently in O(N) time using a hash map to store numbers and their indices. As we iterate through each element in the array, we calculate the required complement (target - current_number). If the complement already exists in our map, we immediately return both indices; otherwise, we record the current number and continue.
-
-e.g. (Bullet Points):
-- Maintain an empty hash map 'seen' mapping numbers to indices
-- For each number at index i:
-  - If (target - number) is in 'seen': return [seen[target - number], i]
-  - Otherwise: record seen[number] = i
-- Time: O(N), Space: O(N)"
+          aria-label="Your plain-English algorithm"
+          placeholder={PLACEHOLDER}
           spellCheck={false}
-          className="flex-1 p-3 bg-transparent text-[#2F3E46] dark:text-[#CAD2C5] placeholder-[#52796F]/60 dark:placeholder-[#CAD2C5]/40 resize-none focus:outline-none overflow-y-auto leading-6 selection:bg-[#52796F] selection:text-[#CAD2C5] dark:selection:bg-[#84A98C] dark:selection:text-[#2F3E46]"
+          className="flex-1 py-4 pl-5 pr-4 bg-transparent text-ink resize-none focus:outline-none focus-visible:outline-none overflow-y-auto leading-7"
           style={{ tabSize: 2 }}
         />
       </div>
     </div>
   );
 };
+
+const PLACEHOLDER = `Describe your algorithm in whatever format feels natural: a paragraph, bullet points or numbered steps.
+
+For example:
+- Keep a hash map 'seen' from number to index
+- For each number at index i:
+  - If (target - number) is in 'seen': return [seen[target - number], i]
+  - Otherwise: record seen[number] = i
+- Time: O(N), Space: O(N)`;
+
+const TEMPLATES = [
+  {
+    glyph: '¶',
+    name: 'Paragraph',
+    note: 'Plain prose',
+    text: 'We can solve this by maintaining [data structure]. As we iterate through [input], we check [condition] and update [state]. Once [termination], we return [result].',
+  },
+  {
+    glyph: '•',
+    name: 'Bullet points',
+    note: 'Nested logic points',
+    text: '- Maintain [data structure] to store [purpose]\n- For each [element] in [collection]:\n  - Calculate [lookup/condition]\n  - If match found: return [result]\n  - Otherwise: record into [data structure]\n- If no solution found: return [default]',
+  },
+  {
+    glyph: '1.',
+    name: 'Numbered steps',
+    note: 'One step per line',
+    text: 'Step 1: Initialize [data_structure] to store [purpose].\nStep 2: Traverse [input] and check [condition].\nStep 3: Return [result].',
+  },
+  {
+    glyph: 'O',
+    name: 'Complexity',
+    note: 'Time and space bounds',
+    text: 'Complexity Analysis:\n- Time Complexity: O(...) because [reason].\n- Space Complexity: O(...) because [reason].',
+  },
+];

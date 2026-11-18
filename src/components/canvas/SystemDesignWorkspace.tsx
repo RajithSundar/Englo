@@ -14,7 +14,7 @@ import {
   BackgroundVariant,
   useReactFlow
 } from '@xyflow/react';
-import { Lightbulb, RotateCcw, Play, Sparkles, Zap, Layers } from 'lucide-react';
+import { Lightbulb, RotateCcw, Play, Loader2, Zap, Layers } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { Problem, SystemNodeData } from '../../types';
 import { audioService } from '../../services/audioService';
@@ -87,7 +87,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
         {
           ...params,
           animated: true,
-          style: { stroke: '#84A98C', strokeWidth: 2 }
+          style: { stroke: 'var(--accent)', strokeWidth: 2 }
         },
         edges
       );
@@ -274,7 +274,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
   const currentEvaluation = archEvaluations[problem.id] || null;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#FBFBFD] dark:bg-[#090A0E] relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-paper relative">
       {/* Middle: Palette + Canvas */}
       <div className="flex-1 flex min-h-0 relative overflow-hidden">
         {/* Node Palette Draggable Tray */}
@@ -296,72 +296,52 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
             snapToGrid={true}
             snapGrid={[16, 16]}
             fitView
-            fitViewOptions={{ padding: 0.35, includeHiddenNodes: false }}
+            fitViewOptions={{ padding: 0.35, includeHiddenNodes: false, maxZoom: 1 }}
             defaultEdgeOptions={{
               animated: true,
-              style: { stroke: '#84A98C', strokeWidth: 2 }
+              style: { stroke: 'var(--accent)', strokeWidth: 2 }
             }}
           >
             <Background
               variant={BackgroundVariant.Dots}
               gap={16}
               size={1.5}
-              color="#84A98C"
+              color="var(--rule-2)"
             />
-            <Controls className="!bg-white dark:!bg-[#2F3E46] !border-[#CAD2C5]/80 dark:!border-[#52796F]/40 !text-[#2F3E46] dark:!text-white !shadow-apple [&>button]:!border-[#CAD2C5]/80 dark:[&>button]:!border-[#52796F]/40 [&>button]:!bg-white dark:[&>button]:!bg-[#2F3E46] [&>button]:!fill-[#2F3E46] dark:[&>button]:!fill-white [&>button:hover]:!bg-[#CAD2C5]/20 dark:[&>button:hover]:!bg-white/10" />
+            <Controls />
             <MiniMap
-              nodeColor={() => '#84A98C'}
-              maskColor="rgba(47, 62, 70, 0.6)"
-              className="!pointer-events-none !bg-white dark:!bg-[#2F3E46] !border-[#CAD2C5]/80 dark:!border-[#52796F]/40 !rounded-xl !shadow-apple"
+              nodeColor={() => 'var(--accent)'}
+              maskColor="color-mix(in oklab, var(--paper) 70%, transparent)"
+              className="!pointer-events-none !bg-paper-2 !border !border-rule !rounded-xl overflow-hidden"
             />
           </ReactFlow>
 
-          {/* Top Canvas Action Bar */}
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/90 dark:bg-[#2F3E46]/90 backdrop-blur-md p-1.5 rounded-full border border-[#CAD2C5]/80 dark:border-[#52796F]/40 shadow-apple">
-            {/* Toggle Palette Button */}
+          {/* Canvas toolbar: one primary action, the rest as icon buttons */}
+          <div
+            role="toolbar"
+            aria-label="Canvas actions"
+            className="absolute top-4 right-4 z-20 flex items-center gap-1 p-1 rounded-full glass"
+          >
             <button
               type="button"
               id="btn-toggle-palette"
               onClick={() => setIsPaletteOpen(!isPaletteOpen)}
-              className="px-2.5 py-1 rounded-full bg-[#F4F6F4] dark:bg-[#1E272C] hover:bg-[#CAD2C5]/30 dark:hover:bg-white/10 text-[#52796F] dark:text-[#CAD2C5] hover:text-[#2F3E46] dark:hover:text-white border border-[#CAD2C5]/80 dark:border-[#52796F]/40 text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              title={isPaletteOpen ? 'Hide Component Palette' : 'Show Component Palette'}
+              className={`btn-icon border-transparent ${isPaletteOpen ? 'text-accent' : ''}`}
+              aria-pressed={isPaletteOpen}
+              aria-label={isPaletteOpen ? 'Hide components' : 'Show components'}
+              title={isPaletteOpen ? 'Hide components' : 'Show components'}
             >
-              <Layers className="w-3.5 h-3.5 text-[#52796F] dark:text-[#84A98C]" />
-              <span>{isPaletteOpen ? 'Hide Palette' : 'Palette'}</span>
-            </button>
-            {/* Chaos Surge Button */}
-            <button
-              type="button"
-              onClick={handleChaosSurge}
-              className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-red-500 hover:from-amber-600 hover:to-red-600 text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer"
-              title="Stress test topology under 10x Black Friday / Flash Sale traffic surge"
-            >
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              <span>Chaos Surge (10x)</span>
+              <Layers className="w-4 h-4" />
             </button>
 
             <button
               type="button"
-              onClick={() => {
-                audioService.playTap();
-                setConsoleExpanded(true);
-                runArchEvaluation(problem.id);
-              }}
-              disabled={isEvaluating}
-              className="px-3 py-1 rounded-full bg-[#84A98C] hover:bg-[#52796F] text-[#2F3E46] hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs disabled:opacity-60 cursor-pointer"
-              title="Run distributed system simulation"
+              onClick={handleChaosSurge}
+              className="btn-icon border-transparent"
+              aria-label="Stress test with a 10x traffic surge"
+              title="Stress test with a 10x traffic surge"
             >
-              {isEvaluating ? (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                  <span>Simulating...</span>
-                </>
-              ) : (
-                <>
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>Simulate Topology</span>
-                </>
-              )}
+              <Zap className="w-4 h-4" />
             </button>
 
             {problem.solutionArchNodes && (
@@ -372,11 +352,11 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
                     loadSolution(problem.id);
                   }
                 }}
-                className="px-3 py-1 rounded-full bg-[#CAD2C5]/30 dark:bg-[#354F52]/60 hover:bg-[#CAD2C5]/50 dark:hover:bg-[#354F52] text-[#52796F] dark:text-[#84A98C] border border-[#CAD2C5] dark:border-[#52796F]/50 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer"
-                title="Inspect the optimal reference system architecture"
+                className="btn-icon border-transparent"
+                aria-label="Load reference architecture"
+                title="Load reference architecture"
               >
-                <Lightbulb className="w-3.5 h-3.5" />
-                <span>Reference Architecture</span>
+                <Lightbulb className="w-4 h-4" />
               </button>
             )}
 
@@ -387,11 +367,37 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
                   resetProblem(problem.id);
                 }
               }}
-              className="px-3 py-1 rounded-full bg-[#F5F5F7] dark:bg-white/[0.06] hover:bg-neutral-200 dark:hover:bg-white/10 text-[#6E6E73] dark:text-neutral-300 hover:text-[#1D1D1F] dark:hover:text-white border border-neutral-200/80 dark:border-white/10 text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              title="Reset canvas to starter state"
+              className="btn-icon border-transparent"
+              aria-label="Reset canvas"
+              title="Reset canvas"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Canvas</span>
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            <span className="w-px h-5 bg-rule mx-1" aria-hidden="true" />
+
+            <button
+              type="button"
+              onClick={() => {
+                audioService.playTap();
+                setConsoleExpanded(true);
+                runArchEvaluation(problem.id);
+              }}
+              disabled={isEvaluating}
+              className="btn-primary"
+              title="Run the load and failover scenarios on this design"
+            >
+              {isEvaluating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Running</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  <span>Run scenarios</span>
+                </>
+              )}
             </button>
           </div>
 

@@ -8,7 +8,7 @@ import {
   useScroll,
   useTransform,
 } from 'motion/react';
-import { ArrowRight, ChevronDown, Network } from 'lucide-react';
+import { ArrowRight, ChevronDown, Moon, Network, Sun } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { PROBLEMS } from '../../data/problems';
 import { SplineIDE } from './SplineIDE';
@@ -134,13 +134,13 @@ const Callout: React.FC<{
       style={{ top, opacity, ...(left ? { right: 'calc(50% + 250px)' } : { left: 'calc(50% + 250px)' }) }}
     >
       <div className={left ? 'text-left' : 'text-left'}>
-        <div className="text-[15px] font-medium text-[#EEF2F5]">{c.title}</div>
-        <p className="mt-1.5 text-[13px] leading-[1.55] text-[#9DA6AD]">{c.body}</p>
+        <div className="text-[15px] font-medium text-ink">{c.title}</div>
+        <p className="mt-1.5 text-[13px] leading-[1.55] text-muted">{c.body}</p>
       </div>
       {/* Leader line toward the model */}
       <motion.span
         aria-hidden
-        className="absolute top-[11px] h-px w-[150px] bg-gradient-to-r from-[#00C8FF]/0 via-[#00C8FF]/70 to-[#00C8FF]"
+        className="absolute top-[11px] h-px w-[150px] bg-gradient-to-r from-accent/0 via-accent/70 to-accent"
         style={{
           scaleX: lineScale,
           transformOrigin: left ? 'left' : 'right',
@@ -199,11 +199,11 @@ const DotNav: React.FC = () => {
           <span
             className={`block rounded-full transition-all duration-300 ${
               active === s.id
-                ? 'h-2.5 w-2.5 border border-[#00C8FF] shadow-[0_0_10px_rgba(0,200,255,0.8)]'
-                : 'h-1 w-1 bg-[#9DA6AD] group-hover:bg-[#EEF2F5]'
+                ? 'h-2.5 w-2.5 border border-accent shadow-glow-1'
+                : 'h-1 w-1 bg-muted group-hover:bg-ink'
             }`}
           />
-          <span className="pointer-events-none absolute right-5 whitespace-nowrap text-[12px] text-[#9DA6AD] opacity-0 transition-opacity group-hover:opacity-100">
+          <span className="pointer-events-none absolute right-5 whitespace-nowrap text-[12px] text-muted opacity-0 transition-opacity group-hover:opacity-100">
             {s.label}
           </span>
         </a>
@@ -225,7 +225,7 @@ const ArchitecturePlate: React.FC = () => {
   return (
     <div className="relative mx-auto h-[360px] w-full max-w-[460px] max-sm:scale-[0.78]" style={{ perspective: 1400 }}>
       <div
-        className="absolute left-1/2 top-1/2 h-[380px] w-[380px] rounded-2xl border border-white/10 bg-white/[0.02]"
+        className="absolute left-1/2 top-1/2 h-[380px] w-[380px] rounded-2xl border border-rule bg-ink/[0.02]"
         style={{ transform: 'translate(-50%, -50%) rotateX(56deg) rotateZ(-34deg)', transformStyle: 'preserve-3d' }}
       >
         <svg className="absolute inset-0" width="380" height="380" aria-hidden>
@@ -241,10 +241,10 @@ const ArchitecturePlate: React.FC = () => {
         {nodes.map((n, i) => (
           <div
             key={n.label}
-            className={`absolute flex h-9 w-[120px] items-center justify-center rounded-lg border bg-black text-[12px] ${
+            className={`absolute flex h-9 w-[120px] items-center justify-center rounded-lg border bg-paper-2 text-[12px] ${
               i === 2
-                ? 'border-[#00C8FF] text-[#EEF2F5] shadow-[0_0_18px_rgba(0,200,255,0.45)]'
-                : 'border-white/15 text-[#CBD2D7]'
+                ? 'border-accent text-ink shadow-glow-1'
+                : 'border-rule text-ink-2'
             }`}
             style={{ left: n.x, top: n.y, transform: 'translateZ(18px)' }}
           >
@@ -259,7 +259,7 @@ const ArchitecturePlate: React.FC = () => {
 /* ------------------------------------------------------------------ */
 
 export const LandingPage: React.FC = () => {
-  const { setActiveView, setActiveProblem, openAuth, authenticatedUser } = usePlatformStore();
+  const { setActiveView, setActiveProblem, openAuth, authenticatedUser, isDarkMode, toggleDarkMode } = usePlatformStore();
   const narrow = useIsNarrow();
   const reduceMotion = useReducedMotion();
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'algorithm' | 'system_design'>('all');
@@ -328,41 +328,48 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div
-      className="relative min-h-screen overflow-x-clip bg-black text-[#EEF2F5] antialiased selection:bg-[#00C8FF] selection:text-[#00182B]"
+      className="relative min-h-screen overflow-x-clip bg-paper text-ink antialiased"
       style={{ fontFamily: SANS }}
     >
       {/* ---------------- Top bar ---------------- */}
       <header
         className={`fixed inset-x-0 top-0 z-40 transition-colors duration-300 ${
-          scrolled ? 'border-b border-white/10 bg-black/70 backdrop-blur-xl' : 'border-b border-transparent'
+          scrolled ? 'border-b border-rule bg-paper/70 backdrop-blur-xl' : 'border-b border-transparent'
         }`}
       >
         <div className="mx-auto flex h-16 max-w-[1320px] items-center gap-6 px-5 md:px-10">
           <a href="#top" aria-label="Englo, back to top" className="text-[19px] font-medium tracking-[-0.01em]">
             Englo
           </a>
-          <nav aria-label="Primary" className="ml-auto hidden items-center gap-8 text-[13.5px] text-[#CBD2D7] md:flex">
-            <a href="#how-it-works" className="hover:text-white">How it works</a>
-            <a href="#advantage" className="hover:text-white">Inside the editor</a>
-            <a href="#architecture" className="hover:text-white">System design</a>
-            <button id="landing-nav-ledger" onClick={() => setActiveView('dashboard')} className="hover:text-white">
+          <nav aria-label="Primary" className="ml-auto hidden items-center gap-8 text-[13.5px] text-ink-2 md:flex">
+            <a href="#how-it-works" className="hover:text-ink">How it works</a>
+            <a href="#advantage" className="hover:text-ink">Inside the editor</a>
+            <a href="#architecture" className="hover:text-ink">System design</a>
+            <button id="landing-nav-ledger" onClick={() => setActiveView('dashboard')} className="hover:text-ink">
               Problems
             </button>
           </nav>
-          <div className="ml-auto flex items-center gap-5 md:ml-8">
+          <div className="ml-auto flex items-center gap-4 md:ml-8">
+            <button
+              onClick={toggleDarkMode}
+              aria-label={isDarkMode ? 'Switch to light theme' : 'Switch to dark theme'}
+              className="btn-icon h-8 w-8"
+            >
+              {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
             {authenticatedUser ? (
-              <button onClick={() => setActiveView('dashboard')} className="text-[13.5px] text-[#CBD2D7] hover:text-white">
+              <button onClick={() => setActiveView('dashboard')} className="text-[13.5px] text-ink-2 hover:text-ink">
                 {authenticatedUser.name || authenticatedUser.handle}
               </button>
             ) : (
-              <button onClick={() => openAuth('login')} className="text-[13.5px] text-[#CBD2D7] hover:text-white">
+              <button onClick={() => openAuth('login')} className="text-[13.5px] text-ink-2 hover:text-ink">
                 Sign in
               </button>
             )}
             <button
               id="landing-start-free-btn"
               onClick={() => startProblem('algo-1')}
-              className="rounded-full border border-white/30 px-4 py-1.5 text-[13px] text-[#EEF2F5] transition hover:border-[#00C8FF] hover:shadow-[0_0_14px_rgba(0,200,255,0.35)]"
+              className="rounded-full border border-rule-2 px-4 py-1.5 text-[13px] text-ink transition hover:border-accent hover:shadow-glow-1"
             >
               Try Two Sum
             </button>
@@ -389,7 +396,7 @@ export const LandingPage: React.FC = () => {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(48% 42% at 68% 46%, rgba(0,200,255,0.07) 0%, rgba(0,200,255,0.035) 35%, rgba(0,200,255,0.012) 65%, rgba(0,0,0,0) 100%)',
+                'radial-gradient(48% 42% at 68% 46%, color-mix(in oklab, var(--accent) 7%, transparent) 0%, color-mix(in oklab, var(--accent) 3.5%, transparent) 35%, color-mix(in oklab, var(--accent) 1.2%, transparent) 65%, transparent 100%)',
             }}
           />
 
@@ -454,7 +461,7 @@ export const LandingPage: React.FC = () => {
           {!reduceMotion && (
             <motion.div
               aria-hidden
-              className="absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-[12px] text-[#9DA6AD]"
+              className="absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-[12px] text-muted"
               style={{ opacity: cueOpacity }}
             >
               Scroll
@@ -479,9 +486,9 @@ export const LandingPage: React.FC = () => {
         <section id={reduceMotion ? 'advantage' : undefined} className="mx-auto max-w-[1320px] px-5 pb-8 pt-4 md:px-10">
           <ol className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
             {CALLOUTS.map((c) => (
-              <li key={c.title} className="border-l border-[#00C8FF]/60 pl-4">
+              <li key={c.title} className="border-l border-accent/60 pl-4">
                 <div className="text-[15px] font-medium">{c.title}</div>
-                <p className="mt-1 text-[14px] leading-[1.55] text-[#9DA6AD]">{c.body}</p>
+                <p className="mt-1 text-[14px] leading-[1.55] text-muted">{c.body}</p>
               </li>
             ))}
           </ol>
@@ -489,7 +496,7 @@ export const LandingPage: React.FC = () => {
       )}
 
       {/* ---------------- System design ---------------- */}
-      <section id="architecture" className="border-t border-white/10">
+      <section id="architecture" className="border-t border-rule">
         <div className="mx-auto grid max-w-[1320px] items-center gap-12 px-5 py-24 md:grid-cols-2 md:px-10 md:py-32">
           <ArchitecturePlate />
           <div className="max-w-[460px]">
@@ -497,15 +504,15 @@ export const LandingPage: React.FC = () => {
             <h2 className="text-[32px] font-medium leading-[1.1] tracking-[-0.02em] md:text-[40px]">
               Design systems on a canvas.
             </h2>
-            <p className="mt-5 text-[16px] leading-[1.6] text-[#9DA6AD]">
+            <p className="mt-5 text-[16px] leading-[1.6] text-muted">
               Drag clients, gateways, load balancers, servers, caches and databases onto a canvas, connect them, then run
               the problem's scenarios against your design.
             </p>
             <button
               onClick={() => startProblem('sys-1')}
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-[14px] transition hover:border-[#00C8FF] hover:shadow-[0_0_16px_rgba(0,200,255,0.35)]"
+              className="mt-8 inline-flex items-center gap-2 rounded-full border border-rule-2 px-5 py-2.5 text-[14px] transition hover:border-accent hover:shadow-glow-1"
             >
-              <Network className="h-4 w-4 text-[#00C8FF]" />
+              <Network className="h-4 w-4 text-accent" />
               Open the URL shortener design
             </button>
           </div>
@@ -513,7 +520,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ---------------- Problems ---------------- */}
-      <section id="problem-catalog" className="border-t border-white/10">
+      <section id="problem-catalog" className="border-t border-rule">
         <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
@@ -521,11 +528,11 @@ export const LandingPage: React.FC = () => {
               <h2 className="text-[32px] font-medium leading-[1.1] tracking-[-0.02em] md:text-[40px]">
                 {PROBLEMS.length} problems to start with.
               </h2>
-              <p className="mt-4 max-w-[520px] text-[16px] leading-[1.6] text-[#9DA6AD]">
+              <p className="mt-4 max-w-[520px] text-[16px] leading-[1.6] text-muted">
                 Classic algorithm questions and system design rounds, from Two Sum to a payment ledger.
               </p>
             </div>
-            <div role="tablist" aria-label="Filter problems" className="flex rounded-full border border-white/15 p-1 text-[13px]">
+            <div role="tablist" aria-label="Filter problems" className="flex rounded-full border border-rule p-1 text-[13px]">
               {(
                 [
                   ['all', 'All'],
@@ -540,8 +547,8 @@ export const LandingPage: React.FC = () => {
                   onClick={() => setCatalogFilter(key)}
                   className={`rounded-full px-4 py-1.5 transition ${
                     catalogFilter === key
-                      ? 'bg-[#00C8FF]/15 text-[#EEF2F5] shadow-[inset_0_0_0_1px_rgba(0,200,255,0.6)]'
-                      : 'text-[#9DA6AD] hover:text-[#EEF2F5]'
+                      ? 'bg-accent/15 text-ink shadow-[inset_0_0_0_1px_var(--accent)]'
+                      : 'text-muted hover:text-ink'
                   }`}
                 >
                   {label}
@@ -550,43 +557,43 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          <ul className="mt-12 border-t border-white/10">
+          <ul className="mt-12 border-t border-rule">
             {filtered.map((prob, i) => (
               <li key={prob.id}>
                 <button
                   onClick={() => startProblem(prob.id)}
-                  className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-white/10 py-4 text-left transition hover:bg-white/[0.025] md:grid-cols-[3rem_1fr_10rem_6rem_1.5rem]"
+                  className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-rule py-4 text-left transition hover:bg-ink/[0.03] md:grid-cols-[3rem_1fr_10rem_6rem_1.5rem]"
                 >
-                  <span className="text-[12px] text-[#9DA6AD]" style={{ fontFamily: MONO }}>
+                  <span className="text-[12px] text-muted" style={{ fontFamily: MONO }}>
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[15px] text-[#EEF2F5] md:text-[16px]">{prob.title}</span>
-                  <span className="hidden text-[13px] text-[#9DA6AD] md:block">
+                  <span className="text-[15px] text-ink md:text-[16px]">{prob.title}</span>
+                  <span className="hidden text-[13px] text-muted md:block">
                     {prob.category === 'algorithm' ? 'Algorithm' : 'System design'}
                   </span>
                   <span
                     className={`text-[13px] ${
                       prob.difficulty === 'Easy'
-                        ? 'text-[#74E791]'
+                        ? 'text-ok'
                         : prob.difficulty === 'Medium'
-                          ? 'text-[#CBD2D7]'
-                          : 'text-[#FF8880]'
+                          ? 'text-ink-2'
+                          : 'text-bad'
                     }`}
                   >
                     {prob.difficulty}
                   </span>
-                  <ArrowRight className="hidden h-4 w-4 text-[#9DA6AD] transition group-hover:translate-x-0.5 group-hover:text-[#00C8FF] md:block" />
+                  <ArrowRight className="hidden h-4 w-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-accent md:block" />
                 </button>
               </li>
             ))}
           </ul>
 
-          <details className="group mt-16 max-w-[720px] border-t border-white/10 pt-6">
-            <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] text-[#CBD2D7] hover:text-white">
+          <details className="group mt-16 max-w-[720px] border-t border-rule pt-6">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-[15px] text-ink-2 hover:text-ink">
               How answers are checked, and the limits
               <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
             </summary>
-            <div className="mt-4 space-y-3 text-[14.5px] leading-[1.65] text-[#9DA6AD]">
+            <div className="mt-4 space-y-3 text-[14.5px] leading-[1.65] text-muted">
               <p>
                 When the server has Google Cloud credentials, Gemini 2.5 Flash on Vertex AI reads your steps and grades
                 them. Without them, a local checker scores your answer against the patterns it expects for that problem.
@@ -601,25 +608,25 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ---------------- Closing ---------------- */}
-      <section className="border-t border-white/10">
+      <section className="border-t border-rule">
         <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
           <h2 className="text-[36px] font-medium leading-[1.05] tracking-[-0.025em] md:text-[56px]">Start with one problem.</h2>
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <PrimaryButton onClick={() => startProblem('algo-1')}>Start with Two Sum</PrimaryButton>
-            <button onClick={() => openAuth('register')} className="text-[14px] text-[#CBD2D7] hover:text-white">
+            <button onClick={() => openAuth('register')} className="text-[14px] text-ink-2 hover:text-ink">
               Create an account
             </button>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 px-5 py-8 text-[13px] text-[#9DA6AD] md:px-10">
+      <footer className="border-t border-rule">
+        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-4 px-5 py-8 text-[13px] text-muted md:px-10">
           <span>© 2026 Englo Studio</span>
           <div className="flex gap-6">
-            <a href="#how-it-works" className="hover:text-white">How it works</a>
-            <a href="#architecture" className="hover:text-white">System design</a>
-            <a href="#problem-catalog" className="hover:text-white">Problems</a>
+            <a href="#how-it-works" className="hover:text-ink">How it works</a>
+            <a href="#architecture" className="hover:text-ink">System design</a>
+            <a href="#problem-catalog" className="hover:text-ink">Problems</a>
           </div>
         </div>
       </footer>
@@ -630,14 +637,14 @@ export const LandingPage: React.FC = () => {
 /* ------------------------------------------------------------------ */
 
 const Marker: React.FC = () => (
-  <span aria-hidden className="mb-6 block h-[3px] w-10 rounded-full bg-[#00C8FF] shadow-[0_0_12px_rgba(0,200,255,0.8)]" />
+  <span aria-hidden className="mb-6 block h-[3px] w-10 rounded-full bg-accent shadow-glow-1" />
 );
 
 const PrimaryButton: React.FC<{ onClick: () => void; id?: string; children: React.ReactNode }> = ({ onClick, id, children }) => (
   <button
     id={id}
     onClick={onClick}
-    className="inline-flex items-center gap-2 rounded-full bg-[#00C8FF] px-6 py-3 text-[15px] font-medium text-[#00182B] shadow-[0_0_24px_rgba(0,200,255,0.45)] transition hover:bg-[#80E7FF] hover:shadow-[0_0_34px_rgba(0,200,255,0.65)] active:scale-[0.98]"
+    className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-[15px] font-medium text-accent-ink shadow-glow-2 transition hover:bg-accent-hi hover:shadow-glow-3 active:scale-[0.98]"
   >
     {children}
   </button>
@@ -650,7 +657,7 @@ const HeroCopy: React.FC<{ narrow: boolean; onStart: () => void; onBrowse: () =>
       <br />
       plain English.
     </h1>
-    <p className="mt-6 max-w-[420px] text-[16px] leading-[1.6] text-[#CBD2D7] md:text-[17px]">
+    <p className="mt-6 max-w-[420px] text-[16px] leading-[1.6] text-ink-2 md:text-[17px]">
       LeetCode-style problems for people who think in steps, not syntax. Write your approach as pseudocode and get
       feedback on the logic.
     </p>
@@ -659,7 +666,7 @@ const HeroCopy: React.FC<{ narrow: boolean; onStart: () => void; onBrowse: () =>
         Start with Two Sum
         <ArrowRight className="h-4 w-4" />
       </PrimaryButton>
-      <button id="hero-btn-explore-ledger" onClick={onBrowse} className="text-[14.5px] text-[#CBD2D7] underline-offset-4 hover:text-white hover:underline">
+      <button id="hero-btn-explore-ledger" onClick={onBrowse} className="text-[14.5px] text-ink-2 underline-offset-4 hover:text-ink hover:underline">
         Browse all {PROBLEMS.length} problems
       </button>
     </div>
@@ -674,17 +681,17 @@ const GuideCopy: React.FC<{ onStart: () => void }> = ({ onStart }) => (
       <br />
       not the typing.
     </h2>
-    <p className="mt-5 text-[15.5px] leading-[1.65] text-[#9DA6AD]">
+    <p className="mt-5 text-[15.5px] leading-[1.65] text-muted">
       Interviews test whether you can find the right idea and explain it. Englo lets you answer in structured steps:
       what you keep track of, how each step moves you forward, and when you stop.
     </p>
-    <p className="mt-3 text-[15.5px] leading-[1.65] text-[#9DA6AD]">
+    <p className="mt-3 text-[15.5px] leading-[1.65] text-muted">
       Each answer is reviewed for correctness, edge cases and complexity, so you learn where your reasoning breaks
       before an interviewer finds it.
     </p>
     <button
       onClick={onStart}
-      className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-[14px] transition hover:border-[#00C8FF] hover:shadow-[0_0_16px_rgba(0,200,255,0.35)]"
+      className="mt-7 inline-flex items-center gap-2 rounded-full border border-rule-2 px-5 py-2.5 text-[14px] transition hover:border-accent hover:shadow-glow-1"
     >
       Try it on Two Sum
     </button>

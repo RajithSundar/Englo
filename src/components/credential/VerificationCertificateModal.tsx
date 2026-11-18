@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Award,
-  ShieldCheck,
-  CheckCircle2,
-  Copy,
-  Check,
-  X,
-  Share2,
-  ExternalLink,
-  Lock,
-  Sparkles,
-  Zap
-} from 'lucide-react';
+import { CheckCircle2, Copy, Check, X, Share2 } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { audioService } from '../../services/audioService';
 
@@ -19,6 +7,21 @@ interface VerificationCertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const COMPETENCIES: Array<{ title: string; detail: React.ReactNode }> = [
+  {
+    title: 'Double-entry ledger invariant',
+    detail: <>Zero-sum conservation &Delta;Bal(A) + &Delta;Bal(B) = 0 with deadlock-free locking.</>
+  },
+  {
+    title: 'Idempotent payment gateway and webhook DLQ',
+    detail: 'Redis SETNX locking, acquirer circuit breakers and exponential backoff retries.'
+  },
+  {
+    title: 'Black Friday chaos surge resilience',
+    detail: 'No single points of failure under surge traffic; replicated database failover.'
+  }
+];
 
 export const VerificationCertificateModal: React.FC<VerificationCertificateModalProps> = ({
   isOpen,
@@ -63,130 +66,74 @@ export const VerificationCertificateModal: React.FC<VerificationCertificateModal
     setTimeout(() => setCopiedMd(false), 2000);
   };
 
+  const handleClose = () => {
+    audioService.playTap();
+    onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim backdrop-blur-sm">
       <div
-        className="relative w-full max-w-xl bg-white dark:bg-[#161B22] rounded-3xl border border-black/10 dark:border-white/10 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="glass-strong rounded-xl w-full max-w-xl max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="certificate-modal-title"
       >
-        {/* Certificate Apple-style Top Gradient Card */}
-        <div className="relative p-6 sm:p-8 bg-gradient-to-br from-[#84A98C]/15 via-[#EBF0EB] to-[#F4F6F4] dark:from-[#84A98C]/20 dark:via-[#2F3E46] dark:to-[#1E272C] border-b border-black/[0.06] dark:border-white/10">
-          <button
-            onClick={() => {
-              audioService.playTap();
-              onClose();
-            }}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-[#52796F] dark:text-neutral-400 hover:text-[#2F3E46] dark:hover:text-white transition-colors cursor-pointer"
-            title="Close"
-          >
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 flex items-start justify-between gap-4 border-b border-rule">
+          <div className="min-w-0">
+            <h2 id="certificate-modal-title" className="text-lg font-medium tracking-tight text-ink">
+              Proof of engineering competence
+            </h2>
+            <p className="text-sm text-muted mt-1">
+              A shareable credential for the challenges you have solved.
+            </p>
+          </div>
+          <button type="button" onClick={handleClose} className="btn-icon shrink-0" aria-label="Close" title="Close">
             <X className="w-4 h-4" />
           </button>
-
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#84A98C] to-[#52796F] flex items-center justify-center text-white shadow-md">
-              <Award className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#52796F] dark:text-[#84A98C] font-bold">
-                  Official Verification Credential
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
-                  Tamper-Proof
-                </span>
-              </div>
-              <h2 id="certificate-modal-title" className="text-xl font-bold tracking-tight text-[#2F3E46] dark:text-white">
-                Proof of Engineering Competence
-              </h2>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/80 dark:bg-[#2F3E46]/80 border border-black/[0.04] dark:border-white/10 shadow-sm backdrop-blur-sm">
-            <div className="text-xs text-[#84A98C] dark:text-neutral-400 font-medium">Issued To</div>
-            <div className="text-lg font-bold text-[#2F3E46] dark:text-white mb-2">{candidateName}</div>
-
-            <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-black/[0.04] dark:border-white/10">
-              <div>
-                <span className="text-[#84A98C] dark:text-neutral-400">Credential Hash:</span>
-                <div className="font-mono text-[11px] font-semibold text-[#52796F] dark:text-[#84A98C] truncate">
-                  {verificationHash}
-                </div>
-              </div>
-              <div>
-                <span className="text-[#84A98C] dark:text-neutral-400">Issue Date:</span>
-                <div className="font-mono text-[11px] font-semibold text-[#2F3E46] dark:text-white">
-                  {issueDate}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Verified Competency Invariants */}
-        <div className="p-6 space-y-4">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#84A98C] dark:text-neutral-400">
-            Verified Fintech &amp; Distributed Systems Competencies
+        {/* Body */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-6">
+          <dl className="text-sm divide-y divide-rule border-y border-rule">
+            <div className="flex justify-between gap-4 py-2.5">
+              <dt className="text-muted shrink-0">Issued to</dt>
+              <dd className="text-ink font-medium text-right">{candidateName}</dd>
+            </div>
+            <div className="flex justify-between gap-4 py-2.5">
+              <dt className="text-muted shrink-0">Credential hash</dt>
+              <dd className="font-mono text-xs text-ink-2 truncate">{verificationHash}</dd>
+            </div>
+            <div className="flex justify-between gap-4 py-2.5">
+              <dt className="text-muted shrink-0">Issued</dt>
+              <dd className="text-ink-2">{issueDate}</dd>
+            </div>
+          </dl>
+
+          <div>
+            <div className="label mb-1">Verified competencies</div>
+            <ul className="divide-y divide-rule border-y border-rule">
+              {COMPETENCIES.map((c) => (
+                <li key={c.title} className="flex items-start gap-2.5 py-3 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-ok shrink-0 mt-0.5" />
+                  <div>
+                    <div className="text-ink font-medium">{c.title}</div>
+                    <div className="text-muted mt-0.5">{c.detail}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="space-y-2.5">
-            <div className="flex items-start gap-2.5 text-xs">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-[#2F3E46] dark:text-white font-semibold">
-                  Atomic Financial Double-Entry Accounting Invariant:
-                </strong>{' '}
-                <span className="text-[#52796F] dark:text-neutral-400">
-                  Formulated strict zero-sum ledger conservation &Delta;Bal(A) + &Delta;Bal(B) = 0 with deadlock-free concurrency locking.
-                </span>
+          {/* RazorpayX bounty */}
+          <div className="flex items-center justify-between gap-4 p-4 rounded-xl border border-rule">
+            <div className="min-w-0">
+              <div className="text-sm font-medium text-ink">₹5,000 engineering bounty</div>
+              <div className="text-xs text-muted mt-0.5">
+                {bountyClaimed ? 'Sent through RazorpayX.' : 'Paid out through RazorpayX for the fintech challenges.'}
               </div>
             </div>
-
-            <div className="flex items-start gap-2.5 text-xs">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-[#2F3E46] dark:text-white font-semibold">
-                  Idempotent Payment Gateway &amp; Webhook DLQ Architecture:
-                </strong>{' '}
-                <span className="text-[#52796F] dark:text-neutral-400">
-                  Engineered distributed locking with Redis SETNX, bank acquirer circuit breakers, and exponential backoff retry semantics.
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-2.5 text-xs">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-[#2F3E46] dark:text-white font-semibold">
-                  Black Friday 10x Chaos Surge Resilience:
-                </strong>{' '}
-                <span className="text-[#52796F] dark:text-neutral-400">
-                  Simulated 100,000 req/s stress traffic; eliminated single points of failure (SPOFs) and verified multi-replica database failover.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* RazorpayX ₹5,000 Bounty Claim Callout */}
-          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-[#84A98C]/15 to-amber-500/10 border border-purple-500/25 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-[#52796F] flex items-center justify-center text-white shrink-0 shadow-sm">
-                <Zap className="w-4 h-4 fill-white" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-[#2F3E46] dark:text-white flex items-center gap-1.5">
-                  <span>₹5,000 Engineering Bounty Earned</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 font-mono font-bold">
-                    RazorpayX
-                  </span>
-                </div>
-                <div className="text-[11px] text-[#52796F] dark:text-neutral-400">
-                  {bountyClaimed ? 'Disbursed directly via UPI / IMPS' : 'Instant direct bank payout for solving fintech challenges'}
-                </div>
-              </div>
-            </div>
-
             <button
               type="button"
               id="btn-open-bounty-modal"
@@ -194,45 +141,26 @@ export const VerificationCertificateModal: React.FC<VerificationCertificateModal
                 audioService.playTap();
                 setBountyModalOpen(true);
               }}
-              className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold shrink-0 transition-all active:scale-95 shadow-sm cursor-pointer"
+              className="btn shrink-0"
             >
               {bountyClaimed ? 'View UTR' : 'Claim ₹5,000'}
             </button>
           </div>
+        </div>
 
-          {/* Action Row */}
-          <div className="pt-4 border-t border-black/[0.06] dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="px-3.5 py-2 rounded-xl bg-[#84A98C] hover:bg-[#52796F] text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-sm cursor-pointer"
-              >
-                {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedLink ? 'Link Copied!' : 'Copy Verification URL'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleCopyMarkdown}
-                className="px-3.5 py-2 rounded-xl bg-[#F5F5F7] dark:bg-white/[0.08] hover:bg-neutral-200 dark:hover:bg-white/15 text-[#1D1D1F] dark:text-white border border-black/5 dark:border-white/10 text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-              >
-                {copiedMd ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
-                <span>{copiedMd ? 'Badge Copied!' : 'GitHub Badge'}</span>
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                audioService.playTap();
-                onClose();
-              }}
-              className="text-xs font-medium text-[#86868B] dark:text-neutral-400 hover:text-[#1D1D1F] dark:hover:text-white transition-colors cursor-pointer"
-            >
-              Done
-            </button>
-          </div>
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-rule flex flex-wrap items-center justify-end gap-2">
+          <button type="button" onClick={handleClose} className="btn-quiet">
+            Done
+          </button>
+          <button type="button" onClick={handleCopyMarkdown} className="btn">
+            {copiedMd ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
+            <span>{copiedMd ? 'Badge copied' : 'GitHub badge'}</span>
+          </button>
+          <button type="button" onClick={handleCopyLink} className="btn-primary">
+            {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copiedLink ? 'Link copied' : 'Copy verification URL'}</span>
+          </button>
         </div>
       </div>
     </div>
