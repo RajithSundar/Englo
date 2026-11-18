@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, MotionValue, useTransform } from 'motion/react';
+import { motion, MotionValue } from 'motion/react';
 
 /**
  * A hand-built 3D model of the Englo workspace, made of six stacked planes.
@@ -17,17 +17,20 @@ export const IDE_HEIGHT = 450;
 export const IDE_LAYERS = ['frame', 'problem', 'editor', 'analysis', 'tests', 'review'] as const;
 export type IDELayer = (typeof IDE_LAYERS)[number];
 
-/** Z position of a plane, centred on the middle of the stack. */
-export const layerOffset = (index: number) => index - (IDE_LAYERS.length - 1) / 2;
+/** Scroll-driven state of one plane. */
+export interface LayerMotion {
+  /** Height of the plane above the window frame, in px. */
+  z: MotionValue<number>;
+  /** 0..1: how visible the plane's glass sheet is (shown once it has lifted off). */
+  sheet: MotionValue<number>;
+}
 
 interface IDEModel3DProps {
   rotateX: MotionValue<number>;
   rotateY: MotionValue<number>;
   rotateZ: MotionValue<number>;
-  /** Distance in px between neighbouring planes. */
-  spread: MotionValue<number>;
-  /** 0..1: how visible the glass sheets behind each plane are. */
-  sheets: MotionValue<number>;
+  /** One entry per plane, in IDE_LAYERS order. */
+  layers: LayerMotion[];
 }
 
 const STEPS = [
@@ -41,13 +44,9 @@ const STEPS = [
 ];
 
 const Plane: React.FC<{
-  index: number;
-  spread: MotionValue<number>;
-  sheets: MotionValue<number>;
+  motion: LayerMotion;
   children: React.ReactNode;
-}> = ({ index, spread, sheets, children }) => {
-  const z = useTransform(spread, (s: number) => layerOffset(index) * s);
-  const sheetOpacity = useTransform(sheets, (v: number) => v);
+}> = ({ motion: { z, sheet }, children }) => {
   return (
     <motion.div
       className="absolute inset-0"
@@ -57,7 +56,7 @@ const Plane: React.FC<{
       <motion.div
         aria-hidden
         className="absolute inset-0 rounded-[14px] border border-[#00C8FF]/30 bg-white/[0.025]"
-        style={{ opacity: sheetOpacity, boxShadow: '0 0 24px rgba(0,200,255,0.10) inset' }}
+        style={{ opacity: sheet, boxShadow: '0 0 24px rgba(0,200,255,0.10) inset' }}
       />
       {children}
     </motion.div>
@@ -66,7 +65,7 @@ const Plane: React.FC<{
 
 const mono = { fontFamily: "'Atkinson Hyperlegible Mono', 'JetBrains Mono', ui-monospace, monospace" };
 
-export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotateZ, spread, sheets }) => {
+export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotateZ, layers }) => {
   return (
     <motion.div
       className="relative"
@@ -80,7 +79,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       }}
     >
       {/* 0. Window frame */}
-      <Plane index={0} spread={spread} sheets={sheets}>
+      <Plane motion={layers[0]}>
         <div
           className="absolute inset-0 rounded-[14px] border border-white/10 bg-[#03060A]"
           style={{
@@ -103,7 +102,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       </Plane>
 
       {/* 1. Problem statement (left column) */}
-      <Plane index={1} spread={spread} sheets={sheets}>
+      <Plane motion={layers[1]}>
         <div className="absolute left-0 top-9 h-[414px] w-[240px] p-4">
           <div className="flex items-center gap-2">
             <span className="text-[14px] font-medium text-[#EEF2F5]">Two Sum</span>
@@ -129,7 +128,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       </Plane>
 
       {/* 2. Plain-English editor */}
-      <Plane index={2} spread={spread} sheets={sheets}>
+      <Plane motion={layers[2]}>
         <div className="absolute left-[240px] right-0 top-9 h-[250px] px-4 py-3" style={mono}>
           {STEPS.map((line, i) => (
             <div key={i} className="flex text-[12px] leading-[1.85]">
@@ -143,7 +142,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       </Plane>
 
       {/* 3. Technique and complexity strip */}
-      <Plane index={3} spread={spread} sheets={sheets}>
+      <Plane motion={layers[3]}>
         <div
           className="absolute left-[240px] right-0 top-[286px] flex h-10 items-center gap-5 border-y border-white/10 bg-[#03060A] px-4 text-[11px]"
           style={mono}
@@ -155,7 +154,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       </Plane>
 
       {/* 4. Test cases console */}
-      <Plane index={4} spread={spread} sheets={sheets}>
+      <Plane motion={layers[4]}>
         <div className="absolute bottom-0 left-[240px] right-0 top-[326px] px-4 py-2.5 text-[11px]" style={mono}>
           {[
             ['nums = [2,7,11,15], target = 9', '[0, 1]'],
@@ -172,7 +171,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
       </Plane>
 
       {/* 5. Logic review card */}
-      <Plane index={5} spread={spread} sheets={sheets}>
+      <Plane motion={layers[5]}>
         <div
           className="absolute right-5 top-[58px] w-[200px] rounded-xl border border-[#00C8FF]/40 bg-[#02070C]/95 p-3.5"
           style={{ boxShadow: '0 0 0 1px rgba(0,200,255,0.15), 0 0 28px rgba(0,200,255,0.22)' }}

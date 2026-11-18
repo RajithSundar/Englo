@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { motion, MotionValue, useMotionValueEvent } from 'motion/react';
 import type { Application, SPEObject } from '@splinetool/runtime';
-import { IDEModel3D, IDE_LAYERS, IDE_WIDTH, layerOffset } from './IDEModel3D';
+import { IDEModel3D, IDE_LAYERS, IDE_WIDTH, LayerMotion } from './IDEModel3D';
 
 /**
  * The landing page's 3D IDE.
@@ -16,12 +16,12 @@ import { IDEModel3D, IDE_LAYERS, IDE_WIDTH, layerOffset } from './IDEModel3D';
  *   - a group named "IDE" holding the whole model; its rotation is set from scroll
  *   - six children named "Layer-0" .. "Layer-5" (frame, problem, editor,
  *     analysis, tests, review), stacked along the group's local Z axis;
- *     each is moved along Z from its authored position as the stack explodes
+ *     as each one lifts off, it is moved along Z from its authored position
  *   - optional Number variable "progress" (0..100), set on every scroll frame
  */
 
 const SCENE_URL: string | undefined = (import.meta as any).env?.VITE_SPLINE_IDE_SCENE || undefined;
-/** Spline scene units per CSS pixel of spread. Tune for your scene's scale. */
+/** Spline scene units per CSS pixel of lift. Tune for your scene's scale. */
 const SPLINE_UNITS_PER_PX = Number((import.meta as any).env?.VITE_SPLINE_IDE_SCALE) || 1;
 
 const Spline = React.lazy(() => import('@splinetool/react-spline'));
@@ -30,14 +30,13 @@ interface SplineIDEProps {
   rotateX: MotionValue<number>;
   rotateY: MotionValue<number>;
   rotateZ: MotionValue<number>;
-  spread: MotionValue<number>;
-  sheets: MotionValue<number>;
+  layers: LayerMotion[];
   progress: MotionValue<number>;
 }
 
 const deg = (d: number) => (d * Math.PI) / 180;
 
-export const SplineIDE: React.FC<SplineIDEProps> = ({ rotateX, rotateY, rotateZ, spread, sheets, progress }) => {
+export const SplineIDE: React.FC<SplineIDEProps> = ({ rotateX, rotateY, rotateZ, layers, progress }) => {
   const appRef = useRef<Application | null>(null);
   const groupRef = useRef<SPEObject | null>(null);
   const layersRef = useRef<{ obj: SPEObject; baseZ: number; index: number }[]>([]);
@@ -53,8 +52,7 @@ export const SplineIDE: React.FC<SplineIDEProps> = ({ rotateX, rotateY, rotateZ,
       g.rotation.y = deg(rotateY.get());
       g.rotation.z = deg(-rotateZ.get());
     }
-    const s = spread.get() * SPLINE_UNITS_PER_PX;
-    for (const l of layersRef.current) l.obj.position.z = l.baseZ + layerOffset(l.index) * s;
+    for (const l of layersRef.current) l.obj.position.z = l.baseZ + layers[l.index].z.get() * SPLINE_UNITS_PER_PX;
     try {
       app.setVariable('progress', Math.round(progress.get() * 1000) / 10);
     } catch {
@@ -99,7 +97,7 @@ export const SplineIDE: React.FC<SplineIDEProps> = ({ rotateX, rotateY, rotateZ,
 
       {!splineReady && (
         <motion.div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
-          <IDEModel3D rotateX={rotateX} rotateY={rotateY} rotateZ={rotateZ} spread={spread} sheets={sheets} />
+          <IDEModel3D rotateX={rotateX} rotateY={rotateY} rotateZ={rotateZ} layers={layers} />
         </motion.div>
       )}
 

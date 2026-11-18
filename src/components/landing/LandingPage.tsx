@@ -12,7 +12,7 @@ import { ArrowRight, ChevronDown, Network } from 'lucide-react';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { PROBLEMS } from '../../data/problems';
 import { SplineIDE } from './SplineIDE';
-import { IDE_HEIGHT, IDE_WIDTH, layerOffset } from './IDEModel3D';
+import { IDE_HEIGHT, IDE_WIDTH, LayerMotion } from './IDEModel3D';
 
 /* ------------------------------------------------------------------ */
 /* Look: pure black ground, pale ink, one neon-blue accent.           */
@@ -63,7 +63,38 @@ const CALLOUTS: { layer: number; side: 'left' | 'right'; title: string; body: st
 
 /** Exploded-view camera angle (degrees). Used to place callouts beside their plane. */
 const EXPLODED_RX = 56;
-const SCENE_VH = 500; // height of the scroll-driven section, in vh
+const SIN_RX = Math.sin((EXPLODED_RX * Math.PI) / 180);
+const SCENE_VH = 600; // height of the scroll-driven section, in vh
+
+/*
+ * The breakdown. The IDE turns to the exploded camera angle as one piece
+ * (TURN_START..TURN_END), then the layers lift off it one at a time, front to
+ * back. The window frame (layer 0) stays put as the base. Each callout appears
+ * once its layer has lifted off; the frame's callout comes last.
+ */
+const TURN_START = 0.46;
+const TURN_END = 0.58;
+const PEEL_ORDER = [5, 4, 3, 2, 1];
+const PEEL_START = 0.6;
+const PEEL_STEP = 0.065;
+const PEEL_LEN = 0.05;
+const STACKED_GAP = 1.5; // px between planes while the IDE is whole
+
+/** Scroll window in which a layer lifts off; the frame's is when its callout shows. */
+const peelWindow = (layer: number): [number, number] => {
+  const k = PEEL_ORDER.indexOf(layer);
+  const start = PEEL_START + (k < 0 ? PEEL_ORDER.length : k) * PEEL_STEP;
+  return [start, start + PEEL_LEN];
+};
+const PEEL_DONE = peelWindow(0)[1];
+
+const useLayerMotion = (p: MotionValue<number>, layer: number, gap: number): LayerMotion => {
+  const [a, b] = peelWindow(layer);
+  const z = useTransform(p, [a, b], layer === 0 ? [0, 0] : [layer * STACKED_GAP, layer * gap]);
+  // The frame's sheet shows as soon as the first layer leaves it.
+  const sheet = useTransform(p, layer === 0 ? [PEEL_START, PEEL_START + PEEL_LEN] : [a, b], [0, 1]);
+  return { z, sheet };
+};
 
 const useIsNarrow = () => {
   const [narrow, setNarrow] = useState(() =>
@@ -82,18 +113,19 @@ const useIsNarrow = () => {
 
 const Callout: React.FC<{
   c: (typeof CALLOUTS)[number];
-  order: number;
   progress: MotionValue<number>;
-  spread: MotionValue<number>;
+  layer: LayerMotion;
+  /** How far the whole model is moved down to keep the stack centred (local px). */
+  shift: MotionValue<number>;
   scale: MotionValue<number>;
-}> = ({ c, order, progress, spread, scale }) => {
-  const start = 0.64 + order * 0.045;
-  const opacity = useTransform(progress, [start, start + 0.04], [0, 1]);
-  const lineScale = useTransform(progress, [start, start + 0.05], [0, 1]);
+}> = ({ c, progress, layer, shift, scale }) => {
+  // Appears as its layer finishes lifting off.
+  const [, end] = peelWindow(c.layer);
+  const start = end - 0.025;
+  const opacity = useTransform(progress, [start, start + 0.03], [0, 1]);
+  const lineScale = useTransform(progress, [start, start + 0.04], [0, 1]);
   // Vertical position of the plane on screen at the exploded camera angle.
-  const y = useTransform([spread, scale] as MotionValue<number>[], ([s, k]: number[]) =>
-    -Math.sin((EXPLODED_RX * Math.PI) / 180) * layerOffset(c.layer) * s * k
-  );
+  const y = useTransform([layer.z, shift, scale] as MotionValue<number>[], ([z, sh, k]: number[]) => (sh - SIN_RX * z) * k);
   const top = useMotionTemplate`calc(50% + ${y}px)`;
   const left = c.side === 'left';
   return (
@@ -250,26 +282,36 @@ export const LandingPage: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: sceneRef, offset: ['start start', 'end end'] });
   // With reduced motion, jump straight to the exploded view and keep everything still.
-  const fixed = useMotionValue(0.95);
+  const fixed = useMotionValue(1);
   // Pass progress through a plain function so Motion drives every value from
   // JavaScript. Fed straight from useScroll, Motion hands opacity to a native
   // ViewTimeline whose range ignores this section's offsets.
   const live = useTransform(scrollYProgress, (v: number) => v);
   const p = reduceMotion ? fixed : live;
 
-  const keys = [0, 0.2, 0.46, 0.62, 1];
+  const keys = [0, 0.2, TURN_START, TURN_END, 1];
   const rotateX = useTransform(p, keys, [18, 12, 10, EXPLODED_RX, EXPLODED_RX]);
   const rotateY = useTransform(p, keys, [-30, -38, -22, 0, 0]);
   const rotateZ = useTransform(p, keys, [6, 9, 4, -32, -32]);
-  const spread = useTransform(p, [0, 0.48, 0.66, 1], [1.5, 1.5, narrow ? 70 : 118, narrow ? 70 : 118]);
-  const sheets = useTransform(p, [0.5, 0.62], [0, 1]);
+  const gap = narrow ? 70 : 118;
+  const layers = [
+    useLayerMotion(p, 0, gap),
+    useLayerMotion(p, 1, gap),
+    useLayerMotion(p, 2, gap),
+    useLayerMotion(p, 3, gap),
+    useLayerMotion(p, 4, gap),
+    useLayerMotion(p, 5, gap),
+  ];
+  // Move the model down while it turns, so the finished stack (frame at the
+  // bottom, five layers above) ends up centred.
+  const stackShift = useTransform(p, [TURN_START, TURN_END], [0, SIN_RX * 2.5 * gap]);
   const modelScale = useTransform(
     p,
-    [0, 0.46, 0.62, 1],
+    [0, TURN_START, TURN_END, 1],
     narrow ? [0.46, 0.46, 0.42, 0.42] : [1, 0.94, 0.68, 0.68]
   );
-  const modelX = useTransform(p, [0, 0.46, 0.62, 1], narrow ? ['0vw', '0vw', '0vw', '0vw'] : ['20vw', '22vw', '0vw', '0vw']);
-  const modelY = useTransform(p, [0, 0.46, 0.62, 1], narrow ? ['27vh', '27vh', '6vh', '6vh'] : ['0vh', '0vh', '3vh', '3vh']);
+  const modelX = useTransform(p, [0, TURN_START, TURN_END, 1], narrow ? ['0vw', '0vw', '0vw', '0vw'] : ['20vw', '22vw', '0vw', '0vw']);
+  const modelY = useTransform(p, [0, TURN_START, TURN_END, 1], narrow ? ['27vh', '27vh', '4vh', '4vh'] : ['0vh', '0vh', '2vh', '2vh']);
 
   // On narrow screens the model sits under the text, so dim it while chapter 2 is read.
   const modelOpacity = useTransform(p, [0.18, 0.23, 0.41, 0.46], narrow ? [1, 0.12, 0.12, 1] : [1, 1, 1, 1]);
@@ -279,7 +321,7 @@ export const LandingPage: React.FC = () => {
   const guideOpacity = useTransform(p, [0.2, 0.26, 0.4, 0.46], [0, 1, 1, 0]);
   const guideY = useTransform(p, [0.2, 0.26, 0.4, 0.46], [40, 0, 0, -40]);
   const guidePointer = useTransform(guideOpacity, (o) => (o > 0.3 ? 'auto' : 'none'));
-  const insideOpacity = useTransform(p, [0.6, 0.66], [0, 1]);
+  const insideOpacity = useTransform(p, [TURN_END, PEEL_START + 0.02], [0, 1]);
   const cueOpacity = useTransform(p, [0, 0.05], [1, 0]);
 
   const filtered = PROBLEMS.filter((x) => catalogFilter === 'all' || x.category === catalogFilter);
@@ -335,8 +377,8 @@ export const LandingPage: React.FC = () => {
         {/* Anchors for in-page links, placed where each chapter is fully shown. */}
         {!reduceMotion && (
           <>
-            <span id="how-it-works" className="absolute left-0" style={{ top: `${SCENE_VH * 0.07 * 4}vh` }} />
-            <span id="advantage" className="absolute left-0" style={{ top: `${(SCENE_VH - 100) * 0.94}vh` }} />
+            <span id="how-it-works" className="absolute left-0" style={{ top: `${(SCENE_VH - 100) * 0.33}vh` }} />
+            <span id="advantage" className="absolute left-0" style={{ top: `${(SCENE_VH - 100) * (PEEL_DONE + 0.02)}vh` }} />
           </>
         )}
 
@@ -366,8 +408,10 @@ export const LandingPage: React.FC = () => {
             }}
             aria-hidden
           >
-            <motion.div className="h-full w-full" animate={reduceMotion ? undefined : { y: [0, -10, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}>
-              <SplineIDE rotateX={rotateX} rotateY={rotateY} rotateZ={rotateZ} spread={spread} sheets={sheets} progress={p} />
+            <motion.div className="h-full w-full" style={{ y: stackShift }}>
+              <motion.div className="h-full w-full" animate={reduceMotion ? undefined : { y: [0, -10, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}>
+                <SplineIDE rotateX={rotateX} rotateY={rotateY} rotateZ={rotateZ} layers={layers} progress={p} />
+              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -402,8 +446,8 @@ export const LandingPage: React.FC = () => {
             </motion.div>
 
             {!narrow &&
-              CALLOUTS.map((c, i) => (
-                <Callout key={c.title} c={c} order={i} progress={p} spread={spread} scale={modelScale} />
+              CALLOUTS.map((c) => (
+                <Callout key={c.title} c={c} progress={p} layer={layers[c.layer]} shift={stackShift} scale={modelScale} />
               ))}
           </div>
 
