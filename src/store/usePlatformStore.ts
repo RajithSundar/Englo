@@ -14,7 +14,7 @@ import { audioService } from '../services/audioService';
 const STORAGE_KEY = 'algo_system_design_store_v2';
 const LEGACY_STORAGE_KEY = 'algo_system_design_store_v1';
 
-export type AppView = 'landing' | 'dashboard' | 'algo_workspace' | 'system_design_workspace' | 'auth';
+export type AppView = 'landing' | 'dashboard' | 'algo_workspace' | 'system_design_workspace' | 'auth' | 'learn';
 
 interface PlatformState {
   activeView: AppView;

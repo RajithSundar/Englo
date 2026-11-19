@@ -6,6 +6,7 @@
 import React, { useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
+import { LearnView } from './components/LearnView';
 import { ResizableSplitPane } from './components/ResizableSplitPane';
 import { ProblemDescription } from './components/ProblemDescription';
 import { AlgoWorkspace } from './components/algo/AlgoWorkspace';
@@ -143,6 +144,7 @@ export default function App() {
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
         {activeView === 'dashboard' && <DashboardView />}
         {activeView === 'auth' && <AuthView />}
+        {activeView === 'learn' && <LearnView />}
 
         {activeView === 'algo_workspace' && (
           <ResizableSplitPane

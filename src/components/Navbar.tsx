@@ -131,7 +131,7 @@ export const Navbar: React.FC = () => {
   const activeProblem = PROBLEMS.find((p) => p.id === activeProblemId) || PROBLEMS[0];
   const totalSolved = solvedProblemIds.length;
   const totalProblems = PROBLEMS.length;
-  const inWorkspace = activeView !== 'dashboard' && activeView !== 'landing';
+  const inWorkspace = activeView === 'algo_workspace' || activeView === 'system_design_workspace';
   const activeToday = recentDays[recentDays.length - 1]?.isActive;
 
   const difficultyChip =
@@ -180,6 +180,16 @@ export const Navbar: React.FC = () => {
         className="seg-item"
       >
         Workspace
+      </button>
+      <button
+        id="nav-tab-learn"
+        type="button"
+        role="tab"
+        aria-selected={activeView === 'learn'}
+        onClick={() => setActiveView('learn')}
+        className="seg-item"
+      >
+        Learn
       </button>
     </div>
   );

@@ -13,7 +13,6 @@ import { usePlatformStore } from '../../store/usePlatformStore';
 import { PROBLEMS } from '../../data/problems';
 import { SplineIDE } from './SplineIDE';
 import { IDE_HEIGHT, IDE_WIDTH, LayerMotion } from './IDEModel3D';
-import { LearningSources } from './LearningSources';
 
 /* ------------------------------------------------------------------ */
 /* Look: pure black ground, pale ink, one neon-blue accent.           */
@@ -346,7 +345,9 @@ export const LandingPage: React.FC = () => {
             <a href="#how-it-works" className="hover:text-ink">How it works</a>
             <a href="#advantage" className="hover:text-ink">Inside the editor</a>
             <a href="#architecture" className="hover:text-ink">System design</a>
-            <a href="#learn" className="hover:text-ink">Learn</a>
+            <button id="landing-nav-learn" onClick={() => setActiveView('learn')} className="hover:text-ink">
+              Learn
+            </button>
             <button id="landing-nav-ledger" onClick={() => setActiveView('dashboard')} className="hover:text-ink">
               Problems
             </button>
@@ -609,9 +610,6 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ---------------- Sources to learn ---------------- */}
-      <LearningSources />
-
       {/* ---------------- Closing ---------------- */}
       <section className="border-t border-rule">
         <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
@@ -632,7 +630,7 @@ export const LandingPage: React.FC = () => {
             <a href="#how-it-works" className="hover:text-ink">How it works</a>
             <a href="#architecture" className="hover:text-ink">System design</a>
             <a href="#problem-catalog" className="hover:text-ink">Problems</a>
-            <a href="#learn" className="hover:text-ink">Learn</a>
+            <button onClick={() => setActiveView('learn')} className="hover:text-ink">Learn</button>
           </div>
         </div>
       </footer>
