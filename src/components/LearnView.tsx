@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowUpRight, ArrowRight, PlayCircle, BookOpen } from 'lucide-react';
 import { usePlatformStore } from '../store/usePlatformStore';
+import { LEARN_ICONS } from '../data/learnIcons';
 
 const MONO = "'Atkinson Hyperlegible Mono', 'JetBrains Mono', ui-monospace, monospace";
 
@@ -511,6 +512,33 @@ const TRACKS: Track[] = [
 
 const costClass = (c: Cost) => (c === 'Paid' ? 'text-muted' : 'text-accent');
 
+/** The creator's or site's icon; a lettered badge when the site has none. */
+const SourceIcon: React.FC<{ source: Source }> = ({ source }) => {
+  const [failed, setFailed] = React.useState(false);
+  const src = LEARN_ICONS[source.href];
+  const box = 'h-9 w-9 shrink-0 rounded-lg ring-1 ring-rule';
+  if (src && !failed) {
+    return (
+      <img
+        src={src}
+        alt=""
+        width={36}
+        height={36}
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        className={`${box} bg-white object-cover`}
+      />
+    );
+  }
+  const letters = (source.by.split(/[\s,&]+/).filter(Boolean)[0]?.[0] ?? '') + (source.name.match(/[A-Z0-9]/)?.[0] ?? '');
+  return (
+    <span aria-hidden className={`${box} flex items-center justify-center bg-accent/15 text-[12px] font-medium text-accent`} style={{ fontFamily: MONO }}>
+      {letters.toUpperCase()}
+    </span>
+  );
+};
+
 const SourceCard: React.FC<{ source: Source; rank: number }> = ({ source: s, rank }) => (
   <a
     href={s.href}
@@ -526,12 +554,15 @@ const SourceCard: React.FC<{ source: Source; rank: number }> = ({ source: s, ran
       {rank}
     </span>
     <span className="min-w-0">
-      <span className="flex items-start justify-between gap-2">
-        <span className="text-[15px] font-medium leading-snug text-ink">{s.name}</span>
+      <span className="flex items-start gap-3">
+        <SourceIcon source={s} />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium leading-snug text-ink">{s.name}</span>
+          <span className="mt-0.5 block text-[12.5px] text-ink-2">{s.by}</span>
+        </span>
         <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
       </span>
-      <span className="mt-0.5 block text-[12.5px] text-ink-2">{s.by}</span>
-      <span className="mt-2 block text-[13.5px] leading-[1.55] text-muted">{s.caption}</span>
+      <span className="mt-3 block text-[13.5px] leading-[1.55] text-muted">{s.caption}</span>
       <span className={`mt-3 block text-[11px] uppercase tracking-[0.08em] ${costClass(s.cost)}`} style={{ fontFamily: MONO }}>
         {s.cost}
         <span className="sr-only"> (opens in a new tab)</span>
