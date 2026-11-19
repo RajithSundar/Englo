@@ -79,3 +79,16 @@ The 3D model is hand-built (`IDEModel3D.tsx`). `SplineIDE.tsx` can load a Spline
 
 - Show only what the product does. Do not add invented percentiles, acceptance rates, user counts or "proofs".
 - Evaluation is feedback from Gemini (when configured) or a local rule-based checker. It is never presented as a formal proof.
+
+---
+
+## Landing and Learn: Console
+
+Since 2026-11-19 the landing page and the Learn page use a second system, Hallmark's **Console** theme, scoped to those two pages so the app screens above keep this one. It lives in `src/styles/console.css`, with its Hallmark stamp at the top.
+
+- **Scope:** the page root carries `data-theme="console"`, `data-mode` (from the app's theme toggle) and the class `theme-console`. The tokens there reuse this file's names (`paper`, `ink`, `accent`, ...), so the same Tailwind utilities pick them up.
+- **Dark (graphite):** a graphite ground in three lightness steps, pale ink, hairline panels. **Light (paper):** a warm paper ground with the same structure.
+- **Two meanings:** amber is a person (your answer, the one primary action); cool blue is an instrument (a reading, a complexity). Nothing glows, nothing is glass.
+- **Type:** Host Grotesk 500 for heads, 400 for reading; Atkinson Hyperlegible Mono (`.measured`) only for what the checker or the system wrote: code, figures, readings.
+- **Controls:** `.c-btn` (outline) and `.c-btn--primary` (amber), `.c-seg` (the chosen chip on the cool tint), `.c-link`, `.c-quiet`. One filled primary per screen.
+- **The 3D workspace** on the landing page stays by request, drawn from the same tokens.

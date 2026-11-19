@@ -106,7 +106,7 @@ export const SplineIDE: React.FC<SplineIDEProps> = ({ rotateX, rotateY, rotateZ,
           href="https://spline.design"
           target="_blank"
           rel="noopener"
-          className="absolute -bottom-10 right-0 text-[11px] text-[#9DA6AD] hover:text-[#EEF2F5]"
+          className="absolute -bottom-10 right-0 text-[11px] text-muted hover:text-ink"
         >
           Made with Spline
         </a>

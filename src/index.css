@@ -4,6 +4,7 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 @import "@xyflow/react/dist/style.css";
+@import "./styles/console.css";
 
 /* ---------- light: white glass ---------- */
 :root {

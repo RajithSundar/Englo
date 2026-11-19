@@ -1,9 +1,7 @@
 import React from 'react';
-import { ArrowUpRight, ArrowRight, PlayCircle, BookOpen } from 'lucide-react';
+import { ArrowUpRight, PlayCircle, BookOpen } from 'lucide-react';
 import { usePlatformStore } from '../store/usePlatformStore';
 import { LEARN_ICONS } from '../data/learnIcons';
-
-const MONO = "'Atkinson Hyperlegible Mono', 'JetBrains Mono', ui-monospace, monospace";
 
 type Cost = 'Free' | 'Open source' | 'Free to audit' | 'Free + paid' | 'Paid';
 type Level = 'beginner' | 'intermediate' | 'advanced';
@@ -510,60 +508,54 @@ const TRACKS: Track[] = [
   },
 ];
 
-const costClass = (c: Cost) => (c === 'Paid' ? 'text-muted' : 'text-accent');
-
 /** The creator's or site's icon; a lettered badge when the site has none. */
 const SourceIcon: React.FC<{ source: Source }> = ({ source }) => {
   const [failed, setFailed] = React.useState(false);
   const src = LEARN_ICONS[source.href];
-  const box = 'h-9 w-9 shrink-0 rounded-lg ring-1 ring-rule';
+  const box = 'h-8 w-8 shrink-0 rounded-[6px] border border-rule';
   if (src && !failed) {
     return (
       <img
         src={src}
         alt=""
-        width={36}
-        height={36}
-        loading="lazy"
+        width={32}
+        height={32}
         decoding="async"
         onError={() => setFailed(true)}
-        className={`${box} bg-white object-cover`}
+        className={`${box} bg-paper-2 object-cover`}
       />
     );
   }
   const letters = (source.by.split(/[\s,&]+/).filter(Boolean)[0]?.[0] ?? '') + (source.name.match(/[A-Z0-9]/)?.[0] ?? '');
   return (
-    <span aria-hidden className={`${box} flex items-center justify-center bg-accent/15 text-[12px] font-medium text-accent`} style={{ fontFamily: MONO }}>
+    <span aria-hidden className={`${box} flex items-center justify-center bg-paper-3 text-[12px] font-medium text-ink-2`}>
       {letters.toUpperCase()}
     </span>
   );
 };
 
-const SourceCard: React.FC<{ source: Source; rank: number }> = ({ source: s, rank }) => (
+/** One ranked source: a row on a hairline, the whole row a link. */
+const SourceRow: React.FC<{ source: Source; rank: number }> = ({ source: s, rank }) => (
   <a
     href={s.href}
     target="_blank"
     rel="noopener noreferrer"
-    className="glass group grid h-full grid-cols-[2rem_1fr] gap-x-3 rounded-xl p-4 transition hover:border-accent hover:shadow-glow-1"
+    className="group grid grid-cols-[1.75rem_2rem_minmax(0,1fr)] gap-x-3 border-t border-rule py-4 no-underline transition-colors hover:bg-paper-2"
   >
-    <span
-      aria-label={`Rank ${rank}`}
-      className={`text-[22px] leading-none ${rank === 1 ? 'text-accent' : 'text-muted'}`}
-      style={{ fontFamily: MONO }}
-    >
+    <span className="measured pt-1.5 text-[14px] text-muted" aria-label={`Rank ${rank}`}>
       {rank}
     </span>
+    <SourceIcon source={s} />
     <span className="min-w-0">
-      <span className="flex items-start gap-3">
-        <SourceIcon source={s} />
-        <span className="min-w-0 flex-1">
-          <span className="block text-[15px] font-medium leading-snug text-ink">{s.name}</span>
-          <span className="mt-0.5 block text-[12.5px] text-ink-2">{s.by}</span>
+      <span className="flex items-start justify-between gap-2">
+        <span className="text-[16px] font-medium leading-snug text-ink underline decoration-transparent underline-offset-[0.16em] transition-colors group-hover:decoration-accent">
+          {s.name}
         </span>
-        <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+        <ArrowUpRight aria-hidden className="mt-1 h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-ink" />
       </span>
-      <span className="mt-3 block text-[13.5px] leading-[1.55] text-muted">{s.caption}</span>
-      <span className={`mt-3 block text-[11px] uppercase tracking-[0.08em] ${costClass(s.cost)}`} style={{ fontFamily: MONO }}>
+      <span className="mt-0.5 block text-[14px] text-ink-2">{s.by}</span>
+      <span className="mt-2 block text-[15px] leading-[1.5] text-muted">{s.caption}</span>
+      <span className={`mt-2 block text-[14px] ${s.cost === 'Paid' ? 'text-ink-2' : 'text-muted'}`}>
         {s.cost}
         <span className="sr-only"> (opens in a new tab)</span>
       </span>
@@ -573,27 +565,24 @@ const SourceCard: React.FC<{ source: Source; rank: number }> = ({ source: s, ran
 
 export const LearnView: React.FC = () => {
   const setActiveView = usePlatformStore((s) => s.setActiveView);
+  const isDarkMode = usePlatformStore((s) => s.isDarkMode);
   const [format, setFormat] = React.useState<Format>('video');
-  const total = TRACKS.length * LEVELS.length * 5 * FORMATS.length;
 
   return (
-    <div id="learn-scroll-container" className="flex-1 overflow-y-auto w-full h-full bg-paper text-ink">
-      <div className="mx-auto max-w-[1320px] px-5 pb-14 pt-14 md:px-10 md:pt-20">
-        <header className="max-w-[680px]">
-          <span aria-hidden className="mb-6 block h-[3px] w-10 rounded-full bg-accent shadow-glow-1" />
-          <h1 className="text-[34px] font-medium leading-[1.05] tracking-[-0.025em] md:text-[48px]">Sources to learn from</h1>
-          <p className="mt-5 text-[16px] leading-[1.6] text-muted">
-            {total} courses, channels, books and guides that programmers recommend most on Reddit and other forums,
-            nearly all free or open source. Pick videos or text; each level is ranked 1 to 5 by how widely it's
-            recommended. Englo doesn't run any of them.
-          </p>
-        </header>
-      </div>
+    <div
+      id="learn-scroll-container"
+      data-theme="console"
+      data-mode={isDarkMode ? 'dark' : 'light'}
+      className="theme-console flex-1 overflow-y-auto w-full h-full bg-paper">
+      <header className="c-container pb-12 pt-16 md:pt-20">
+        <h1 className="display-s">Sources to learn from</h1>
+        <p className="lead mt-5">Sixty free courses, channels and books, ranked by level.</p>
+      </header>
 
-      {/* Format switch stays in reach while scrolling through both topics */}
-      <div className="sticky top-0 z-20 border-y border-rule bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1320px] flex-wrap items-center justify-between gap-3 px-5 py-3 md:px-10">
-          <div role="tablist" aria-label="Format" className="seg">
+      {/* The format switch stays in reach while scrolling through both topics */}
+      <div className="sticky top-0 z-[200] border-y border-rule bg-paper">
+        <div className="c-container flex flex-wrap items-center justify-between gap-4 py-3">
+          <div role="tablist" aria-label="Format" className="c-seg">
             {FORMATS.map((f) => (
               <button
                 key={f.key}
@@ -603,16 +592,15 @@ export const LearnView: React.FC = () => {
                 aria-selected={format === f.key}
                 aria-controls="learn-panel"
                 onClick={() => setFormat(f.key)}
-                className="seg-item inline-flex items-center gap-1.5"
               >
                 {f.icon}
                 {f.label}
               </button>
             ))}
           </div>
-          <nav aria-label="Topics" className="flex gap-5 text-[13px] text-muted">
+          <nav aria-label="Topics" className="flex gap-6 text-[15px]">
             {TRACKS.map((t) => (
-              <a key={t.key} href={`#learn-${t.key}`} className="hover:text-ink">
+              <a key={t.key} href={`#learn-${t.key}`} className="c-quiet no-underline">
                 {t.key === 'dsa' ? 'DSA' : t.label}
               </a>
             ))}
@@ -620,27 +608,25 @@ export const LearnView: React.FC = () => {
         </div>
       </div>
 
-      <div id="learn-panel" role="tabpanel" aria-labelledby={`learn-format-${format}`} className="mx-auto max-w-[1320px] px-5 md:px-10">
+      <div id="learn-panel" role="tabpanel" aria-labelledby={`learn-format-${format}`} className="c-container">
         {TRACKS.map((track) => (
-          <section key={track.key} id={`learn-${track.key}`} aria-labelledby={`learn-${track.key}-title`} className="scroll-mt-20 pt-14">
-            <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-rule pb-4">
-              <h2 id={`learn-${track.key}-title`} className="text-[24px] font-medium tracking-[-0.01em] md:text-[28px]">
+          <section key={track.key} id={`learn-${track.key}`} aria-labelledby={`learn-${track.key}-title`} className="scroll-mt-20 pt-20">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+              <h2 id={`learn-${track.key}-title`} className="text-[length:var(--text-display-s)]">
                 {track.label}
               </h2>
-              <p className="text-[14px] text-muted">{track.intro}</p>
+              <p className="text-[15px] text-muted">{track.intro}</p>
             </div>
 
-            <div className="mt-8 grid gap-12 lg:grid-cols-3 lg:gap-8">
+            <div className="mt-10 grid gap-x-8 gap-y-12 lg:grid-cols-3">
               {LEVELS.map((level) => (
-                <div key={level.key} role="group" aria-labelledby={`learn-${track.key}-${level.key}`}>
-                  <h3 id={`learn-${track.key}-${level.key}`} className="text-[18px] font-medium">
-                    {level.label}
-                  </h3>
-                  <p className="mt-1 text-[13.5px] text-muted">{level.blurb}</p>
-                  <ol className="mt-5 space-y-3">
+                <div key={level.key} role="group" aria-labelledby={`learn-${track.key}-${level.key}`} className="min-w-0">
+                  <h3 id={`learn-${track.key}-${level.key}`}>{level.label}</h3>
+                  <p className="mt-1 mb-4 text-[15px] text-muted">{level.blurb}</p>
+                  <ol>
                     {track.sources[format][level.key].map((s, i) => (
                       <li key={s.href}>
-                        <SourceCard source={s} rank={i + 1} />
+                        <SourceRow source={s} rank={i + 1} />
                       </li>
                     ))}
                   </ol>
@@ -650,13 +636,12 @@ export const LearnView: React.FC = () => {
           </section>
         ))}
 
-        <div className="mt-20 flex flex-wrap items-center justify-between gap-6 border-t border-rule py-10">
-          <p className="max-w-[560px] text-[14px] leading-[1.6] text-muted">
-            Learned a pattern? Practise it here: write the approach in plain steps and get feedback on the logic.
+        <div className="mt-24 flex flex-wrap items-center justify-between gap-6 border-t border-rule py-12">
+          <p className="max-w-[40rem] text-[15px] text-muted">
+            Ranked by how widely programmers recommend each one, favouring free material. Englo runs none of them.
           </p>
-          <button type="button" onClick={() => setActiveView('dashboard')} className="btn-primary">
+          <button type="button" onClick={() => setActiveView('dashboard')} className="c-btn c-btn--primary">
             Browse the problems
-            <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>
