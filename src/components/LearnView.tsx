@@ -512,7 +512,7 @@ const TRACKS: Track[] = [
 const SourceIcon: React.FC<{ source: Source }> = ({ source }) => {
   const [failed, setFailed] = React.useState(false);
   const src = LEARN_ICONS[source.href];
-  const box = 'h-8 w-8 shrink-0 rounded-[6px] border border-rule';
+  const box = 'h-8 w-8 shrink-0 rounded-none border border-rule';
   if (src && !failed) {
     return (
       <img

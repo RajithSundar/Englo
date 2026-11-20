@@ -244,7 +244,7 @@ export const LandingPage: React.FC = () => {
         }`}
       >
         <div className="c-container flex h-16 items-center gap-6">
-          <a href="#top" aria-label="Englo, back to top" className="text-[19px] font-medium tracking-[-0.01em] text-ink no-underline">
+          <a href="#top" aria-label="Englo, back to top" className="wordmark text-[18px] text-ink no-underline">
             Englo
           </a>
           <nav aria-label="Primary" className="ml-auto hidden items-center gap-8 text-[15px] md:flex">
@@ -422,11 +422,7 @@ export const LandingPage: React.FC = () => {
                   <span className="hidden text-[15px] text-muted md:block">
                     {prob.category === 'algorithm' ? 'Algorithm' : 'System design'}
                   </span>
-                  <span
-                    className={`text-[15px] ${
-                      prob.difficulty === 'Easy' ? 'text-ok' : prob.difficulty === 'Medium' ? 'text-ink-2' : 'text-bad'
-                    }`}
-                  >
+                  <span className="text-[15px] text-muted">
                     {prob.difficulty}
                   </span>
                 </button>

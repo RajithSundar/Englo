@@ -77,8 +77,8 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
           <div className="flex h-9 items-center gap-3 border-b border-rule px-4">
             <span className="text-[13px] font-medium text-ink">Englo</span>
             <span className="h-4 w-px bg-rule" />
-            <span className="measured rounded-[4px] border border-rule px-2 py-0.5 text-[11px] text-ink-2">two-sum</span>
-            <span className="ml-auto rounded-[4px] bg-accent px-3 py-0.5 text-[11px] font-medium text-accent-ink">Submit</span>
+            <span className="measured rounded-none border border-rule px-2 py-0.5 text-[11px] text-ink-2">two-sum</span>
+            <span className="ml-auto rounded-none bg-accent px-3 py-0.5 text-[11px] font-medium text-accent-ink">Submit</span>
           </div>
           <div className="absolute bottom-0 left-[240px] top-9 w-px bg-rule" />
         </div>
@@ -89,14 +89,14 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
         <div className="absolute left-0 top-9 h-[414px] w-[240px] p-4">
           <div className="flex items-center gap-2">
             <span className="text-[14px] font-medium text-ink">Two Sum</span>
-            <span className="rounded-[4px] border border-rule px-1.5 text-[10px] text-ok">Easy</span>
+            <span className="rounded-none border border-rule px-1.5 text-[10px] text-ok">Easy</span>
           </div>
           <p className="mt-3 text-[11px] leading-[1.55] text-muted">
             Given an array of integers <span className="measured text-ink-2">nums</span> and a{' '}
             <span className="measured text-ink-2">target</span>, describe in plain English how to return the indices of
             the two numbers that add up to the target.
           </p>
-          <div className="measured mt-4 rounded-[6px] border border-rule bg-paper-3 p-3 text-[10.5px] leading-[1.6] text-ink-2">
+          <div className="measured mt-4 rounded-none border border-rule bg-paper-3 p-3 text-[10.5px] leading-[1.6] text-ink-2">
             <div className="text-muted">Example 1</div>
             <div>nums = [2, 7, 11, 15]</div>
             <div>target = 9</div>

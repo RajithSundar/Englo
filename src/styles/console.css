@@ -1,8 +1,8 @@
-/* Hallmark · shape: Pinned (kept scroll story: the IDE turns, then peels) · genre: modern-minimal · theme: Console (deal 2/3, seed practice-where-people-solve-f277·fc6b61a0·2026-11-19·r0) · redesign: full
- * hero: Stage · nav: edge-aligned (wordmark, two links, one action) · footer: colophon · imagery: the product (the 3D workspace) · signature: the workspace peeling into its six layers · console: graphite (dark) + paper (light)
- * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · modes: light+dark · contrast: pass · fold: pass · scope: landing + /learn only · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V3 · weakest: V, the kept scroll story fixes the order; varied the lower half (split, index, band) and cut the dot nav, glow, bob loop and scroll cue */
-/* Hallmark · user override 47c and 84 · the hand-built 3D workspace stays because Karthik asked to keep it over a capture; it shows only real features, retokened, no glow */
+/* Hallmark · shape: Pinned (kept scroll story: the IDE turns, then peels) · genre: modern-minimal · theme: custom (by request: greyscale, mono heads, square corners, after opencode.ai) · redesign: full
+ * hero: Stage · nav: edge-aligned (wordmark, two links, one action) · footer: colophon · imagery: the product (the 3D workspace) · signature: the workspace peeling into its six layers · palette: ink on near-black, no accent hue
+ * axes: dark/mono/neutral · posture: restrained · surface: neutral · modes: light+dark · contrast: pass · fold: pass · scope: landing + /learn only · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V3 · weakest: V, the kept scroll story fixes the order; the lower half varies (split, index, band); cut every hue, so state is carried by words, weight and the ink fill */
+/* Hallmark · user override 47c and 84 · the hand-built 3D workspace stays because Karthik asked to keep it over a capture; it shows only real features, drawn from the page tokens, no glow */
 /* Hallmark · dropped #how-it-works, #advantage, #architecture · nav anchors into one scroll story; the section ids stay, and Problems and Learn are the real destinations */
 /* Hallmark · dropped #problem-catalog, {`#${s.id}`} · the footer anchor and the dot nav; the footer now links the real Problems and Learn views */
 /* Hallmark · dropped onClick={onClick} · the PrimaryButton wrapper became the .c-btn--primary class; every button keeps its own startProblem handler */
@@ -10,40 +10,44 @@
 /* Hallmark · dropped "Try it on Two Sum" in the guide chapter · it repeated the hero's action on the next screen */
 
 /*
- * Console, scoped. Englo's other screens keep their own system, so every token
- * here is set on [data-theme="console"] (the landing page and the Learn page, which
- * also carry .theme-console and data-mode from the app's theme toggle) using the
+ * Englo's public pages (the landing page and the Learn page), scoped. The app
+ * screens keep their own system, so every token here is set on
+ * [data-theme="console"] (with data-mode from the app's theme toggle) using the
  * project's own token names; the Tailwind utilities (bg-paper, text-ink, ...)
- * pick them up inside the scope. Light is Console's "paper" colourway, dark its
- * "graphite"; amber means a person (your answer, the one action), cool blue an
- * instrument (a reading, a complexity).
+ * pick them up inside the scope.
+ *
+ * The look follows opencode.ai at Karthik's request: no colour at all. A
+ * near-black ground (a near-white one in light mode), grey body text, panels
+ * one step lighter, monospace heads at weight 400, square corners, and the one
+ * primary control filled with the ink. Every former accent token resolves to a
+ * grey, so nothing on these pages carries a hue.
  */
 
 @theme {
-  --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
-  --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.75rem);
-  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem);
-  --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem);
-  --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --text-display: clamp(2.5rem, 3.5vw + 1rem, 4rem);
+  --text-display-s: clamp(2rem, 2.5vw + 1rem, 3rem);
+  --text-section: clamp(1.75rem, 1.5vw + 1rem, 2.5rem);
+  --text-title: clamp(1.125rem, 0.5vw + 0.875rem, 1.375rem);
+  --text-lead: clamp(1.0625rem, 0.25vw + 1rem, 1.25rem);
   --font-outlier: "Atkinson Hyperlegible Mono", ui-monospace, monospace;
-  --radius-card: 10px;
-  --radius-pill: 6px;
+  --radius-card: 0px;
+  --radius-pill: 0px;
 }
 
 @layer base {
   [data-theme="console"] {
-    /* paper colourway (light) */
-    --paper: oklch(98% 0.006 85);   --paper-2: oklch(99.5% 0.003 85); --paper-3: oklch(95% 0.008 85);
-    --ink: oklch(19% 0.010 60);     --ink-2: oklch(31% 0.010 60);     --muted: oklch(44% 0.012 60);
-    --rule: oklch(89% 0.008 85);    --rule-2: oklch(74% 0.010 85);
-    --accent: oklch(54% 0.14 70);   --accent-hi: oklch(48% 0.13 68);  --accent-ink: oklch(99% 0.004 85); --accent-soft: oklch(94% 0.04 80);
-    --cool: oklch(52% 0.14 250);    --cool-soft: oklch(95% 0.02 250);
-    --ok: oklch(48% 0.13 150);      --ok-soft: oklch(95% 0.03 150);
-    --bad: oklch(52% 0.18 27);      --bad-soft: oklch(95% 0.03 27);
-    --focus: oklch(54% 0.14 70);
+    /* light: near-white, ink near-black */
+    --paper: oklch(98.5% 0 0);     --paper-2: oklch(96.5% 0 0);     --paper-3: oklch(94% 0 0);
+    --ink: oklch(16% 0 0);         --ink-2: oklch(32% 0 0);         --muted: oklch(46% 0 0);
+    --rule: oklch(90% 0 0);        --rule-2: oklch(80% 0 0);
+    --accent: oklch(16% 0 0);      --accent-hi: oklch(30% 0 0);     --accent-ink: oklch(98.5% 0 0); --accent-soft: oklch(92% 0 0);
+    --cool: oklch(32% 0 0);        --cool-soft: oklch(92% 0 0);
+    --ok: oklch(32% 0 0);          --ok-soft: oklch(94% 0 0);
+    --bad: oklch(16% 0 0);         --bad-soft: oklch(94% 0 0);
+    --focus: oklch(16% 0 0);
     color-scheme: light;
 
-    /* No glass, no glow, no lamp: elevation is lightness and a hairline. */
+    /* No glass, no glow: elevation is lightness and a hairline. */
     --glass: var(--paper-2); --glass-strong: var(--paper-2); --glass-border: var(--rule); --glass-hi: 0 0 0 0 transparent;
     --glow-1: 0 0 0 0 transparent; --glow-2: 0 0 0 0 transparent; --glow-3: 0 0 0 0 transparent;
     --card-shadow: 0 0 0 0 transparent; --ground: none;
@@ -53,28 +57,28 @@
     --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
     --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
     --ease-out-c: cubic-bezier(0.16, 1, 0.3, 1);
-    --container: 1440px; --gutter: 64px; --gap-columns: 32px;
+    --container: 1280px; --gutter: 64px; --gap-columns: 32px;
     --nav-h: 64px;
-    --tracking-display: -0.03em;
+    --tracking-display: -0.02em;
 
     background: var(--paper);
-    color: var(--ink-2);
+    color: var(--muted);
     font-family: var(--font-display);
     font-size: 1rem;
     line-height: 1.55;
     font-synthesis: none;
   }
 
-  /* graphite colourway (dark) */
+  /* dark: the opencode.ai ground (about #0c0c0c), panels at #161616 to #1a1a1a */
   [data-theme="console"][data-mode="dark"] {
-    --paper: oklch(17% 0.008 250);  --paper-2: oklch(21% 0.009 250);  --paper-3: oklch(13.5% 0.007 250);
-    --ink: oklch(95% 0.005 250);    --ink-2: oklch(83% 0.008 250);    --muted: oklch(71% 0.01 250);
-    --rule: oklch(31% 0.01 250);    --rule-2: oklch(42% 0.012 250);
-    --accent: oklch(82% 0.15 80);   --accent-hi: oklch(86% 0.13 82);  --accent-ink: oklch(18% 0.04 75); --accent-soft: oklch(29% 0.05 80);
-    --cool: oklch(77% 0.12 245);    --cool-soft: oklch(29% 0.05 245);
-    --ok: oklch(76% 0.15 150);      --ok-soft: oklch(24.5% 0.03 150);
-    --bad: oklch(70% 0.17 25);      --bad-soft: oklch(24.5% 0.035 25);
-    --focus: oklch(82% 0.15 80);
+    --paper: oklch(15.5% 0 0);     --paper-2: oklch(20.5% 0 0);     --paper-3: oklch(19% 0 0);
+    --ink: oklch(98.5% 0 0);       --ink-2: oklch(86% 0 0);         --muted: oklch(66% 0 0);
+    --rule: oklch(26% 0 0);        --rule-2: oklch(36% 0 0);
+    --accent: oklch(98.5% 0 0);    --accent-hi: oklch(88% 0 0);     --accent-ink: oklch(15.5% 0 0); --accent-soft: oklch(26% 0 0);
+    --cool: oklch(86% 0 0);        --cool-soft: oklch(28% 0 0);
+    --ok: oklch(86% 0 0);          --ok-soft: oklch(22% 0 0);
+    --bad: oklch(98.5% 0 0);       --bad-soft: oklch(22% 0 0);
+    --focus: oklch(98.5% 0 0);
     color-scheme: dark;
   }
 
@@ -82,58 +86,58 @@
   @media (max-width: 40rem) { .theme-console { --gutter: 16px; --gap-columns: 16px; } }
 
   /* ---------- base, inside the scope ---------- */
-  .theme-console ::selection { background: color-mix(in oklab, var(--accent) 25%, transparent); color: var(--ink); }
+  .theme-console ::selection { background: var(--rule-2); color: var(--ink); }
   .theme-console :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; transition: none; }
-  .theme-console a { text-decoration-thickness: 1px; text-underline-offset: 0.16em; }
+  .theme-console a { text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
   .theme-console h1,
   .theme-console h2,
   .theme-console h3 {
-    margin: 0; color: var(--ink); font-family: var(--font-display); font-weight: 500; font-synthesis: none;
-    letter-spacing: var(--tracking-display); line-height: 1.04; overflow-wrap: break-word; min-width: 0; text-wrap: balance;
+    margin: 0; color: var(--ink); font-family: var(--font-outlier); font-weight: 400; font-synthesis: none;
+    letter-spacing: var(--tracking-display); line-height: 1.1; overflow-wrap: break-word; min-width: 0; text-wrap: balance;
   }
   .theme-console h1 { max-width: 20ch; font-size: var(--text-display); }
   .theme-console h2 { max-width: 30ch; font-size: var(--text-section); }
-  .theme-console h3 { max-width: 40ch; font-size: var(--text-title); line-height: 1.2; letter-spacing: -0.01em; }
+  .theme-console h3 { max-width: 40ch; font-size: var(--text-title); line-height: 1.25; letter-spacing: 0; }
   .theme-console .display-s { font-size: var(--text-display-s); max-width: 24ch; }
-  .theme-console .lead { font-size: var(--text-lead); line-height: 1.45; max-width: 52ch; color: var(--ink-2); }
+  .theme-console .lead { font-size: var(--text-lead); line-height: 1.5; max-width: 52ch; color: var(--muted); }
   .theme-console p { margin: 0; text-wrap: pretty; }
   .theme-console .c-container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
   .theme-console .measured { font-family: var(--font-outlier); font-variant-numeric: tabular-nums slashed-zero; }
+  .theme-console .wordmark { font-family: var(--font-outlier); }
 }
 
 @layer components {
-  /* ---------- controls: the pair ---------- */
+  /* ---------- controls: an ink-filled primary beside a grey secondary ---------- */
   .theme-console .c-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);
     min-height: 44px; padding: 0 var(--space-lg); border-radius: var(--radius-pill);
-    border: 1px solid var(--rule-2); background: var(--paper-2); color: var(--ink);
+    border: 1px solid var(--rule); background: var(--paper-2); color: var(--ink);
     font-size: 0.9375rem; font-weight: 500; white-space: nowrap; cursor: pointer;
     transition: background-color var(--dur-short) var(--ease-out-c), border-color var(--dur-short) var(--ease-out-c), color var(--dur-short) var(--ease-out-c);
   }
-  .theme-console .c-btn:hover { border-color: var(--muted); background: var(--paper-3); }
-  .theme-console .c-btn:active { background: var(--rule); }
+  .theme-console .c-btn:hover { border-color: var(--rule-2); background: var(--rule); }
+  .theme-console .c-btn:active { background: var(--rule-2); }
   .theme-console .c-btn:disabled { opacity: 0.55; cursor: not-allowed; }
   .theme-console .c-btn--primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .theme-console .c-btn--primary:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
   .theme-console .c-btn--primary:active { background: var(--accent-hi); }
   .theme-console .c-btn--sm { min-height: 36px; padding: 0 var(--space-md); font-size: 0.875rem; }
 
-  .theme-console .c-link { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--rule-2); transition: color var(--dur-short) var(--ease-out-c), text-decoration-color var(--dur-short) var(--ease-out-c); }
-  .theme-console .c-link:hover { color: var(--ink); text-decoration-color: var(--accent); }
-  .theme-console .c-quiet { color: var(--ink-2); transition: color var(--dur-short) var(--ease-out-c); }
+  .theme-console .c-link { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule-2); transition: text-decoration-color var(--dur-short) var(--ease-out-c); }
+  .theme-console .c-link:hover { text-decoration-color: var(--ink); }
+  .theme-console .c-quiet { color: var(--muted); transition: color var(--dur-short) var(--ease-out-c); }
   .theme-console .c-quiet:hover { color: var(--ink); }
-  .theme-console .c-quiet:active { color: var(--accent); }
+  .theme-console .c-quiet:active { color: var(--ink-2); }
 
-  /* segmented switch: a row of chips, the chosen one on the cool tint */
-  .theme-console .c-seg { display: inline-flex; gap: var(--space-2xs); padding: var(--space-2xs); border: 1px solid var(--rule); border-radius: var(--radius-pill); background: var(--paper-2); }
+  /* segmented switch: the chosen option one grey step up */
+  .theme-console .c-seg { display: inline-flex; gap: var(--space-2xs); padding: var(--space-2xs); border: 1px solid var(--rule); border-radius: var(--radius-pill); background: var(--paper); }
   .theme-console .c-seg > button {
     display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 36px; padding: 0 var(--space-md);
-    border-radius: 4px; color: var(--muted); font-size: 0.875rem; font-weight: 500; white-space: nowrap; cursor: pointer;
+    border-radius: 0; color: var(--muted); font-size: 0.875rem; font-weight: 500; white-space: nowrap; cursor: pointer;
     transition: background-color var(--dur-short) var(--ease-out-c), color var(--dur-short) var(--ease-out-c);
   }
   .theme-console .c-seg > button:hover { color: var(--ink); }
-  .theme-console .c-seg > button[aria-selected="true"] { background: var(--cool-soft); color: var(--ink); }
-
+  .theme-console .c-seg > button[aria-selected="true"] { background: var(--paper-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
