@@ -8,8 +8,8 @@ import { motion, MotionValue } from 'motion/react';
  *
  * Everything is driven from outside through MotionValues so the landing
  * page's scroll position controls the whole choreography. Colours come from
- * the Console tokens of the page around it (amber for what the person wrote,
- * cool blue for what the checker measured); nothing glows.
+ * the Console tokens of the page around it (the ink for what the person wrote,
+ * one grey step for what the checker measured); nothing glows.
  */
 
 export const IDE_WIDTH = 720;
@@ -110,7 +110,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
         </div>
       </Plane>
 
-      {/* 2. Plain-English editor: what the person wrote, so the caret is amber */}
+      {/* 2. Plain-English editor: what the person wrote, so the caret is the ink */}
       <Plane motion={layers[2]}>
         <div className="measured absolute left-[240px] right-0 top-9 h-[250px] px-4 py-3">
           {STEPS.map((line, i) => (
@@ -123,7 +123,7 @@ export const IDEModel3D: React.FC<IDEModel3DProps> = ({ rotateX, rotateY, rotate
         </div>
       </Plane>
 
-      {/* 3. Technique and complexity: what the checker measured, so the readings are cool */}
+      {/* 3. Technique and complexity: what the checker measured, so the readings sit one grey step down */}
       <Plane motion={layers[3]}>
         <div className="measured absolute left-[240px] right-0 top-[286px] flex h-10 items-center gap-5 border-y border-rule bg-paper-3 px-4 text-[11px]">
           <span className="text-muted">

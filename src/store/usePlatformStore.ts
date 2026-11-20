@@ -126,6 +126,7 @@ const savedData = loadInitialState();
 
 if (typeof document !== 'undefined') {
   const initialDark = savedData?.isDarkMode ?? true;
+  document.documentElement.dataset.mode = initialDark ? 'dark' : 'light';
   if (initialDark) {
     document.documentElement.classList.add('dark');
     document.body?.classList.add('dark');
@@ -279,6 +280,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
     set({ isDarkMode: next });
     if (typeof document !== 'undefined') {
       document.documentElement.classList.toggle('dark', next);
+      document.documentElement.dataset.mode = next ? 'dark' : 'light';
       document.body?.classList.toggle('dark', next);
     }
     persist(get());
@@ -287,6 +289,7 @@ export const usePlatformStore = create<PlatformState>((set, get) => ({
     set({ isDarkMode: dark });
     if (typeof document !== 'undefined') {
       document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.dataset.mode = dark ? 'dark' : 'light';
       document.body?.classList.toggle('dark', dark);
     }
     persist(get());

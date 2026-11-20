@@ -58,7 +58,7 @@ export const AlgoOutputConsole: React.FC<AlgoOutputConsoleProps> = ({
   return (
     <div
       id="algo-output-console"
-      className="border-t border-rule bg-paper flex flex-col flex-shrink-0 transition-[height] duration-300 z-30"
+      className="border-t border-rule bg-paper flex flex-col flex-shrink-0 z-30"
       style={{ height: isExpanded ? '440px' : '48px' }}
     >
       {/* Header */}
@@ -134,7 +134,7 @@ export const AlgoOutputConsole: React.FC<AlgoOutputConsoleProps> = ({
                 <div className="space-y-6 pt-3">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2.5">
-                      <span className={`w-2 h-2 rounded-full ${evaluation.passed ? 'bg-ok' : 'bg-bad'}`} />
+                      <span className={`w-2 h-2 rounded-none ${evaluation.passed ? 'bg-ok' : 'bg-bad'}`} />
                       <span className="text-base font-medium text-ink">
                         {evaluation.passed ? 'Passed' : 'Not passing yet'}
                       </span>
@@ -173,9 +173,9 @@ export const AlgoOutputConsole: React.FC<AlgoOutputConsoleProps> = ({
                               <span className="text-ink-2">{label}</span>
                               <span className="font-mono text-xs text-muted">{evaluation.matrix[key]}</span>
                             </div>
-                            <div className="h-1 rounded-full bg-paper-3 overflow-hidden">
+                            <div className="h-1 rounded-none bg-paper-3 overflow-hidden">
                               <div
-                                className="h-full rounded-full bg-accent transition-[width] duration-700"
+                                className="h-full rounded-none bg-accent"
                                 style={{ width: `${v}%` }}
                               />
                             </div>
@@ -210,7 +210,7 @@ export const AlgoOutputConsole: React.FC<AlgoOutputConsoleProps> = ({
                       {testCases.map((tc, idx) => (
                         <div key={tc.id || idx} id={`test-case-item-${idx}`} className="py-2.5">
                           <div className="flex items-center gap-2.5">
-                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${tc.passed ? 'bg-ok' : 'bg-bad'}`} />
+                            <span className={`w-1.5 h-1.5 rounded-none shrink-0 ${tc.passed ? 'bg-ok' : 'bg-bad'}`} />
                             <span className="text-ink truncate">{tc.name}</span>
                             <span className={`text-xs ${tc.passed ? 'text-muted' : 'text-bad'}`}>
                               {tc.passed ? 'ok' : 'failed'}

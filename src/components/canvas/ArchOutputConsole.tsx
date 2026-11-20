@@ -42,7 +42,7 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
     <section
       id="arch-output-console"
       aria-label="Scenario results"
-      className="border-t border-rule bg-paper-2 flex flex-col flex-shrink-0 transition-[height] duration-300 z-30"
+      className="border-t border-rule bg-paper-2 flex flex-col flex-shrink-0 z-30"
       style={{ height: isExpanded ? '330px' : '44px' }}
     >
       {/* Header */}
@@ -83,7 +83,7 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
             <span className="flex items-center gap-1.5 text-xs text-ink-2 whitespace-nowrap">
               <span
                 aria-hidden="true"
-                className={`w-2 h-2 rounded-full ${evaluation.passed ? 'bg-ok' : 'bg-bad'}`}
+                className={`w-2 h-2 rounded-none ${evaluation.passed ? 'bg-ok' : 'bg-bad'}`}
               />
               {evaluation.passed ? 'Passed' : 'Needs work'}
               <span className="text-muted tabular-nums">{evaluation.score}/100</span>
@@ -136,7 +136,7 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
                       <span
                         role="img"
                         aria-label={tc.passed ? 'Passed' : 'Failed'}
-                        className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${tc.passed ? 'bg-ok' : 'bg-bad'}`}
+                        className={`mt-1.5 w-2 h-2 rounded-none shrink-0 ${tc.passed ? 'bg-ok' : 'bg-bad'}`}
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-3">
@@ -158,9 +158,9 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
                         <span className="text-ink font-medium">{s.label}</span>
                         <span className="text-ink tabular-nums">{s.value}%</span>
                       </div>
-                      <div className="w-full h-1.5 rounded-full bg-rule overflow-hidden">
+                      <div className="w-full h-1.5 rounded-none bg-rule overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-accent transition-[width] duration-700"
+                          className="h-full rounded-none bg-accent"
                           style={{ width: `${s.value}%` }}
                         />
                       </div>
@@ -178,7 +178,7 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
                       <ul className="space-y-2">
                         {evaluation.identifiedBottlenecks.map((b, i) => (
                           <li key={i} className="flex gap-2.5 leading-relaxed">
-                            <span aria-hidden="true" className="mt-2 w-1.5 h-1.5 rounded-full bg-bad shrink-0" />
+                            <span aria-hidden="true" className="mt-2 w-1.5 h-1.5 rounded-none bg-bad shrink-0" />
                             <span>{b}</span>
                           </li>
                         ))}
@@ -194,7 +194,7 @@ export const ArchOutputConsole: React.FC<ArchOutputConsoleProps> = ({
                       <ul className="space-y-2">
                         {evaluation.recommendations.map((r, i) => (
                           <li key={i} className="flex gap-2.5 leading-relaxed">
-                            <span aria-hidden="true" className="mt-2 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                            <span aria-hidden="true" className="mt-2 w-1.5 h-1.5 rounded-none bg-accent shrink-0" />
                             <span>{r}</span>
                           </li>
                         ))}

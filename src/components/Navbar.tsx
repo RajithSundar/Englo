@@ -214,7 +214,7 @@ export const Navbar: React.FC = () => {
               }
             }
           }}
-          className="h-8 max-w-[16rem] truncate rounded-lg border border-rule bg-transparent pl-3 pr-8 text-[13px] font-medium text-ink appearance-none cursor-pointer transition-colors hover:border-rule-2 focus:outline-none focus:border-accent focus:shadow-glow-1"
+          className="h-8 max-w-[16rem] truncate rounded-lg border border-rule bg-transparent pl-3 pr-8 text-[13px] font-medium text-ink appearance-none cursor-pointer transition-colors hover:border-rule-2 focus:outline-none focus:border-accent focus:"
         >
           {PROBLEMS.map((p) => (
             <option key={p.id} value={p.id} className="bg-paper-2 text-ink">
@@ -295,7 +295,7 @@ export const Navbar: React.FC = () => {
           type="button"
           id="nav-brand-logo"
           onClick={() => setActiveView('landing')}
-          className="order-1 h-14 text-[17px] font-medium tracking-tight text-ink hover:text-accent transition-colors cursor-pointer"
+          className="wordmark order-1 h-14 text-[17px] text-ink hover:text-accent transition-colors cursor-pointer"
         >
           Englo
         </button>
@@ -350,7 +350,7 @@ export const Navbar: React.FC = () => {
                       <div key={day.date} className="flex flex-col items-center gap-1">
                         <span className="text-[10px] text-muted">{day.label}</span>
                         <div
-                          className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-medium ${
+                          className={`w-7 h-7 rounded-none flex items-center justify-center text-[11px] font-medium ${
                             day.isActive
                               ? 'bg-accent/15 text-ink border border-accent/60'
                               : 'text-muted border border-rule'
@@ -416,7 +416,7 @@ export const Navbar: React.FC = () => {
                     setIsToolsOpen(false);
                     item.onClick();
                   }}
-                  className="w-full flex items-start gap-3 rounded-lg px-2.5 py-2 text-left cursor-pointer transition-colors hover:bg-paper-3 focus:outline-none focus-visible:bg-paper-3 focus-visible:shadow-glow-1"
+                  className="w-full flex items-start gap-3 rounded-lg px-2.5 py-2 text-left cursor-pointer transition-colors hover:bg-paper-3 focus:outline-none focus-visible:bg-paper-3 focus-visible:"
                 >
                   <span className="mt-0.5 text-muted">{item.icon}</span>
                   <span className="flex-1 min-w-0">
@@ -457,9 +457,9 @@ export const Navbar: React.FC = () => {
                 aria-haspopup="menu"
                 aria-expanded={isUserMenuOpen}
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 h-8 pl-1 pr-2 rounded-full hover:bg-ink/[0.06] transition-colors cursor-pointer"
+                className="flex items-center gap-2 h-8 pl-1 pr-2 rounded-none hover:bg-ink/[0.06] transition-colors cursor-pointer"
               >
-                <span className="w-7 h-7 rounded-full border border-rule-2 flex items-center justify-center text-ink-2 text-[11px] font-medium">
+                <span className="w-7 h-7 rounded-none border border-rule-2 flex items-center justify-center text-ink-2 text-[11px] font-medium">
                   {authenticatedUser.handle.replace('@', '').slice(0, 2).toUpperCase()}
                 </span>
                 <span className="hidden md:inline text-[13px] text-ink-2 max-w-[9rem] truncate">

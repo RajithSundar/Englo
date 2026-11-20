@@ -1,20 +1,21 @@
 /* Hallmark · shape: Pinned (kept scroll story: the IDE turns, then peels) · genre: modern-minimal · theme: custom (by request: greyscale, mono heads, square corners, after opencode.ai) · redesign: full
  * hero: Stage · nav: edge-aligned (wordmark, two links, one action) · footer: colophon · imagery: the product (the 3D workspace) · signature: the workspace peeling into its six layers · palette: ink on near-black, no accent hue
- * axes: dark/mono/neutral · posture: restrained · surface: neutral · modes: light+dark · contrast: pass · fold: pass · scope: landing + /learn only · v2.0.0 */
+ * axes: dark/mono/neutral · posture: restrained · surface: neutral · modes: light+dark · contrast: pass · fold: pass · scope: the whole app (landing, Learn, problems, sign-in, both workspaces, modals) · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V3 · weakest: V, the kept scroll story fixes the order; the lower half varies (split, index, band); cut every hue, so state is carried by words, weight and the ink fill */
 /* Hallmark · user override 47c and 84 · the hand-built 3D workspace stays because Karthik asked to keep it over a capture; it shows only real features, drawn from the page tokens, no glow */
 /* Hallmark · dropped #how-it-works, #advantage, #architecture · nav anchors into one scroll story; the section ids stay, and Problems and Learn are the real destinations */
 /* Hallmark · dropped #problem-catalog, {`#${s.id}`} · the footer anchor and the dot nav; the footer now links the real Problems and Learn views */
 /* Hallmark · dropped onClick={onClick} · the PrimaryButton wrapper became the .c-btn--primary class; every button keeps its own startProblem handler */
 /* Hallmark · dismissed 49 · "Open the URL shortener design" carries whitespace-nowrap and .c-btn sets white-space: nowrap */
+/* Hallmark · waive 24b · one nudge: margin-top -7px on the level slider thumb · it centres the 14px square thumb on the 1px level slider track */
+/* Hallmark · dropped "Continue where you left off" · the eyebrow over the dashboard's continue card; the card's heading and its button already say it */
 /* Hallmark · dropped "Try it on Two Sum" in the guide chapter · it repeated the hero's action on the next screen */
 
 /*
- * Englo's public pages (the landing page and the Learn page), scoped. The app
- * screens keep their own system, so every token here is set on
- * [data-theme="console"] (with data-mode from the app's theme toggle) using the
+ * Englo's one system. Every token here is set on [data-theme="console"], which
+ * <html> carries (with data-mode from the app's theme toggle), using the
  * project's own token names; the Tailwind utilities (bg-paper, text-ink, ...)
- * pick them up inside the scope.
+ * pick them up on every screen.
  *
  * The look follows opencode.ai at Karthik's request: no colour at all. A
  * near-black ground (a near-white one in light mode), grey body text, panels
@@ -32,6 +33,9 @@
   --font-outlier: "Atkinson Hyperlegible Mono", ui-monospace, monospace;
   --radius-card: 0px;
   --radius-pill: 0px;
+  /* square corners everywhere: Tailwind's radius steps all resolve to 0 */
+  --radius-xs: 0px; --radius-sm: 0px; --radius-md: 0px; --radius-lg: 0px;
+  --radius-xl: 0px; --radius-2xl: 0px; --radius-3xl: 0px; --radius-4xl: 0px;
 }
 
 @layer base {
@@ -44,6 +48,8 @@
     --cool: oklch(32% 0 0);        --cool-soft: oklch(92% 0 0);
     --ok: oklch(32% 0 0);          --ok-soft: oklch(94% 0 0);
     --bad: oklch(16% 0 0);         --bad-soft: oklch(94% 0 0);
+    --warn: oklch(32% 0 0);        --warn-soft: oklch(94% 0 0);
+    --scrim: oklch(16% 0 0 / 0.45);
     --focus: oklch(16% 0 0);
     color-scheme: light;
 
@@ -78,6 +84,8 @@
     --cool: oklch(86% 0 0);        --cool-soft: oklch(28% 0 0);
     --ok: oklch(86% 0 0);          --ok-soft: oklch(22% 0 0);
     --bad: oklch(98.5% 0 0);       --bad-soft: oklch(22% 0 0);
+    --warn: oklch(86% 0 0);        --warn-soft: oklch(22% 0 0);
+    --scrim: oklch(8% 0 0 / 0.72);
     --focus: oklch(98.5% 0 0);
     color-scheme: dark;
   }
@@ -138,6 +146,16 @@
   }
   .theme-console .c-seg > button:hover { color: var(--ink); }
   .theme-console .c-seg > button[aria-selected="true"] { background: var(--paper-2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-2); }
+
+  /* the level slider: a hairline track, a square ink thumb */
+  .theme-console .c-range { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; }
+  .theme-console .c-range::-webkit-slider-runnable-track { height: 1px; background: var(--rule-2); }
+  .theme-console .c-range::-moz-range-track { height: 1px; background: var(--rule-2); }
+  .theme-console .c-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; margin-top: -7px; background: var(--ink); border: 0; border-radius: 0; }
+  .theme-console .c-range::-moz-range-thumb { width: 14px; height: 14px; background: var(--ink); border: 0; border-radius: 0; }
+  .theme-console .c-range:hover::-webkit-slider-thumb { background: var(--ink-2); }
+  .theme-console .c-range:active::-webkit-slider-thumb { background: var(--ink-2); }
+  .theme-console .c-range:disabled { opacity: 0.55; cursor: not-allowed; }
 }
 
 @media (prefers-reduced-motion: reduce) {

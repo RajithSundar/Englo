@@ -261,7 +261,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      className={`h-[3px] rounded-full transition-colors duration-300 ${i <= strengthLevel ? strengthColor : 'bg-rule'}`}
+                      className={`h-[3px] rounded-none transition-colors duration-300 ${i <= strengthLevel ? strengthColor : 'bg-rule'}`}
                     />
                   ))}
                 </div>

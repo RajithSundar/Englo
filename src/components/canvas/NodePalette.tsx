@@ -221,7 +221,7 @@ export const NodePalette: React.FC<NodePaletteProps> = ({ onAddNode }) => {
                             e.stopPropagation();
                             onAddNode(item);
                           }}
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-muted hover:text-accent hover:bg-accent/15 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 transition shrink-0 cursor-pointer"
+                          className="w-7 h-7 rounded-none flex items-center justify-center text-muted hover:text-accent hover:bg-accent/15 opacity-60 group-hover:opacity-100 focus-visible:opacity-100 transition shrink-0 cursor-pointer"
                           aria-label={`Add ${item.label} to canvas`}
                           title="Add to canvas"
                         >

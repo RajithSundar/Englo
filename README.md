@@ -4,7 +4,7 @@
 
 [![Live App](https://img.shields.io/badge/Live_App-Cloud_Run-4285F4?logo=googlecloud&logoColor=white)](https://englo-studio-95017413334.us-central1.run.app)
 [![Docker](https://img.shields.io/badge/Docker-Node_22_Alpine-2496ED?logo=docker&logoColor=white)](Dockerfile)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-lightgrey.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 ---
@@ -158,4 +158,4 @@ Building an AI-assisted evaluation engine for financial systems revealed real en
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+Proprietary. Copyright (c) 2026 Rajith Sundar, all rights reserved. No use, copying, modification or distribution without written permission; see [LICENSE](LICENSE).

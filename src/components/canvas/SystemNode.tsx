@@ -80,7 +80,7 @@ export const SystemNode = memo(({ data, selected }: NodeProps) => {
 
   let borderClasses = 'border-rule hover:border-rule-2';
   if (selected) {
-    borderClasses = 'border-accent shadow-glow-1';
+    borderClasses = 'border-accent';
   } else if (isError) {
     borderClasses = 'border-bad/70';
   } else if (isWarning) {
@@ -119,7 +119,7 @@ export const SystemNode = memo(({ data, selected }: NodeProps) => {
           role="img"
           aria-label={statusLabel}
           title={statusLabel}
-          className={`w-2 h-2 rounded-full shrink-0 ${statusDot}`}
+          className={`w-2 h-2 rounded-none shrink-0 ${statusDot}`}
         />
       </div>
     </div>

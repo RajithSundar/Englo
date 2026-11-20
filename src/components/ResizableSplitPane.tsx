@@ -95,14 +95,14 @@ export const ResizableSplitPane: React.FC<ResizableSplitPaneProps> = ({
         {/* Hairline */}
         <div
           className={`w-px h-full transition-colors ${
-            isDragging ? 'bg-accent shadow-glow-1' : 'bg-rule group-hover:bg-accent/60'
+            isDragging ? 'bg-accent' : 'bg-rule group-hover:bg-accent/60'
           }`}
         />
 
         {/* Grip */}
         <div
-          className={`absolute w-1 h-8 rounded-full transition-colors ${
-            isDragging ? 'bg-accent shadow-glow-1' : 'bg-rule-2 group-hover:bg-accent/70'
+          className={`absolute w-1 h-8 rounded-none transition-colors ${
+            isDragging ? 'bg-accent' : 'bg-rule-2 group-hover:bg-accent/70'
           }`}
         />
       </div>

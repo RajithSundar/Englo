@@ -333,7 +333,7 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
       {isListening && (
         <div className="px-4 py-2 border-b border-rule flex items-center justify-between gap-3 text-sm text-ink-2">
           <span className="flex items-center gap-2 min-w-0">
-            <span className="w-1.5 h-1.5 rounded-full bg-bad shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-none bg-bad shrink-0" />
             <span className="truncate">Listening. What you say is typed at the cursor.</span>
           </span>
           <button type="button" onClick={toggleDictation} className="text-sm font-medium text-bad hover:underline cursor-pointer shrink-0">
@@ -360,7 +360,7 @@ export const AlgoEditor: React.FC<AlgoEditorProps> = ({
         {/* Neon spine on the active editor */}
         <div
           aria-hidden="true"
-          className={`absolute left-12 top-4 bottom-4 w-[2px] rounded-full bg-accent shadow-glow-1 transition-opacity duration-200 ${
+          className={`absolute left-12 top-4 bottom-4 w-[2px] rounded-none bg-accent transition-opacity duration-200 ${
             isFocused ? 'opacity-100' : 'opacity-0'
           }`}
         />

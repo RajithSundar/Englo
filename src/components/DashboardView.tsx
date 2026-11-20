@@ -101,7 +101,6 @@ export const DashboardView: React.FC = () => {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           <section className="glass rounded-xl p-6 lg:col-span-7 flex flex-col justify-between gap-6">
             <div className="space-y-3">
-              <span className="label">Continue where you left off</span>
               <h2 className="text-2xl font-medium tracking-[-0.015em] text-ink">{featuredProblem.title}</h2>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="chip">{kindLabel(featuredProblem.category)}</span>
@@ -138,7 +137,7 @@ export const DashboardView: React.FC = () => {
                 <span className="text-sm text-muted">of {totalProblems} solved</span>
               </div>
               <div
-                className="h-1 w-full overflow-hidden rounded-full bg-ink/10"
+                className="h-1 w-full overflow-hidden rounded-none bg-ink/10"
                 role="progressbar"
                 aria-valuenow={solvedPct}
                 aria-valuemin={0}
@@ -146,7 +145,7 @@ export const DashboardView: React.FC = () => {
                 aria-label="Problems solved"
               >
                 <div
-                  className="h-full rounded-full bg-accent shadow-glow-1 transition-all duration-700"
+                  className="h-full rounded-none bg-accent "
                   style={{ width: `${solvedPct}%` }}
                 />
               </div>
@@ -279,7 +278,7 @@ export const DashboardView: React.FC = () => {
                         {isSolved ? (
                           <Check className="h-4 w-4 text-accent" />
                         ) : (
-                          <span className="h-3.5 w-3.5 rounded-full border border-rule-2" />
+                          <span className="h-3.5 w-3.5 rounded-none border border-rule-2" />
                         )}
                       </span>
                       <ArrowRight className="hidden h-4 w-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-accent md:block" />

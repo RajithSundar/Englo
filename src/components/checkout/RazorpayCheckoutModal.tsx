@@ -182,7 +182,7 @@ export const RazorpayCheckoutModal: React.FC<RazorpayCheckoutModalProps> = ({
           planId: selectedPlan
         },
         theme: {
-          color: '#00C8FF'
+          color: '#1a1a1a'
         },
         modal: {
           ondismiss: () => {
@@ -279,7 +279,7 @@ export const RazorpayCheckoutModal: React.FC<RazorpayCheckoutModalProps> = ({
                       onClick={() => setSelectedPlan(plan.id)}
                       className={`text-left p-4 rounded-xl border transition-colors cursor-pointer ${
                         active
-                          ? 'border-accent bg-accent/10 shadow-glow-1'
+                          ? 'border-accent bg-accent/10'
                           : 'border-rule hover:border-rule-2'
                       }`}
                     >

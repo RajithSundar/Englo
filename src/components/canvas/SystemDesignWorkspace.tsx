@@ -320,7 +320,7 @@ const SystemDesignWorkspaceInner: React.FC<SystemDesignWorkspaceInnerProps> = ({
           <div
             role="toolbar"
             aria-label="Canvas actions"
-            className="absolute top-4 right-4 z-20 flex items-center gap-1 p-1 rounded-full glass"
+            className="absolute top-4 right-4 z-20 flex items-center gap-1 p-1 rounded-none glass"
           >
             <button
               type="button"

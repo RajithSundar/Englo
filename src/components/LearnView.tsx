@@ -534,54 +534,90 @@ const SourceIcon: React.FC<{ source: Source }> = ({ source }) => {
   );
 };
 
-/** One ranked source: a row on a hairline, the whole row a link. */
-const SourceRow: React.FC<{ source: Source; rank: number }> = ({ source: s, rank }) => (
+/** One ranked source on one line: rank, icon, name and author, caption, cost. The whole row is a link. */
+const SourceLine: React.FC<{ source: Source; rank: number }> = ({ source: s, rank }) => (
   <a
     href={s.href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group grid grid-cols-[1.75rem_2rem_minmax(0,1fr)] gap-x-3 border-t border-rule py-4 no-underline transition-colors hover:bg-paper-2"
+    className="group grid grid-cols-[2rem_2rem_minmax(0,1fr)] items-start gap-x-4 gap-y-1 border-b border-rule px-2 py-4 no-underline transition-colors hover:bg-paper-2 md:grid-cols-[2.5rem_2rem_minmax(0,18rem)_minmax(0,1fr)_7rem_1rem] md:items-center"
   >
-    <span className="measured pt-1.5 text-[14px] text-muted" aria-label={`Rank ${rank}`}>
-      {rank}
+    <span className="measured text-[15px] text-muted" aria-label={`Rank ${rank}`}>
+      {String(rank).padStart(2, '0')}
     </span>
     <SourceIcon source={s} />
     <span className="min-w-0">
-      <span className="flex items-start justify-between gap-2">
-        <span className="text-[16px] font-medium leading-snug text-ink underline decoration-transparent underline-offset-[0.16em] transition-colors group-hover:decoration-accent">
-          {s.name}
-        </span>
-        <ArrowUpRight aria-hidden className="mt-1 h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-ink" />
+      <span className="block text-[16px] font-medium leading-snug text-ink underline decoration-transparent underline-offset-[0.18em] transition-colors group-hover:decoration-ink">
+        {s.name}
       </span>
-      <span className="mt-0.5 block text-[14px] text-ink-2">{s.by}</span>
-      <span className="mt-2 block text-[15px] leading-[1.5] text-muted">{s.caption}</span>
-      <span className={`mt-2 block text-[14px] ${s.cost === 'Paid' ? 'text-ink-2' : 'text-muted'}`}>
-        {s.cost}
-        <span className="sr-only"> (opens in a new tab)</span>
-      </span>
+      <span className="mt-0.5 block text-[14px] text-muted">{s.by}</span>
     </span>
+    <span className="col-start-3 text-[15px] leading-[1.5] text-muted md:col-start-auto">{s.caption}</span>
+    <span className="col-start-3 text-[14px] text-ink-2 md:col-start-auto">
+      {s.cost}
+      <span className="sr-only"> (opens in a new tab)</span>
+    </span>
+    <ArrowUpRight aria-hidden className="hidden h-4 w-4 text-muted transition-colors group-hover:text-ink md:block" />
   </a>
+);
+
+/** The proficiency slider: a real range input with three stops, each stop also a button. */
+const LevelSlider: React.FC<{ value: number; onChange: (v: number) => void }> = ({ value, onChange }) => (
+  <div className="flex min-w-[18rem] flex-1 items-start gap-4 sm:max-w-[26rem]">
+    <label htmlFor="learn-level" className="shrink-0 pt-0.5 text-[14px] text-muted">
+      Level
+    </label>
+    <div className="flex-1">
+      <input
+        id="learn-level"
+        type="range"
+        min={0}
+        max={LEVELS.length - 1}
+        step={1}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-valuetext={LEVELS[value].label}
+        className="c-range"
+      />
+      <div className="mt-1 flex justify-between">
+        {LEVELS.map((l, i) => (
+          <button
+            key={l.key}
+            type="button"
+            onClick={() => onChange(i)}
+            aria-pressed={value === i}
+            className={`min-h-[32px] text-[13px] transition-colors ${value === i ? 'text-ink' : 'text-muted hover:text-ink-2'}`}
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
 );
 
 export const LearnView: React.FC = () => {
   const setActiveView = usePlatformStore((s) => s.setActiveView);
   const isDarkMode = usePlatformStore((s) => s.isDarkMode);
   const [format, setFormat] = React.useState<Format>('video');
+  const [levelIndex, setLevelIndex] = React.useState(0);
+  const level = LEVELS[levelIndex];
 
   return (
     <div
       id="learn-scroll-container"
       data-theme="console"
       data-mode={isDarkMode ? 'dark' : 'light'}
-      className="theme-console flex-1 overflow-y-auto w-full h-full bg-paper">
-      <header className="c-container pb-12 pt-16 md:pt-20">
+      className="theme-console flex-1 overflow-y-auto w-full h-full bg-paper"
+    >
+      <header className="c-container pb-10 pt-16 md:pt-20">
         <h1 className="display-s">Sources to learn from</h1>
-        <p className="lead mt-5">Sixty free courses, channels and books, ranked by level.</p>
+        <p className="lead mt-5">Sixty free courses, channels and books. Pick a format and your level.</p>
       </header>
 
-      {/* The format switch stays in reach while scrolling through both topics */}
+      {/* Format and level stay in reach while scrolling through both topics */}
       <div className="sticky top-0 z-[200] border-y border-rule bg-paper">
-        <div className="c-container flex flex-wrap items-center justify-between gap-4 py-3">
+        <div className="c-container flex flex-wrap items-center justify-between gap-x-10 gap-y-3 py-3">
           <div role="tablist" aria-label="Format" className="c-seg">
             {FORMATS.map((f) => (
               <button
@@ -598,45 +634,33 @@ export const LearnView: React.FC = () => {
               </button>
             ))}
           </div>
-          <nav aria-label="Topics" className="flex gap-6 text-[15px]">
-            {TRACKS.map((t) => (
-              <a key={t.key} href={`#learn-${t.key}`} className="c-quiet no-underline">
-                {t.key === 'dsa' ? 'DSA' : t.label}
-              </a>
-            ))}
-          </nav>
+          <LevelSlider value={levelIndex} onChange={setLevelIndex} />
         </div>
       </div>
 
-      <div id="learn-panel" role="tabpanel" aria-labelledby={`learn-format-${format}`} className="c-container">
+      <div id="learn-panel" role="tabpanel" aria-labelledby={`learn-format-${format}`} aria-live="polite" className="c-container">
+        <p className="pt-10 text-[15px] text-muted">
+          <span className="text-ink">{level.label}.</span> {level.blurb}
+        </p>
         {TRACKS.map((track) => (
-          <section key={track.key} id={`learn-${track.key}`} aria-labelledby={`learn-${track.key}-title`} className="scroll-mt-20 pt-20">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-              <h2 id={`learn-${track.key}-title`} className="text-[length:var(--text-display-s)]">
+          <section key={track.key} id={`learn-${track.key}`} aria-labelledby={`learn-${track.key}-title`} className="scroll-mt-28 pt-12">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-b border-rule pb-4">
+              <h2 id={`learn-${track.key}-title`} className="text-[length:var(--text-title)]">
                 {track.label}
               </h2>
-              <p className="text-[15px] text-muted">{track.intro}</p>
+              <p className="text-[14px] text-muted">{track.intro}</p>
             </div>
-
-            <div className="mt-10 grid gap-x-8 gap-y-12 lg:grid-cols-3">
-              {LEVELS.map((level) => (
-                <div key={level.key} role="group" aria-labelledby={`learn-${track.key}-${level.key}`} className="min-w-0">
-                  <h3 id={`learn-${track.key}-${level.key}`}>{level.label}</h3>
-                  <p className="mt-1 mb-4 text-[15px] text-muted">{level.blurb}</p>
-                  <ol>
-                    {track.sources[format][level.key].map((s, i) => (
-                      <li key={s.href}>
-                        <SourceRow source={s} rank={i + 1} />
-                      </li>
-                    ))}
-                  </ol>
-                </div>
+            <ol>
+              {track.sources[format][level.key].map((s, i) => (
+                <li key={s.href}>
+                  <SourceLine source={s} rank={i + 1} />
+                </li>
               ))}
-            </div>
+            </ol>
           </section>
         ))}
 
-        <div className="mt-24 flex flex-wrap items-center justify-between gap-6 border-t border-rule py-12">
+        <div className="mt-20 flex flex-wrap items-center justify-between gap-6 border-t border-rule py-12">
           <p className="max-w-[40rem] text-[15px] text-muted">
             Ranked by how widely programmers recommend each one, favouring free material. Englo runs none of them.
           </p>
