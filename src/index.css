@@ -15,6 +15,7 @@
   --color-accent: var(--accent); --color-accent-hi: var(--accent-hi); --color-accent-ink: var(--accent-ink); --color-accent-soft: var(--accent-soft);
   --color-cool: var(--cool); --color-cool-soft: var(--cool-soft);
   --color-ok: var(--ok); --color-ok-soft: var(--ok-soft);
+  --color-done: var(--done); --color-done-ink: var(--done-ink);
   --color-bad: var(--bad); --color-bad-soft: var(--bad-soft);
   --color-warn: var(--warn); --color-warn-soft: var(--warn-soft);
   --color-scrim: var(--scrim);

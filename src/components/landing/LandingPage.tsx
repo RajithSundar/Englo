@@ -9,6 +9,7 @@ import {
   useTransform,
 } from 'motion/react';
 import { ChevronDown, Moon, Sun } from 'lucide-react';
+import { SolvedBadge } from '../SolvedBadge';
 import { usePlatformStore } from '../../store/usePlatformStore';
 import { PROBLEMS } from '../../data/problems';
 import { SplineIDE } from './SplineIDE';
@@ -165,7 +166,7 @@ const ArchitecturePlate: React.FC = () => {
 /* ------------------------------------------------------------------ */
 
 export const LandingPage: React.FC = () => {
-  const { setActiveView, setActiveProblem, openAuth, authenticatedUser, isDarkMode, toggleDarkMode } = usePlatformStore();
+  const { setActiveView, setActiveProblem, openAuth, authenticatedUser, isDarkMode, toggleDarkMode, solvedProblemIds } = usePlatformStore();
   const narrow = useIsNarrow();
   const reduceMotion = useReducedMotion();
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'algorithm' | 'system_design'>('all');
@@ -418,7 +419,10 @@ export const LandingPage: React.FC = () => {
                   className="grid min-h-[64px] w-full grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-4 border-b border-rule py-3 text-left transition-colors hover:bg-paper-2 md:grid-cols-[3.5rem_minmax(0,1fr)_11rem_6rem]"
                 >
                   <span className="measured text-[14px] text-muted">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="text-[16px] text-ink md:text-[17px]">{prob.title}</span>
+                  <span className="flex min-w-0 items-center gap-3 text-[16px] text-ink md:text-[17px]">
+                    <span className="min-w-0">{prob.title}</span>
+                    {solvedProblemIds.includes(prob.id) && <SolvedBadge size="sm" />}
+                  </span>
                   <span className="hidden text-[15px] text-muted md:block">
                     {prob.category === 'algorithm' ? 'Algorithm' : 'System design'}
                   </span>

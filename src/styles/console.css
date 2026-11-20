@@ -1,5 +1,5 @@
 /* Hallmark · shape: Pinned (kept scroll story: the IDE turns, then peels) · genre: modern-minimal · theme: custom (by request: greyscale, mono heads, square corners, after opencode.ai) · redesign: full
- * hero: Stage · nav: edge-aligned (wordmark, two links, one action) · footer: colophon · imagery: the product (the 3D workspace) · signature: the workspace peeling into its six layers · palette: ink on near-black, no accent hue
+ * hero: Stage · nav: edge-aligned (wordmark, two links, one action) · footer: colophon · imagery: the product (the 3D workspace) · signature: the workspace peeling into its six layers · palette: ink on near-black, no accent hue but one green for a solved problem
  * axes: dark/mono/neutral · posture: restrained · surface: neutral · modes: light+dark · contrast: pass · fold: pass · scope: the whole app (landing, Learn, problems, sign-in, both workspaces, modals) · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V3 · weakest: V, the kept scroll story fixes the order; the lower half varies (split, index, band); cut every hue, so state is carried by words, weight and the ink fill */
 /* Hallmark · user override 47c and 84 · the hand-built 3D workspace stays because Karthik asked to keep it over a capture; it shows only real features, drawn from the page tokens, no glow */
@@ -49,6 +49,8 @@
     --ok: oklch(32% 0 0);          --ok-soft: oklch(94% 0 0);
     --bad: oklch(16% 0 0);         --bad-soft: oklch(94% 0 0);
     --warn: oklch(32% 0 0);        --warn-soft: oklch(94% 0 0);
+    /* the one colour: green for a solved problem, white tick (4.9:1), circle 3.8:1 or more on either ground */
+    --done: oklch(52% 0.15 150);   --done-ink: oklch(98.5% 0 0);
     --scrim: oklch(16% 0 0 / 0.45);
     --focus: oklch(16% 0 0);
     color-scheme: light;

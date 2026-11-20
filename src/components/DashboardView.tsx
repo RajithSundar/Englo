@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, Check, ArrowRight, Flame, CreditCard } from 'lucide-react';
+import { Search, ArrowRight, Flame, CreditCard } from 'lucide-react';
+import { SolvedBadge } from './SolvedBadge';
 import { PROBLEMS } from '../data/problems';
 import { usePlatformStore } from '../store/usePlatformStore';
 import { audioService } from '../services/audioService';
@@ -105,12 +106,7 @@ export const DashboardView: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="chip">{kindLabel(featuredProblem.category)}</span>
                 <span className={difficultyChip(featuredProblem.difficulty)}>{featuredProblem.difficulty}</span>
-                {featuredIsSolved && (
-                  <span className="chip chip-accent">
-                    <Check className="w-3 h-3" />
-                    Solved
-                  </span>
-                )}
+                {featuredIsSolved && <SolvedBadge size="sm" label />}
               </div>
               <p className="text-sm leading-relaxed text-ink-2 line-clamp-2">
                 {plainDescription(featuredProblem.description)}
@@ -276,9 +272,9 @@ export const DashboardView: React.FC = () => {
                       </span>
                       <span className="hidden md:flex md:justify-center" aria-label={isSolved ? 'Solved' : 'Not solved'}>
                         {isSolved ? (
-                          <Check className="h-4 w-4 text-accent" />
+                          <SolvedBadge />
                         ) : (
-                          <span className="h-3.5 w-3.5 rounded-none border border-rule-2" />
+                          <span aria-hidden className="h-5 w-5 rounded-full border border-rule-2" />
                         )}
                       </span>
                       <ArrowRight className="hidden h-4 w-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-accent md:block" />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, Copy, Check, Play, Loader2, RotateCcw } from 'lucide-react';
+import { SolvedBadge } from './SolvedBadge';
 import { usePlatformStore } from '../store/usePlatformStore';
 import { Problem } from '../types';
 import { FormattedMarkdown } from './FormattedMarkdown';
@@ -51,7 +52,7 @@ export const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problem 
           <h1 className="text-2xl font-medium tracking-tight text-ink leading-tight">{problem.title}</h1>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
             <span className={difficultyChip(problem.difficulty)}>{problem.difficulty}</span>
-            {isSolved && <span className="chip chip-accent">Solved</span>}
+            {isSolved && <SolvedBadge size="sm" label />}
             <span className="text-sm text-muted">
               {[isAlgo ? 'Algorithm' : 'System design', ...problem.tags.slice(0, 3)].join(' · ')}
             </span>

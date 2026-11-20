@@ -10,7 +10,7 @@ A practice tool should get out of the way. No colour, no glow, no glass: a near-
 
 - **Dark (default):** a near-black ground (about #0c0c0c), panels one grey step lighter, white ink, grey body.
 - **Light:** the same structure on near-white.
-- **No hue anywhere.** The former accent tokens resolve to the ink, so the one primary control on a screen is an ink-filled block. Easy, Medium and Hard, and pass and fail, are read as words.
+- **One hue, one meaning.** The former accent tokens resolve to the ink, so the one primary control on a screen is an ink-filled block. The only colour is green (`done`), used for one thing: the solved mark, a green circle with a white tick (`SolvedBadge`). Easy, Medium and Hard, and pass and fail, are read as words.
 
 ---
 
@@ -31,6 +31,7 @@ Components use the token utilities and never raw colour values.
 | `rule`, `rule-2` | hairlines, control borders |
 | `accent`, `accent-hi`, `accent-ink` | the ink fill of the primary control, its hover, the text on it |
 | `cool`, `ok`, `bad`, `warn` (+ `-soft`) | kept for the code's sake; all greys |
+| `done`, `done-ink` | the solved mark: green circle, white tick |
 | `scrim` | modal backdrop |
 
 All radius tokens resolve to 0. Contrast: body text is 5.8:1 or better in both modes.
